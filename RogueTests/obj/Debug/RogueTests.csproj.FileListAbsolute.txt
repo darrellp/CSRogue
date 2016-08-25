@@ -1,0 +1,12 @@
+C:\Users\darrellp\Documents\Visual Studio 2015\Projects\GitHub\CSRogue\RogueTests\bin\Debug\RogueTests.dll
+C:\Users\darrellp\Documents\Visual Studio 2015\Projects\GitHub\CSRogue\RogueTests\bin\Debug\RogueTests.pdb
+C:\Users\darrellp\Documents\Visual Studio 2015\Projects\GitHub\CSRogue\RogueTests\bin\Debug\CSRogue.dll
+C:\Users\darrellp\Documents\Visual Studio 2015\Projects\GitHub\CSRogue\RogueTests\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
+C:\Users\darrellp\Documents\Visual Studio 2015\Projects\GitHub\CSRogue\RogueTests\bin\Debug\nunit.framework.dll
+C:\Users\darrellp\Documents\Visual Studio 2015\Projects\GitHub\CSRogue\RogueTests\bin\Debug\CSRogue.pdb
+C:\Users\darrellp\Documents\Visual Studio 2015\Projects\GitHub\CSRogue\RogueTests\bin\Debug\nunit.framework.xml
+C:\Users\darrellp\Documents\Visual Studio 2015\Projects\GitHub\CSRogue\RogueTests\bin\Debug\CSRogue_Accessor.dll
+C:\Users\darrellp\Documents\Visual Studio 2015\Projects\GitHub\CSRogue\RogueTests\bin\Debug\CSRogue_Accessor.pdb
+C:\Users\darrellp\Documents\Visual Studio 2015\Projects\GitHub\CSRogue\RogueTests\obj\Debug\RogueTests.csprojResolveAssemblyReference.cache
+C:\Users\darrellp\Documents\Visual Studio 2015\Projects\GitHub\CSRogue\RogueTests\obj\Debug\RogueTests.dll
+C:\Users\darrellp\Documents\Visual Studio 2015\Projects\GitHub\CSRogue\RogueTests\obj\Debug\RogueTests.pdb

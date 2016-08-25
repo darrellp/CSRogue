@@ -17,7 +17,11 @@ namespace CSRogue.Map_Generation
 	/// either wall or floor characters (obtained from TerrainFactory.TerrainToChar() ) or a lower
 	/// case letter.  The letters correspond to exits.  Exit 'a' is an exit to the first room
 	/// in the _exits list, exit 'b' is an exit to the second room, etc..  If you've got more than
-	/// 26 exits in a single room, you're out of luck.  Darrellp, 9/27/2011. 
+	/// 26 exits in a single room, you're out of luck.  Darrellp, 9/27/2011.
+    /// 
+    /// Rooms exist in a larger "map" and Location gives their location on that map.  Thus two types
+    /// of coordinates exist for a room - local cooredinates which index directly into Layout, and
+    /// global or map coordinates which index into the map that the room is embedded in. Darrellp, 8/25/2016
 	/// </remarks>
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	public class GenericRoom
@@ -30,17 +34,33 @@ namespace CSRogue.Map_Generation
 		#endregion
 
 		#region Properties
+        /// <summary>   Matches global coordinates for exits to the rooms they lead to. </summary>
 		public Dictionary<MapCoordinates, GenericRoom> ExitMap => _mapExitLocationsToRooms;
-
+        /// <summary>   Gives coordinates for all the exits </summary>
+	    public IEnumerable<MapCoordinates> ExitCoordinates => ExitMap.Keys;
+        /// <summary>   The neighboring rooms. </summary>
+	    public IEnumerable<GenericRoom> NeighborRooms => ExitMap.Values;
+        /// <summary>   Returns true if this is a corridor. </summary>
 	    public virtual bool IsCorridor => false;
+        /// <summary>   The width of the room's layout. </summary>
         public int Width => Layout.Length;
+        /// <summary>   The height of the room's layout. </summary>
         public int Height => Layout[0].Length;
+        /// <summary>   The left coordinate for the room. </summary>
         public int Left => Location.Column;
+        /// <summary>   The top coordinate for the room. </summary>
         public int Top => Location.Row;
+        /// <summary>   The right coordinate for the room. </summary>
         public int Right => Left + Width - 1;
+        /// <summary>   The bottom coordinate for the room. </summary>
 	    public int Bottom => Top + Height - 1;
 
-	    public int ID { get; set; }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Gets or sets a tag for the room. </summary>
+        ///
+        /// <remarks> Put anything in it you like </remarks>
+        /// <value> The tag. </value>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
 		public object Tag { get; set; }
 		#endregion
 
@@ -168,9 +188,9 @@ namespace CSRogue.Map_Generation
 		{
 			get
 			{
-				for (int iRow = 0; iRow < Height; iRow++)
+				for (var iRow = 0; iRow < Height; iRow++)
 				{
-					for (int iColumn = 0; iColumn < Width; iColumn++)
+					for (var iColumn = 0; iColumn < Width; iColumn++)
 					{
 						if (Layout[iColumn][iRow] == '.')
 						{
@@ -186,7 +206,7 @@ namespace CSRogue.Map_Generation
 		///
 		/// <remarks>	Darrellp, 9/29/2011. </remarks>
 		///
-		/// <param name="location">	The location to be tested. </param>
+		/// <param name="location">	The location in global coordinates to be tested. </param>
 		///
 		/// <returns>	true if location is part of our room, false if not. </returns>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -200,7 +220,7 @@ namespace CSRogue.Map_Generation
 
 		#region Indexer
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Indexer using row and column arguments. </summary>
+		/// <summary>	Indexer using global (map) row and column arguments. </summary>
 		///
 		/// <value>	The indexed item. </value>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
