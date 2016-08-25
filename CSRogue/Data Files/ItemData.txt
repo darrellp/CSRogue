@@ -1,0 +1,4 @@
+﻿//type		ch	name		weight	value	description
+Player		@	.			.		.		The Player
+Rat			r	.			.		.		A vile little sewer rat.
+											These rodents seem to be everywhere!

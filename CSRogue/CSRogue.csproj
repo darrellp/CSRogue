@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1F0DDF6F-A415-4174-B0BD-A7FE18CFC3EC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CSRogue</RootNamespace>
+    <AssemblyName>CSRogue</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Malison.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>External Dependencies\Malison.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Malison.WinForms, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>External Dependencies\Malison.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="EventArgs\AttackEventArgs.cs" />
+    <Compile Include="Game\CommandDispatcher.cs" />
+    <Compile Include="Game\CommandQueue.cs" />
+    <Compile Include="Game\Commands\CommandBase.cs" />
+    <Compile Include="Game\Commands\MoveToCommand.cs" />
+    <Compile Include="Game\Commands\NewLevelCommand.cs" />
+    <Compile Include="Game\Commands\IRogueCommand.cs" />
+    <Compile Include="Game\CommandType.cs" />
+    <Compile Include="Game\Game.cs" />
+    <Compile Include="Game\Commands\MovementCommand.cs" />
+    <Compile Include="Item Handling\CreatureInfo.cs" />
+    <Compile Include="EventArgs\CreatureMoveEventArgs.cs" />
+    <Compile Include="Map Generation\Level.cs" />
+    <Compile Include="Utilities\BresenhamStepper.cs" />
+    <Compile Include="Utilities\DieRoll.cs" />
+    <Compile Include="Item Handling\ReadCreatureData.cs" />
+    <Compile Include="Item Handling\ReadItemData.cs" />
+    <Compile Include="Map Generation\Excavator.cs" />
+    <Compile Include="Map Generation\FileExcavator.cs" />
+    <Compile Include="Map Generation\FOV.cs" />
+    <Compile Include="Map Generation\GenericCorridor.cs" />
+    <Compile Include="Map Generation\GenericRoom.cs" />
+    <Compile Include="Map Generation\GridConnections.cs" />
+    <Compile Include="Item Handling\Item.cs" />
+    <Compile Include="Item Handling\ItemAttribute.cs" />
+    <Compile Include="Item Handling\ItemInfo.cs" />
+    <Compile Include="Items\Creature.cs" />
+    <Compile Include="Items\Player.cs" />
+    <Compile Include="Items\Rat.cs" />
+    <Compile Include="Map Generation\GridExcavator.cs" />
+    <Compile Include="Map Generation\Map.cs" />
+    <Compile Include="Map Generation\MapCoordinates.cs" />
+    <Compile Include="Map Generation\MapGraph.cs" />
+    <Compile Include="Map Generation\MapLocationData.cs" />
+    <Compile Include="Utilities\PerThreadSingleton.cs" />
+    <Compile Include="Utilities\Preferences.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\Random.cs" />
+    <Compile Include="Utilities\RogueColor.cs" />
+    <Compile Include="Utilities\RogueException.cs" />
+    <Compile Include="Map Generation\RectangularRoom.cs" />
+    <Compile Include="Map Generation\TerrainFactory.cs" />
+    <Compile Include="Utilities\Selector.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Data Files\ItemData.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Data Files\CreatureData.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="External Dependencies\Bramble.Core.dll" />
+    <Content Include="External Dependencies\Malison.Core.dll" />
+    <Content Include="External Dependencies\Malison.WinForms.dll" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
