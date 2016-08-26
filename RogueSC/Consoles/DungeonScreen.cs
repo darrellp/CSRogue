@@ -27,7 +27,7 @@ namespace RogueSC.Consoles
         public DungeonScreen()
         {
             StatsConsole = new CharacterConsole(24, 17);
-            ViewConsole = new DungeonMapConsole(56, 16, 100, 100);
+            ViewConsole = new DungeonMapConsole(56, 16, 100, 100, Font.FontSizes.One);
             MessageConsole = new MessagesConsole(80, 6);
 
             // Setup the message header to be as wide as the screen but only 1 character high

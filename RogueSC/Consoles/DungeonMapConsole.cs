@@ -22,16 +22,32 @@ namespace RogueSC.Consoles
         #endregion
 
         #region Constructor
-        public DungeonMapConsole(int viewWidth, int viewHeight, int mapWidth, int mapHeight) : base(mapWidth, mapHeight)
-        {
-            TextSurface.RenderArea = new Rectangle(0, 0, viewWidth, viewHeight);
 
-            AnimatedTextSurface playerAnimation = new AnimatedTextSurface("default", 1, 1, Engine.DefaultFont);
+        private static Dictionary<Font.FontSizes, double> sizeMultipliers = new Dictionary<Font.FontSizes, double>()
+        {
+            {Font.FontSizes.Quarter, 0.25},
+            {Font.FontSizes.Half, 0.5},
+            {Font.FontSizes.One, 1.0},
+            {Font.FontSizes.Two, 2.0},
+            {Font.FontSizes.Three, 3.0},
+            {Font.FontSizes.Four, 4.0}
+        };
+
+        public DungeonMapConsole(int viewWidth, int viewHeight, int mapWidth, int mapHeight, Font.FontSizes fontSize = Font.FontSizes.One) 
+            : base(mapWidth, mapHeight)
+        {
+            SadConsole.FontMaster fontMaster = SadConsole.Engine.LoadFont("IBM.font");
+            Font font = fontMaster.GetFont(fontSize);
+            TextSurface.Font = font;
+            var mult = sizeMultipliers[fontSize];
+            TextSurface.RenderArea = new Rectangle(0, 0, (int)(viewWidth / mult), (int)(viewHeight / mult));
+
+            AnimatedTextSurface playerAnimation = new AnimatedTextSurface("default", 1, 1, font);
             playerAnimation.CreateFrame();
             playerAnimation.CurrentFrame[0].Foreground = Color.Orange;
             playerAnimation.CurrentFrame[0].GlyphIndex = '@';
 
-            Player = new GameObject(Engine.DefaultFont)
+            Player = new GameObject(font)
             {
                 Animation = playerAnimation,
                 Position = new Point(1, 1)
