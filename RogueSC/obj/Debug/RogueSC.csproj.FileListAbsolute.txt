@@ -25,3 +25,5 @@ C:\Users\Darrell\Documents\Visual Studio 2015\Projects\Github\CSRogue\RogueSC\ob
 C:\Users\Darrell\Documents\Visual Studio 2015\Projects\Github\CSRogue\RogueSC\obj\Debug\RogueSC.pdb
 C:\Users\Darrell\Documents\Visual Studio 2015\Projects\Github\CSRogue\RogueSC\bin\Debug\CSRogue.dll
 C:\Users\Darrell\Documents\Visual Studio 2015\Projects\Github\CSRogue\RogueSC\bin\Debug\CSRogue.pdb
+C:\Users\Darrell\Documents\Visual Studio 2015\Projects\Github\CSRogue\RogueSC\bin\Debug\SadConsole.GameHelpers.Windows.dll
+C:\Users\Darrell\Documents\Visual Studio 2015\Projects\Github\CSRogue\RogueSC\bin\Debug\SadConsole.GameHelpers.Windows.xml

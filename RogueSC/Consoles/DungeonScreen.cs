@@ -1,24 +1,33 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using SadConsole;
 using SadConsole.Consoles;
+using SadConsole.Input;
+using CSRogue.Map_Generation;
 using Console = SadConsole.Consoles.Console;
+using Input = Microsoft.Xna.Framework.Input;
 
 namespace RogueSC.Consoles
 {
     class DungeonScreen : ConsoleList
     {
-        public Console ViewConsole;
+        #region Public Properties
+        public DungeonMapConsole ViewConsole;
         public CharacterConsole StatsConsole;
         public MessagesConsole MessageConsole;
+        #endregion
 
+        #region Private Variables
         // ReSharper disable once InconsistentNaming
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly Console messageHeaderConsole;
+        #endregion
 
+        #region Constructor
         public DungeonScreen()
         {
             StatsConsole = new CharacterConsole(24, 17);
-            ViewConsole = new Console(56, 17);
-            ViewConsole.FillWithRandomGarbage(); // Temporary so we can see where the console is on the screen
+            ViewConsole = new DungeonMapConsole(56, 16, 100, 100);
             MessageConsole = new MessagesConsole(80, 6);
 
             // Setup the message header to be as wide as the screen but only 1 character high
@@ -51,6 +60,39 @@ namespace RogueSC.Consoles
             StatsConsole.CharacterName = "Hydorn";
             StatsConsole.MaxHealth = 200;
             StatsConsole.Health = 100;
+
+            Engine.ActiveConsole = this;
+            Engine.Keyboard.RepeatDelay = 0.07f;
+            Engine.Keyboard.InitialRepeatDelay = 0.1f;
         }
+        #endregion
+
+        #region Keyboard handling
+        static Dictionary<Input.Keys, Point> _keysToMovement = new Dictionary<Input.Keys, Point>()
+            {
+                {Input.Keys.Up, new Point(0, -1) },
+                {Input.Keys.Down, new Point(0, 1) },
+                {Input.Keys.Left, new Point(-1, 0) },
+                {Input.Keys.Right, new Point(1, 0) },
+                {Input.Keys.End, new Point(-1, 1) },
+                {Input.Keys.PageUp, new Point(1, -1) },
+                {Input.Keys.PageDown, new Point(1, 1) },
+                {Input.Keys.Home, new Point(-1, -1) },
+            };
+        public override bool ProcessKeyboard(KeyboardInfo info)
+        {
+            if (info.KeysPressed.Count == 0)
+            {
+                return false;
+            }
+
+            if (_keysToMovement.ContainsKey(info.KeysPressed[0].XnaKey))
+            {
+                ViewConsole.MovePlayerBy(_keysToMovement[info.KeysPressed[0].XnaKey]);
+            }
+
+            return false;
+        }
+        #endregion
     }
 }

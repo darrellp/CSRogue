@@ -73,6 +73,10 @@
       <HintPath>..\packages\SadConsole.Core.4.2.1\lib\net45\SadConsole.Core.Windows.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="SadConsole.GameHelpers.Windows, Version=3.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SadConsole.GameHelpers.3.2.0\lib\net45\SadConsole.GameHelpers.Windows.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -88,16 +92,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Consoles\CharacterConsole.cs" />
+    <Compile Include="Consoles\DungeonMapConsole.cs" />
     <Compile Include="Consoles\DungeonScreen.cs" />
     <Compile Include="Consoles\MessagesConsole.cs" />
     <Compile Include="GameWorld.cs" />
+    <Compile Include="Map Objects\Floor.cs" />
+    <Compile Include="Map Objects\Wall.cs" />
     <Compile Include="Program.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CSRogue\CSRogue.csproj">
-      <Project>{1f0ddf6f-a415-4174-b0bd-a7fe18cfc3ec}</Project>
-      <Name>CSRogue</Name>
-    </ProjectReference>
+    <Compile Include="Utilities\Extensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
@@ -110,6 +112,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CSRogue\CSRogue.csproj">
+      <Project>{1f0ddf6f-a415-4174-b0bd-a7fe18cfc3ec}</Project>
+      <Name>CSRogue</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
