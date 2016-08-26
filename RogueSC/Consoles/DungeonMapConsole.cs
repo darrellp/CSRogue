@@ -10,28 +10,71 @@ using Console = SadConsole.Consoles.Console;
 
 namespace RogueSC.Consoles
 {
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// <summary>   The console that actually displays the dungeon. </summary>
+    ///
+    /// <remarks>   Darrellp, 8/26/2016. </remarks>
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
     class DungeonMapConsole : Console
     {
         #region Public Properties
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Gets the player GameObject. </summary>
+        ///
+        /// <value> The player. </value>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
         public GameObject Player { get; }
         #endregion
 
         #region Private Variables
+        /// <summary>   The CSRogue map. </summary>
         private Map _map;
+        /// <summary>   Information describing the map.  Not sure that this isn't
+        ///             subsumed by the _map information.  Probably is. </summary>
         CellAppearance[,] _mapData;
         #endregion
 
         #region Constructor
-        public DungeonMapConsole(int viewWidth, int viewHeight, int mapWidth, int mapHeight) : base(mapWidth, mapHeight)
-        {
-            TextSurface.RenderArea = new Rectangle(0, 0, viewWidth, viewHeight);
 
-            AnimatedTextSurface playerAnimation = new AnimatedTextSurface("default", 1, 1, Engine.DefaultFont);
+        /// <summary>   Size to multiply by for the different font sizes. </summary>
+        private static Dictionary<Font.FontSizes, double> sizeMultipliers = new Dictionary<Font.FontSizes, double>()
+        {
+            {Font.FontSizes.Quarter, 0.25},
+            {Font.FontSizes.Half, 0.5},
+            {Font.FontSizes.One, 1.0},
+            {Font.FontSizes.Two, 2.0},
+            {Font.FontSizes.Three, 3.0},
+            {Font.FontSizes.Four, 4.0}
+        };
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Constructor. </summary>
+        ///
+        /// <remarks>   Darrellp, 8/26/2016. </remarks>
+        ///
+        /// <param name="viewWidth">    Width of the console. </param>
+        /// <param name="viewHeight">   Height of the console. </param>
+        /// <param name="mapWidth">     Width of the underlying map. </param>
+        /// <param name="mapHeight">    Height of the underlying map. </param>
+        /// <param name="fontSize">     (Optional) size of the font. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        public DungeonMapConsole(int viewWidth, int viewHeight, int mapWidth, int mapHeight, Font.FontSizes fontSize = Font.FontSizes.One) 
+            : base(mapWidth, mapHeight)
+        {
+            SadConsole.FontMaster fontMaster = SadConsole.Engine.LoadFont("IBM.font");
+            Font font = fontMaster.GetFont(fontSize);
+            TextSurface.Font = font;
+            var mult = sizeMultipliers[fontSize];
+            TextSurface.RenderArea = new Rectangle(0, 0, (int)(viewWidth / mult), (int)(viewHeight / mult));
+
+            AnimatedTextSurface playerAnimation = new AnimatedTextSurface("default", 1, 1, font);
             playerAnimation.CreateFrame();
             playerAnimation.CurrentFrame[0].Foreground = Color.Orange;
             playerAnimation.CurrentFrame[0].GlyphIndex = '@';
 
-            Player = new GameObject(Engine.DefaultFont)
+            Player = new GameObject(font)
             {
                 Animation = playerAnimation,
                 Position = new Point(1, 1)
@@ -43,6 +86,7 @@ namespace RogueSC.Consoles
 
         #region Mapping
 
+        /// <summary>   Maps terrain types to appearance for that terrain. </summary>
         private static Dictionary<TerrainType, CellAppearance> _mapTerrainToAppearance = new Dictionary
             <TerrainType, CellAppearance>()
         {
@@ -55,6 +99,13 @@ namespace RogueSC.Consoles
             {TerrainType.VerticalWall, new Wall()},
             {TerrainType.Wall, new Wall()},
         };
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Generates a map. </summary>
+        ///
+        /// <remarks>   Darrellp, 8/26/2016. </remarks>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+
         private void GenerateMap()
         {
             _map = new Map(Width, Height);
@@ -91,6 +142,15 @@ namespace RogueSC.Consoles
         #endregion
 
         #region Player handling
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Move player by a delta. </summary>
+        ///
+        /// <remarks>   Darrellp, 8/26/2016. </remarks>
+        ///
+        /// <param name="amount">   The delta to move the player by. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+
         public void MovePlayerBy(Point amount)
         {
             // Get the position the player will be at
