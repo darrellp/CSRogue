@@ -1,0 +1,10 @@
+C:\Users\Darrell\Documents\Visual Studio 2015\Projects\Github\CSRogue\CSRogue\bin\Debug\CSRogue.dll
+C:\Users\Darrell\Documents\Visual Studio 2015\Projects\Github\CSRogue\CSRogue\bin\Debug\CSRogue.pdb
+C:\Users\Darrell\Documents\Visual Studio 2015\Projects\Github\CSRogue\CSRogue\bin\Debug\Malison.Core.dll
+C:\Users\Darrell\Documents\Visual Studio 2015\Projects\Github\CSRogue\CSRogue\bin\Debug\Malison.WinForms.dll
+C:\Users\Darrell\Documents\Visual Studio 2015\Projects\Github\CSRogue\CSRogue\bin\Debug\nunit.framework.dll
+C:\Users\Darrell\Documents\Visual Studio 2015\Projects\Github\CSRogue\CSRogue\bin\Debug\Bramble.Core.dll
+C:\Users\Darrell\Documents\Visual Studio 2015\Projects\Github\CSRogue\CSRogue\bin\Debug\nunit.framework.xml
+C:\Users\Darrell\Documents\Visual Studio 2015\Projects\Github\CSRogue\CSRogue\obj\Debug\CSRogue.csprojResolveAssemblyReference.cache
+C:\Users\Darrell\Documents\Visual Studio 2015\Projects\Github\CSRogue\CSRogue\obj\Debug\CSRogue.dll
+C:\Users\Darrell\Documents\Visual Studio 2015\Projects\Github\CSRogue\CSRogue\obj\Debug\CSRogue.pdb
