@@ -819,7 +819,7 @@ namespace CSRogue.Map_Generation
 				// to add them here
 
 				// For each adjoining room/corridor
-				foreach (var groomAdjoin in groom.ExitMap.Values)
+				foreach (var groomAdjoin in groom.NeighborRooms)
 				{
 					// Add the corridor to the map
 					AssignTilesInRoom(map, groomAdjoin);

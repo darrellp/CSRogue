@@ -24,12 +24,54 @@ namespace CSRogue.Map_Generation
 		#endregion
 
 		#region Properties
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Gets the player. </summary>
+        ///
+        /// <value> The player. </value>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 		public Player Player { get; }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Gets the map width. </summary>
+        ///
+        /// <value> The width. </value>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 		public int Width { get; }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Gets the map height. </summary>
+        ///
+        /// <value> The height. </value>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 		public int Height { get; }
+
+        /// <summary>   The hero position. </summary>
 		public MapCoordinates HeroPosition => Player.Location;
 
-	    public HashSet<GenericRoom> Rooms { get; private set; }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Gets the room or rooms that make up the map. </summary>
+        ///
+        /// <remarks> The map has separated, linked areas known as "rooms" which this property returns.
+        ///           Potentially, the entire level is one giant room with no exits but everything on the
+        ///           level should be contained in one of these rooms.  Currently there are two types of
+        ///           rooms - corridors and normal rooms.  Darrellp, 8/25/2016 
+        ///          </remarks>
+        /// 
+        /// <value> The rooms. </value>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	    public HashSet<GenericRoom> Rooms { get; }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Gets or sets the fov information for the map. </summary>
+        ///
+        /// <value> The fov object for this map. </value>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 		public FOV FOV
 		{
 			get
@@ -126,7 +168,7 @@ namespace CSRogue.Map_Generation
 
 		#region Modification
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Checks the terrain to see if the creature can move by offset. </summary>
+		/// <summary>	Checks the terrain to see if the creature can move there. </summary>
 		///
 		/// <remarks>	Darrellp, 10/15/2011. </remarks>
 		///
@@ -134,7 +176,7 @@ namespace CSRogue.Map_Generation
 		///
 		/// <returns>	true if it succeeds, false if it fails. </returns>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal bool ValidTerrainForMove(MapCoordinates location)
+		internal bool IsWalkable(MapCoordinates location)
 		{
 			return this[location].Terrain != TerrainType.Wall;
 		}
@@ -179,7 +221,7 @@ namespace CSRogue.Map_Generation
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		internal bool ValidRunningMove(MapCoordinates location)
 		{
-			return ValidTerrainForMove(location) && !IsCreatureAt(location);
+			return IsWalkable(location) && !IsCreatureAt(location);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -199,17 +241,17 @@ namespace CSRogue.Map_Generation
 			}
 		}
 
-			////////////////////////////////////////////////////////////////////////////////////////////////////
-			/// <summary>	Move creature to a new location. </summary>
-			///
-			/// <remarks>	Darrellp, 10/15/2011. </remarks>
-			///
-			/// <param name="creature">					The creature. </param>
-			/// <param name="newLocation">				The new location. </param>
-			/// <param name="firstTimeHeroPlacement">	true when placing the hero the first time. </param>
-			/// <param name="run">						true when this is part of a run. </param>
-			/// <param name="litAtStartOfRun">			A list of lit locations at the start of a run. </param>
-			////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		/// <summary>	Move creature to a new location. </summary>
+		///
+		/// <remarks>	Darrellp, 10/15/2011. </remarks>
+		///
+		/// <param name="creature">					The creature. </param>
+		/// <param name="newLocation">				The new location. </param>
+		/// <param name="firstTimeHeroPlacement">	true when placing the hero the first time. </param>
+		/// <param name="run">						true when this is part of a run. </param>
+		/// <param name="litAtStartOfRun">			A list of lit locations at the start of a run. </param>
+		////////////////////////////////////////////////////////////////////////////////////////////////////
 		public void MoveCreatureTo(
 			Creature creature,
 			MapCoordinates newLocation,

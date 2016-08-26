@@ -1,6 +1,7 @@
 ﻿namespace CSRogue.Item_Handling
 {
 	#region Item type enumeration
+    // TODO: How best to extend this to arbitrary types created by a third party?
 	public enum ItemType
 	{
 		Nothing,
