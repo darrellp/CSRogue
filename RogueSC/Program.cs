@@ -1,12 +1,11 @@
 ﻿using System;
 using SadConsole;
-using Console = SadConsole.Consoles.Console;
 
 namespace RogueSC
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             // Setup the engine and creat the main window.
             Engine.Initialize("IBM.font", 80, 25);
@@ -24,8 +23,8 @@ namespace RogueSC
         private static void Engine_EngineStart(object sender, EventArgs e)
         {
             // Clear the default console
-            SadConsole.Engine.ConsoleRenderStack.Clear();
-            SadConsole.Engine.ActiveConsole = null;
+            Engine.ConsoleRenderStack.Clear();
+            Engine.ActiveConsole = null;
 
             GameWorld.Start();
         }

@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using SadConsole;
+﻿using SadConsole;
 using SadConsole.Consoles;
 using Console = SadConsole.Consoles.Console;
 

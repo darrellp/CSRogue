@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using SadConsole;
+﻿using Microsoft.Xna.Framework;
 using SadConsole.Consoles;
 using Console = SadConsole.Consoles.Console;
 
@@ -12,7 +10,9 @@ namespace RogueSC.Consoles
         public CharacterConsole StatsConsole;
         public MessagesConsole MessageConsole;
 
-        private Console messageHeaderConsole;
+        // ReSharper disable once InconsistentNaming
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+        private readonly Console messageHeaderConsole;
 
         public DungeonScreen()
         {
@@ -22,10 +22,12 @@ namespace RogueSC.Consoles
             MessageConsole = new MessagesConsole(80, 6);
 
             // Setup the message header to be as wide as the screen but only 1 character high
-            messageHeaderConsole = new Console(80, 1);
-            messageHeaderConsole.DoUpdate = false;
-            messageHeaderConsole.CanUseKeyboard = false;
-            messageHeaderConsole.CanUseMouse = false;
+            messageHeaderConsole = new Console(80, 1)
+            {
+                DoUpdate = false,
+                CanUseKeyboard = false,
+                CanUseMouse = false
+            };
 
             // Draw the line for the header
             messageHeaderConsole.Fill(Color.White, Color.Black, 196, null);
