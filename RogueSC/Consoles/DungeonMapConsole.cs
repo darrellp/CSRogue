@@ -103,6 +103,7 @@ namespace RogueSC.Consoles
             {
                 // Move the player
                 Player.Position += amount;
+                _map.Player.Location = Player.Position.ToMapCoordinates();
 
                 // Scroll the view area to center the player on the screen
                 TextSurface.RenderArea = new Rectangle(Player.Position.X - (TextSurface.RenderArea.Width / 2),

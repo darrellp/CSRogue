@@ -14,5 +14,10 @@ namespace RogueSC.Utilities
         {
             return new Point(coords.Column, coords.Row);
         }
+
+        internal static MapCoordinates ToMapCoordinates(this Point point)
+        {
+            return new MapCoordinates(point.X, point.Y);
+        }
     }
 }
