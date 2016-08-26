@@ -10,19 +10,34 @@ using Console = SadConsole.Consoles.Console;
 
 namespace RogueSC.Consoles
 {
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// <summary>   The console that actually displays the dungeon. </summary>
+    ///
+    /// <remarks>   Darrellp, 8/26/2016. </remarks>
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
     class DungeonMapConsole : Console
     {
         #region Public Properties
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Gets the player GameObject. </summary>
+        ///
+        /// <value> The player. </value>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
         public GameObject Player { get; }
         #endregion
 
         #region Private Variables
+        /// <summary>   The CSRogue map. </summary>
         private Map _map;
+        /// <summary>   Information describing the map.  Not sure that this isn't
+        ///             subsumed by the _map information.  Probably is. </summary>
         CellAppearance[,] _mapData;
         #endregion
 
         #region Constructor
 
+        /// <summary>   Size to multiply by for the different font sizes. </summary>
         private static Dictionary<Font.FontSizes, double> sizeMultipliers = new Dictionary<Font.FontSizes, double>()
         {
             {Font.FontSizes.Quarter, 0.25},
@@ -32,6 +47,18 @@ namespace RogueSC.Consoles
             {Font.FontSizes.Three, 3.0},
             {Font.FontSizes.Four, 4.0}
         };
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Constructor. </summary>
+        ///
+        /// <remarks>   Darrellp, 8/26/2016. </remarks>
+        ///
+        /// <param name="viewWidth">    Width of the console. </param>
+        /// <param name="viewHeight">   Height of the console. </param>
+        /// <param name="mapWidth">     Width of the underlying map. </param>
+        /// <param name="mapHeight">    Height of the underlying map. </param>
+        /// <param name="fontSize">     (Optional) size of the font. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
 
         public DungeonMapConsole(int viewWidth, int viewHeight, int mapWidth, int mapHeight, Font.FontSizes fontSize = Font.FontSizes.One) 
             : base(mapWidth, mapHeight)
@@ -59,6 +86,7 @@ namespace RogueSC.Consoles
 
         #region Mapping
 
+        /// <summary>   Maps terrain types to appearance for that terrain. </summary>
         private static Dictionary<TerrainType, CellAppearance> _mapTerrainToAppearance = new Dictionary
             <TerrainType, CellAppearance>()
         {
@@ -71,6 +99,13 @@ namespace RogueSC.Consoles
             {TerrainType.VerticalWall, new Wall()},
             {TerrainType.Wall, new Wall()},
         };
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Generates a map. </summary>
+        ///
+        /// <remarks>   Darrellp, 8/26/2016. </remarks>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+
         private void GenerateMap()
         {
             _map = new Map(Width, Height);
@@ -107,6 +142,15 @@ namespace RogueSC.Consoles
         #endregion
 
         #region Player handling
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Move player by a delta. </summary>
+        ///
+        /// <remarks>   Darrellp, 8/26/2016. </remarks>
+        ///
+        /// <param name="amount">   The delta to move the player by. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+
         public void MovePlayerBy(Point amount)
         {
             // Get the position the player will be at
