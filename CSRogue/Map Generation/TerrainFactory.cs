@@ -25,7 +25,7 @@ namespace CSRogue.Map_Generation
 	class TerrainFactory
 	{
 		#region Mapping table
-		static private readonly Dictionary<char, TerrainType> MapCharToTerrain = new Dictionary<char, TerrainType>
+		private static readonly Dictionary<char, TerrainType> MapCharToTerrain = new Dictionary<char, TerrainType>
 		    {
 		        {'.', TerrainType.Floor},
 				{'#', TerrainType.Wall},
@@ -38,7 +38,7 @@ namespace CSRogue.Map_Generation
 				{'<', TerrainType.StairsUp}
 		    };
 
-		static private readonly Dictionary<TerrainType, char> MapTerrainToChar = new Dictionary<TerrainType, char>();
+		private static readonly Dictionary<TerrainType, char> MapTerrainToChar = new Dictionary<TerrainType, char>();
 		#endregion
 
 		#region Static Constructor

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CSRogue.Map_Generation;
+﻿using CSRogue.Map_Generation;
 using Microsoft.Xna.Framework;
 
 namespace RogueSC.Utilities

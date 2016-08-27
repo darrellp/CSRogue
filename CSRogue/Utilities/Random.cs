@@ -11,15 +11,9 @@ namespace CSRogue.Utilities
 	{
 		private Random _rnd;
 
-		internal static Rnd Global
-		{
-			get
-			{
-				return PerThreadSingleton<Rnd>.Instance();
-			}
-		}
+		internal static Rnd Global => PerThreadSingleton<Rnd>.Instance();
 
-		internal Rnd(int seed)
+	    internal Rnd(int seed)
 		{
 			SetSeed(seed);
 		}

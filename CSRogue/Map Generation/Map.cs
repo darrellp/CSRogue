@@ -279,20 +279,17 @@ namespace CSRogue.Map_Generation
 			}
 
 			// If we've got a game object
-			if (_game != null)
-			{
-				// Invoke the move event through it
-				_game.InvokeEvent(EventType.CreatureMove, this,
-					new CreatureMoveEventArgs(
-						this, 
-						creature, 
-						oldPosition, 
-						newLocation, 
-						firstTimeHeroPlacement,
-						isBlocked:false,
-						isRunning:run, 
-						litAtStartOfRun:litAtStartOfRun));
-			}
+		    // Invoke the move event through it
+		    _game?.InvokeEvent(EventType.CreatureMove, this,
+		        new CreatureMoveEventArgs(
+		            this, 
+		            creature, 
+		            oldPosition, 
+		            newLocation, 
+		            firstTimeHeroPlacement,
+		            isBlocked:false,
+		            isRunning:run, 
+		            litAtStartOfRun:litAtStartOfRun));
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////

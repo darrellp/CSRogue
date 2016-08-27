@@ -33,7 +33,7 @@ namespace RogueWPF.Mapping
 		private bool _initialResize = true;
 
 		private readonly Terminal _terminal;
-		static private readonly Dictionary<TerrainType, Character> CharacterInfo = new Dictionary<TerrainType, Character>
+		private static readonly Dictionary<TerrainType, Character> CharacterInfo = new Dictionary<TerrainType, Character>
 		    {
 				{TerrainType.Floor, new Character(Glyph.Period, TermColor.Orange)},
 				{TerrainType.Wall, new Character(Glyph.SolidFill, TermColor.DarkBlue)},

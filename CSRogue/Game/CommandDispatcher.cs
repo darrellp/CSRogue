@@ -27,14 +27,9 @@ namespace CSRogue.GameControl
 		#endregion
 
 		#region Properties
-		Map Map
-		{
-			get
-			{
-				return _game.CurrentLevel.Map;
-			}
-		}
-		#endregion
+		Map Map => _game.CurrentLevel.Map;
+
+	    #endregion
 
 		#region Constructor
 		public CommandDispatcher(Game game)

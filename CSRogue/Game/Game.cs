@@ -40,14 +40,9 @@ namespace CSRogue.GameControl
 		///
 		/// <value>	The map. </value>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public Map Map
-		{
-			get
-			{
-				return CurrentLevel.Map;
-			}
-		}
-		#endregion
+		public Map Map => CurrentLevel.Map;
+
+	    #endregion
 
 		#region Events
 		/// <summary> Event queue for all listeners interested in new level events. </summary>
@@ -55,10 +50,7 @@ namespace CSRogue.GameControl
 		public void InvokeNewLevelEvent(Object sender, EventArgs e)
 		{
 			var handler = NewLevelEvent;
-			if (handler != null)
-			{
-				handler(sender, e);
-			}
+		    handler?.Invoke(sender, e);
 		}
 
 		/// <summary> Event queue for all listeners interested in hero movement events. </summary>
@@ -66,20 +58,14 @@ namespace CSRogue.GameControl
 		private void InvokeHeroMoveEvent(Object sender, CreatureMoveEventArgs e)
 		{
 			var handler = HeroMoveEvent;
-			if (handler != null)
-			{
-				handler(sender, e);
-			}
+		    handler?.Invoke(sender, e);
 		}
 
 		public event EventHandler<AttackEventArgs> AttackEvent;
 		private void InvokeAttackEvent(Object sender, AttackEventArgs e)
 		{
 			var handler = AttackEvent;
-			if (handler != null)
-			{
-				handler(sender, e);
-			}
+		    handler?.Invoke(sender, e);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////

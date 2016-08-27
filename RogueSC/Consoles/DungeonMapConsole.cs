@@ -38,7 +38,7 @@ namespace RogueSC.Consoles
         #region Constructor
 
         /// <summary>   Size to multiply by for the different font sizes. </summary>
-        private static Dictionary<Font.FontSizes, double> sizeMultipliers = new Dictionary<Font.FontSizes, double>()
+        private static readonly Dictionary<Font.FontSizes, double> SizeMultipliers = new Dictionary<Font.FontSizes, double>()
         {
             {Font.FontSizes.Quarter, 0.25},
             {Font.FontSizes.Half, 0.5},
@@ -66,7 +66,7 @@ namespace RogueSC.Consoles
             FontMaster fontMaster = Engine.LoadFont("IBM.font");
             Font font = fontMaster.GetFont(fontSize);
             TextSurface.Font = font;
-            var mult = sizeMultipliers[fontSize];
+            var mult = SizeMultipliers[fontSize];
             TextSurface.RenderArea = new Rectangle(0, 0, (int)(viewWidth / mult), (int)(viewHeight / mult));
 
             AnimatedTextSurface playerAnimation = new AnimatedTextSurface("default", 1, 1, font);
@@ -87,7 +87,7 @@ namespace RogueSC.Consoles
         #region Mapping
 
         /// <summary>   Maps terrain types to appearance for that terrain. </summary>
-        private static Dictionary<TerrainType, string> _mapTerrainToAppearance = new Dictionary
+        private static readonly Dictionary<TerrainType, string> _mapTerrainToAppearance = new Dictionary
             <TerrainType, string>()
         {
             {TerrainType.Floor, "floor"},
@@ -155,8 +155,8 @@ namespace RogueSC.Consoles
         public void MovePlayerBy(Point amount)
         {
             // Get the position the player will be at
-            Point newPosition = Player.Position + amount;
-            TerrainType terrain = _map[newPosition.X, newPosition.Y].Terrain;
+            var newPosition = Player.Position + amount;
+            var terrain = _map[newPosition.X, newPosition.Y].Terrain;
 
             // Check to see if the position is within the map
             if (new Rectangle(0, 0, Width, Height).Contains(newPosition)
@@ -172,7 +172,7 @@ namespace RogueSC.Consoles
                                                         TextSurface.RenderArea.Width, TextSurface.RenderArea.Height);
 
                 // If he view area moved, we'll keep our entity in sync with it.
-                Player.RenderOffset = this.Position - TextSurface.RenderArea.Location;
+                Player.RenderOffset = Position - TextSurface.RenderArea.Location;
             }
         }
 

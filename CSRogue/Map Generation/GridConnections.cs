@@ -338,20 +338,19 @@ namespace CSRogue.Map_Generation
 		{
 			#region Private variables
 			private readonly GridConnections _connections;
-			private readonly MapCoordinates _location;
-			private readonly Dir _dir;
+		    private readonly Dir _dir;
 			#endregion
 
 			#region Properties
-			internal MapCoordinates Location { get { return _location; } }
-			internal Dir Dir { get { return _dir; } }
-			internal bool IsConnected { get; private set; }
+			internal MapCoordinates Location { get; }
+		    internal Dir Dir => _dir;
+		    internal bool IsConnected { get; private set; }
 			#endregion
 
 			#region Constructor
 			public ConnectionInfo(GridConnections connections, MapCoordinates location, Dir dir, bool isConnected) : this()
 			{
-				_location = location;
+				Location = location;
 				_dir = dir;
 				IsConnected = isConnected;
 				_connections = connections;

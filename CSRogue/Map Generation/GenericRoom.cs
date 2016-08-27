@@ -30,13 +30,14 @@ namespace CSRogue.Map_Generation
 		protected char[][] Layout;
 		protected MapCoordinates Location;
 		protected List<GenericRoom> Exits;
-		private readonly Dictionary<MapCoordinates, GenericRoom> _mapExitLocationsToRooms = new Dictionary<MapCoordinates, GenericRoom>();
-		#endregion
+
+	    #endregion
 
 		#region Properties
         /// <summary>   Matches global coordinates for exits to the rooms they lead to. </summary>
-		public Dictionary<MapCoordinates, GenericRoom> ExitMap => _mapExitLocationsToRooms;
-        /// <summary>   Gives coordinates for all the exits </summary>
+		public Dictionary<MapCoordinates, GenericRoom> ExitMap { get; } = new Dictionary<MapCoordinates, GenericRoom>();
+
+	    /// <summary>   Gives coordinates for all the exits </summary>
 	    public IEnumerable<MapCoordinates> ExitCoordinates => ExitMap.Keys;
         /// <summary>   The neighboring rooms. </summary>
 	    public IEnumerable<GenericRoom> NeighborRooms => ExitMap.Values;
@@ -126,7 +127,7 @@ namespace CSRogue.Map_Generation
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		internal GenericRoom(string layout, MapCoordinates location, List<GenericRoom> exits)
 		{
-			List<string> rows = layout.Split(new[] { '\n' }).Select(s => s.TrimEnd(new[] { '\r' })).ToList();
+			List<string> rows = layout.Split('\n').Select(s => s.TrimEnd('\r')).ToList();
 			char[][] layoutArray = new char[rows[0].Length][];
 
 

@@ -36,12 +36,12 @@ namespace RogueWPF.Utilities
 		}
 		// ReSharper restore PossibleInvalidOperationException
 
-		static public Size GetElementPixelSize(FrameworkElement element)
+		public static Size GetElementPixelSize(FrameworkElement element)
 		{
 			return (Size)TransformToDevice(element).Transform(new Vector(element.ActualWidth, element.ActualHeight));
 		}
 
-		static public Size ConvertFromPixels(Vector vec)
+		public static Size ConvertFromPixels(Vector vec)
 		{
 			return (Size) TransformFromDevice().Transform(vec);
 		}

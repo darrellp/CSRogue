@@ -20,8 +20,8 @@ namespace CSRogue.Utilities
 
 		internal DieRoll(string roll)
 		{
-			String[] sides = roll.Split(new[] {'d'});
-			Set(Int16.Parse(sides[0]), Int16.Parse(sides[1]));
+			var sides = roll.Split('d');
+			Set(short.Parse(sides[0]), short.Parse(sides[1]));
 		}
 
 		internal int Roll()

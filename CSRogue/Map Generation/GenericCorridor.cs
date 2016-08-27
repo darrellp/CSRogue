@@ -2,15 +2,9 @@
 {
 	class GenericCorridor : GenericRoom
 	{
-		public override bool IsCorridor
-		{
-			get
-			{
-				return true;
-			}
-		}
+		public override bool IsCorridor => true;
 
-		////////////////////////////////////////////////////////////////////////////////////////////////////
+	    ////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Constructor from just a width, height and location. </summary>
 		///
 		/// <remarks>	Darrellp, 9/28/2011. </remarks>

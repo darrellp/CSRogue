@@ -29,15 +29,9 @@ namespace CSRogue.Map_Generation
 		///
 		/// <value>	The newly seen. </value>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public IEnumerable<MapCoordinates> CurrentlySeen
-		{
-			get
-			{
-				return _currentFOV;
-			}
-		}
+		public IEnumerable<MapCoordinates> CurrentlySeen => _currentFOV;
 
-		////////////////////////////////////////////////////////////////////////////////////////////////////
+	    ////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Return an enumeration of newly visible tile locations. </summary>
 		///
 		/// <value>	The newly seen. </value>
@@ -113,7 +107,8 @@ namespace CSRogue.Map_Generation
 			ScanOctant(Dir.Horiz, rowIncrement: -1, colIncrement: 1);
 			ScanOctant(Dir.Horiz, rowIncrement: 1, colIncrement: 1);
 			ScanOctant(Dir.Horiz, rowIncrement: -1, colIncrement: -1);
-			ScanOctant(Dir.Horiz, rowIncrement: 1, colIncrement: -1);			//ScanQuadrant(Dir.Vert, rowIncrement: -1, colIncrement: 1);
+			ScanOctant(Dir.Horiz, rowIncrement: 1, colIncrement: -1);
+            //ScanQuadrant(Dir.Vert, rowIncrement: -1, colIncrement: 1);
 			//ScanQuadrant(Dir.Vert, rowIncrement: 1, colIncrement: 1);
 			//ScanQuadrant(Dir.Horiz, rowIncrement: -1, colIncrement: 1);
 			//ScanQuadrant(Dir.Horiz, rowIncrement: 1, colIncrement: 1);

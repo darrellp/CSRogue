@@ -14,27 +14,13 @@ namespace RogueTests
 	[TestClass()]
 	public class DieRollTest
 	{
-
-
-		private TestContext testContextInstance;
-
-		/// <summary>
+	    /// <summary>
 		///Gets or sets the test context which provides
 		///information about and functionality for the current test run.
 		///</summary>
-		public TestContext TestContext
-		{
-			get
-			{
-				return testContextInstance;
-			}
-			set
-			{
-				testContextInstance = value;
-			}
-		}
+		public TestContext TestContext { get; set; }
 
-		#region Additional test attributes
+	    #region Additional test attributes
 		// 
 		//You can use the following additional attributes as you write your tests:
 		//
@@ -114,8 +100,7 @@ namespace RogueTests
 			string roll = "2d6";
 			DieRoll target = new DieRoll(roll); // TODO: Initialize to an appropriate value
 			string expected = string.Empty; // TODO: Initialize to an appropriate value
-			string actual;
-			actual = target.ToString();
+		    var actual = target.ToString();
 			Assert.AreEqual(roll, actual);
 		}
 	}
