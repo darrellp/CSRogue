@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using SadConsole.Game;
 using SadConsole.Consoles;
 using CSRogue.Map_Generation;
-using RoguelikeGame.MapObjects;
+using RogueSC.Map_Objects;
 using RogueSC.Utilities;
 using Console = SadConsole.Consoles.Console;
 
@@ -87,17 +87,17 @@ namespace RogueSC.Consoles
         #region Mapping
 
         /// <summary>   Maps terrain types to appearance for that terrain. </summary>
-        private static Dictionary<TerrainType, CellAppearance> _mapTerrainToAppearance = new Dictionary
-            <TerrainType, CellAppearance>()
+        private static Dictionary<TerrainType, string> _mapTerrainToAppearance = new Dictionary
+            <TerrainType, string>()
         {
-            {TerrainType.Floor, new Floor()},
-            {TerrainType.Door, new Floor()},
-            {TerrainType.StairsDown, new Floor()},
-            {TerrainType.StairsUp, new Floor()},
-            {TerrainType.Corner, new Wall()},
-            {TerrainType.HorizontalWall, new Wall()},
-            {TerrainType.VerticalWall, new Wall()},
-            {TerrainType.Wall, new Wall()},
+            {TerrainType.Floor, "floor"},
+            {TerrainType.Door, "floor"},
+            {TerrainType.StairsDown, "floor"},
+            {TerrainType.StairsUp, "floor"},
+            {TerrainType.Corner, "wall"},
+            {TerrainType.HorizontalWall, "wall"},
+            {TerrainType.VerticalWall, "wall"},
+            {TerrainType.Wall, "wall"},
         };
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,7 +125,8 @@ namespace RogueSC.Consoles
                     {
                         continue;
                     }
-                    _mapData[iCol, iRow] = _mapTerrainToAppearance[_map[iCol, iRow].Terrain];
+                    string str = _mapTerrainToAppearance[_map[iCol, iRow].Terrain];
+                    _mapData[iCol, iRow] = MapObjectFactory.ObjectNameToAppearance[str];
                     _mapData[iCol, iRow].CopyAppearanceTo(this[iCol, iRow]);
                 }
             }
