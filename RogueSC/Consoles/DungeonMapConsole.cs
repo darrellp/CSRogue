@@ -63,7 +63,7 @@ namespace RogueSC.Consoles
         public DungeonMapConsole(int viewWidth, int viewHeight, int mapWidth, int mapHeight, Font.FontSizes fontSize = Font.FontSizes.One) 
             : base(mapWidth, mapHeight)
         {
-            SadConsole.FontMaster fontMaster = SadConsole.Engine.LoadFont("IBM.font");
+            FontMaster fontMaster = Engine.LoadFont("IBM.font");
             Font font = fontMaster.GetFont(fontSize);
             TextSurface.Font = font;
             var mult = sizeMultipliers[fontSize];

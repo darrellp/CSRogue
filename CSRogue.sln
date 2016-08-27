@@ -9,6 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RogueTests", "RogueTests\Ro
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E4D56B44-AFB8-406E-8F01-201A50A8D1AF}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
 		CSRogue.vsmdi = CSRogue.vsmdi
 		Local.testsettings = Local.testsettings
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
