@@ -26,7 +26,7 @@ namespace RogueSC.Consoles
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         public GameObject Player { get; }
 
-        public int FovDistance { get; set; } = 10;
+        public int FovDistance { get; set; } = 8;
         #endregion
 
         #region Private Variables

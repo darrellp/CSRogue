@@ -8,8 +8,8 @@ namespace RogueSC.Map_Objects
     {
         internal static Dictionary<string, CellAppearance> ObjectNameToAppearance = new Dictionary<string, CellAppearance>()
         {
-            {"wall", new CellAppearance(Color.White, Color.Gray, 176)},
-            {"floor", new CellAppearance(Color.DarkGray, Color.Transparent, 46)}
+            {"wall", new CellAppearance(Color.Gray, Color.Blue, 176)},
+            {"floor", new CellAppearance(Color.Orange, Color.Transparent, 46)}
         };
 
         internal static MapObject CreateObject(string type)

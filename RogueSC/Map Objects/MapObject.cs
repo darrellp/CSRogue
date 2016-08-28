@@ -7,13 +7,13 @@ namespace RogueSC.Map_Objects
     internal class MapObject
     {
         public CellAppearance Appearance { get; set; }
-        public ICellEffect EffectSeen { get; set; }
         public ICellEffect EffectHidden { get; set; }
+        public ICellEffect EffectSeen { get; set; }
 
         static readonly ICellEffect EffectSeenDefault = new Recolor()
         {
-            Foreground = Color.LightGray * 0.3f,
-            Background = Color.LightGray * 0.3f,
+            Foreground = Color.LightGray * 0.6f,
+            Background = Color.LightGray * 0.2f,
             DoForeground = true,
             DoBackground = true,
             CloneOnApply = false
@@ -31,8 +31,8 @@ namespace RogueSC.Map_Objects
         public MapObject(CellAppearance appearance)
         {
             Appearance = appearance;
-            EffectSeen = EffectSeenDefault;
             EffectHidden = EffectHiddenDefault;
+            EffectSeen = EffectSeenDefault;
         }
 
         public MapObject(Color foreground, Color background, int character) : this(new CellAppearance(foreground, background, character)) {}
@@ -55,12 +55,12 @@ namespace RogueSC.Map_Objects
             }
             else if (isExplored)
             {
-                sadConsoleCell.Effect = EffectSeen;
+                sadConsoleCell.Effect = EffectHidden;
                 sadConsoleCell.Effect.Apply(sadConsoleCell);
             }
             else
             {
-                sadConsoleCell.Effect = EffectHidden;
+                sadConsoleCell.Effect = EffectSeen;
                 sadConsoleCell.Effect.Apply(sadConsoleCell);
             }
         }
@@ -74,7 +74,7 @@ namespace RogueSC.Map_Objects
                 sadConsoleCell.Effect = null;
             }
 
-            sadConsoleCell.Effect = EffectSeen;
+            sadConsoleCell.Effect = EffectHidden;
             sadConsoleCell.Effect.Apply(sadConsoleCell);
         }
     }
