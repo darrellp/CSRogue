@@ -49,7 +49,7 @@ namespace CSRogue.Map_Generation
 		///
 		/// <value>	The now unseen. </value>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public IEnumerable<MapCoordinates> NowUnseen
+		public IEnumerable<MapCoordinates> NewlyUnseen
 		{
 			get
 			{
@@ -87,7 +87,14 @@ namespace CSRogue.Map_Generation
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Scans the map for visible tiles.  </summary>
 		///
-		/// <remarks>	Darrellp, 10/2/2011. </remarks>
+		/// <remarks>	This does two things - it moves the last seen tiles into _previousFOV and puts
+        ///             newly seen tiles in _curentFOV.  That wasy we don't have to deal with tiles we
+        ///             saw on the previous scan and we can deal only with newly seen and newly
+        ///             unseen tiles which are returned in NewlySeen and NewlyUnseen properties
+        ///             respectively.  CurrentlySeen returns an enumerable of all the tiles
+        ///             visible in this scan.
+        ///            
+        ///              Darrellp, 10/2/2011. </remarks>
 		///
 		/// <param name="location">	The viewpoint from which visibility is calculated. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -95,27 +102,24 @@ namespace CSRogue.Map_Generation
 		{
 			_location = location;
 
-			var tmp = _previousFOV;
+		    var tmp = _previousFOV;
 			_previousFOV = _currentFOV;
-			_currentFOV = tmp;
+		    _currentFOV = tmp;
 			_currentFOV.Clear();
+		    _currentFOV.Add(location);
 
-			ScanOctant(Dir.Vert, rowIncrement: -1, colIncrement: 1);
-			ScanOctant(Dir.Vert, rowIncrement: 1, colIncrement: 1);
-			ScanOctant(Dir.Vert, rowIncrement: -1, colIncrement: -1);
-			ScanOctant(Dir.Vert, rowIncrement: 1, colIncrement: -1);
-			ScanOctant(Dir.Horiz, rowIncrement: -1, colIncrement: 1);
-			ScanOctant(Dir.Horiz, rowIncrement: 1, colIncrement: 1);
-			ScanOctant(Dir.Horiz, rowIncrement: -1, colIncrement: -1);
-			ScanOctant(Dir.Horiz, rowIncrement: 1, colIncrement: -1);
-            //ScanQuadrant(Dir.Vert, rowIncrement: -1, colIncrement: 1);
-			//ScanQuadrant(Dir.Vert, rowIncrement: 1, colIncrement: 1);
-			//ScanQuadrant(Dir.Horiz, rowIncrement: -1, colIncrement: 1);
-			//ScanQuadrant(Dir.Horiz, rowIncrement: 1, colIncrement: 1);
+			ScanOctant(Dir.Vert, -1, 1);
+			ScanOctant(Dir.Vert, 1, 1);
+			ScanOctant(Dir.Vert, -1, -1);
+			ScanOctant(Dir.Vert, 1, -1);
+			ScanOctant(Dir.Horiz, -1, 1);
+			ScanOctant(Dir.Horiz, 1, 1);
+			ScanOctant(Dir.Horiz, -1, -1);
+			ScanOctant(Dir.Horiz, 1, -1);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Scans a quadrant. </summary>
+		/// <summary>	Scans an octant. </summary>
 		///
 		/// <remarks>	
 		/// The original paper I read on this advocated scanning in octants.  This may be a teeny bit
@@ -148,19 +152,19 @@ namespace CSRogue.Map_Generation
 			Scan(leftEnumerator, rightEnumerator, _location[dir] + rowIncrement, rowIncrement: rowIncrement, colIncrement: colIncrement, dirOther: dirOther);
 		}
 
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Scans a quadrant for visible tiles. </summary>
-		///
-		/// <remarks>	Darrellp, 10/2/2011. </remarks>
-		///
-		/// <param name="leftEnumerator">	The left side to be scanned. </param>
-		/// <param name="rightEnumerator">	The right side to be scanned. </param>
-		/// <param name="iRow">				The row to start the scan on. </param>
-		/// <param name="rowIncrement">		The amount to increment the row by during the scan. </param>
-		/// <param name="colIncrement">		The amount to increment the column by during the scan. </param>
-		/// <param name="dirOther">			The direction perpindicular to the scan. </param>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private void Scan(
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>	Scans a quadrant for visible tiles. </summary>
+        ///
+        /// <remarks>	Puts any found tiles into _currentFOV  Darrellp, 10/2/2011. </remarks>
+        ///
+        /// <param name="leftEnumerator">	The left side to be scanned. </param>
+        /// <param name="rightEnumerator">	The right side to be scanned. </param>
+        /// <param name="iRow">				The row to start the scan on. </param>
+        /// <param name="rowIncrement">		The amount to increment the row by during the scan. </param>
+        /// <param name="colIncrement">		The amount to increment the column by during the scan. </param>
+        /// <param name="dirOther">			The direction perpindicular to the scan. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        private void Scan(
 			IEnumerator<MapCoordinates> leftEnumerator,
 			IEnumerator<MapCoordinates> rightEnumerator,
 			int iRow,

@@ -1,51 +1,38 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using SadConsole;
 using SadConsole.Effects;
 
 namespace RogueSC.Map_Objects
 {
-    public static class MapObjectFactory
-    {
-        internal static Dictionary<string, CellAppearance> ObjectNameToAppearance = new Dictionary<string, CellAppearance>()
-        {
-            {"wall", new CellAppearance(Color.White, Color.Gray, 176)},
-            {"floor", new CellAppearance(Color.DarkGray, Color.Transparent, 46)}
-        };
-
-        internal static MapObject CreateObject(string type)
-        {
-            return new MapObject(ObjectNameToAppearance[type]);
-        }
-    }
-
     internal class MapObject
     {
         public CellAppearance Appearance { get; set; }
         public ICellEffect EffectSeen { get; set; }
         public ICellEffect EffectHidden { get; set; }
 
+        static readonly ICellEffect EffectSeenDefault = new Recolor()
+        {
+            Foreground = Color.LightGray * 0.3f,
+            Background = Color.LightGray * 0.3f,
+            DoForeground = true,
+            DoBackground = true,
+            CloneOnApply = false
+        };
+
+        static readonly ICellEffect EffectHiddenDefault = new Recolor()
+        {
+            Foreground = Color.Black,
+            Background = Color.Black,
+            DoForeground = true,
+            DoBackground = true,
+            CloneOnApply = false
+            };
+
         public MapObject(CellAppearance appearance)
         {
             Appearance = appearance;
-
-            EffectSeen = new Recolor()
-            {
-                Foreground = Color.LightGray * 0.3f,
-                Background = Color.LightGray * 0.3f,
-                DoForeground = true,
-                DoBackground = true,
-                CloneOnApply = false
-            };
-
-            EffectHidden = new Recolor()
-            {
-                Foreground = Color.Black,
-                Background = Color.Black,
-                DoForeground = true,
-                DoBackground = true,
-                CloneOnApply = false
-            };
+            EffectSeen = EffectSeenDefault;
+            EffectHidden = EffectHiddenDefault;
         }
 
         public MapObject(Color foreground, Color background, int character) : this(new CellAppearance(foreground, background, character)) {}

@@ -97,6 +97,7 @@
     <Compile Include="Consoles\MessagesConsole.cs" />
     <Compile Include="GameWorld.cs" />
     <Compile Include="Map Objects\MapObject.cs" />
+    <Compile Include="Map Objects\MapObjectFactory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Utilities\Extensions.cs" />
   </ItemGroup>

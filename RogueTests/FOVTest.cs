@@ -97,7 +97,7 @@ namespace RogueTests
 ...............
 ...............
 ...............";
-			Test(mapString, new MapCoordinates(0, 0), 5, 23);
+			Test(mapString, new MapCoordinates(0, 0), 5, 24);
 
 			mapString =
 @"...............
@@ -108,7 +108,7 @@ namespace RogueTests
 ...............
 ...............
 ...............";
-			Test(mapString, new MapCoordinates(0, 0), 4, 7);
+			Test(mapString, new MapCoordinates(0, 0), 4, 8);
 
 			mapString =
 @"...............
@@ -119,10 +119,10 @@ namespace RogueTests
 ...............
 ...............
 ...............";
-			fov = Test(mapString, new MapCoordinates(0, 0), 4, 15);
+			fov = Test(mapString, new MapCoordinates(0, 0), 4, 16);
 			fov.Scan(new MapCoordinates(1, 0));
 			Assert.AreEqual(4, fov.NewlySeen.ToList().Count);
-			Assert.AreEqual(0, fov.NowUnseen.ToList().Count);
+			Assert.AreEqual(0, fov.NewlyUnseen.ToList().Count);
 			Test(mapString, new MapCoordinates(14, 7), 4, 16);
 			Test(mapString, new MapCoordinates(0, 7), 4, 16);
 			Test(mapString, new MapCoordinates(14, 0), 4, 16);

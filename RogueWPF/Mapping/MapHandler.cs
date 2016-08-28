@@ -347,7 +347,7 @@ namespace RogueWPF.Mapping
 				{
 					IEnumerable<MapCoordinates> redrawLighting = e.LitAtStartOfRun != null
 					    ? e.LitAtStartOfRun.Concat(e.Map.FOV.CurrentlySeen)
-					    : e.Map.FOV.NewlySeen.Concat(e.Map.FOV.NowUnseen);
+					    : e.Map.FOV.NewlySeen.Concat(e.Map.FOV.NewlyUnseen);
 
 					foreach (var newlyLit in redrawLighting)
 					{

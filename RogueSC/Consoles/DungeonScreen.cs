@@ -79,7 +79,7 @@ namespace RogueSC.Consoles
             StatsConsole.Health = 100;
 
             Engine.ActiveConsole = this;
-            Engine.Keyboard.RepeatDelay = 0.07f;
+            Engine.Keyboard.RepeatDelay = 0.1f;
             Engine.Keyboard.InitialRepeatDelay = 0.1f;
         }
         #endregion

@@ -235,7 +235,7 @@ namespace CSRogue.Map_Generation
 			{
 				this[newlyLitLocation].LitState = LitState.InView;
 			}
-			foreach (var previouslyLitLocation in _fov.NowUnseen)
+			foreach (var previouslyLitLocation in _fov.NewlyUnseen)
 			{
 				this[previouslyLitLocation].LitState = LitState.Remembered;
 			}
