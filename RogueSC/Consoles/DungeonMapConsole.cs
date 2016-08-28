@@ -69,11 +69,11 @@ namespace RogueSC.Consoles
         public DungeonMapConsole(int viewWidth, int viewHeight, int mapWidth, int mapHeight, Font.FontSizes fontSize = Font.FontSizes.One) 
             : base(mapWidth, mapHeight)
         {
-            FontMaster fontMaster = Engine.LoadFont("IBM.font");
+            FontMaster fontMaster = Engine.LoadFont("Cheepicus12.font");
             Font font = fontMaster.GetFont(fontSize);
             TextSurface.Font = font;
             var mult = SizeMultipliers[fontSize];
-            TextSurface.RenderArea = new Rectangle(0, 0, (int)(viewWidth / mult), (int)(viewHeight / mult));
+            TextSurface.RenderArea = new Rectangle(0, 0, (int)(viewWidth * 2 / (3 * mult)), (int)(viewHeight * 3 / (2 * mult)) - 1);
 
             AnimatedTextSurface playerAnimation = new AnimatedTextSurface("default", 1, 1, font);
             playerAnimation.CreateFrame();
