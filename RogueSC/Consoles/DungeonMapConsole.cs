@@ -78,7 +78,7 @@ namespace RogueSC.Consoles
             AnimatedTextSurface playerAnimation = new AnimatedTextSurface("default", 1, 1, font);
             playerAnimation.CreateFrame();
             playerAnimation.CurrentFrame[0].Foreground = Color.Orange;
-            playerAnimation.CurrentFrame[0].GlyphIndex = '@';
+            playerAnimation.CurrentFrame[0].GlyphIndex = 1;//'@';
 
             Player = new GameObject(font)
             {
