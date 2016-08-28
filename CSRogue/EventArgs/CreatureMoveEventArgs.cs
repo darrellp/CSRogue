@@ -6,7 +6,7 @@ namespace CSRogue.RogueEventArgs
 {
 	public class CreatureMoveEventArgs : System.EventArgs
 	{
-		public Map Map { get; private set; }
+		public IGameMap GameMap { get; private set; }
 		public MapCoordinates PreviousCreatureLocation { get; private set; }
 		public MapCoordinates CreatureDestination { get; private set; }
 		public bool IsFirstTimePlacement { get; private set; }
@@ -16,7 +16,7 @@ namespace CSRogue.RogueEventArgs
 		public List<MapCoordinates> LitAtStartOfRun { get; private set; }
 
 		public CreatureMoveEventArgs(
-			Map map,
+			IGameMap gameMap,
 			Creature creature,
 			MapCoordinates previousCreatureLocation,
 			MapCoordinates creatureDestination,
@@ -25,7 +25,7 @@ namespace CSRogue.RogueEventArgs
 			bool isRunning = false,
 			List<MapCoordinates> litAtStartOfRun = null)
 		{
-			Map = map;
+			GameMap = gameMap;
 			PreviousCreatureLocation = previousCreatureLocation;
 			CreatureDestination = creatureDestination;
 			IsFirstTimePlacement = isFirstTimePlacement;

@@ -52,18 +52,18 @@ namespace RogueTests
 		//
 		#endregion
 
-		void CheckLocation(Map map, int iCol, int iRow, TerrainType terrain, ItemType itemType = ItemType.Nothing)
+		void CheckLocation(CsRogueMap csRogueMap, int iCol, int iRow, TerrainType terrain, ItemType itemType = ItemType.Nothing)
 		{
 			if (itemType != ItemType.Nothing)
 			{
-				Assert.AreEqual(1, map.Items(iCol, iRow).Count);
-				Assert.AreEqual(itemType, map.Items(iCol, iRow)[0].ItemType);
+				Assert.AreEqual(1, csRogueMap.Items(iCol, iRow).Count);
+				Assert.AreEqual(itemType, csRogueMap.Items(iCol, iRow)[0].ItemType);
 			}
 			else
 			{
-				Assert.AreEqual(0, map.Items(iCol, iRow).Count);
+				Assert.AreEqual(0, csRogueMap.Items(iCol, iRow).Count);
 			}
-			Assert.AreEqual(terrain, map.Terrain(iCol, iRow));
+			Assert.AreEqual(terrain, csRogueMap.Terrain(iCol, iRow));
 		}
 
 		/// <summary>
@@ -79,16 +79,16 @@ namespace RogueTests
 ...............";
 			MemoryStream stream = new MemoryStream(Encoding.Default.GetBytes(mapString));
 			FileExcavator excavator = new FileExcavator(stream);
-			Map map = new Map();
-			excavator.Excavate(map);
-			CheckLocation(map, 0, 0, TerrainType.Floor, ItemType.Player);
-			CheckLocation(map, 1, 0, TerrainType.Floor, ItemType.Rat);
-			CheckLocation(map, 2, 0, TerrainType.HorizontalWall);
-			CheckLocation(map, 3, 0, TerrainType.Floor);
-			CheckLocation(map, 14, 0, TerrainType.Floor);
-			CheckLocation(map, 15, 0, TerrainType.OffMap);
-			CheckLocation(map, 14,3, TerrainType.Floor);
-			CheckLocation(map, 15, 4, TerrainType.OffMap);
+			CsRogueMap csRogueMap = new CsRogueMap();
+			excavator.Excavate(csRogueMap);
+			CheckLocation(csRogueMap, 0, 0, TerrainType.Floor, ItemType.Player);
+			CheckLocation(csRogueMap, 1, 0, TerrainType.Floor, ItemType.Rat);
+			CheckLocation(csRogueMap, 2, 0, TerrainType.HorizontalWall);
+			CheckLocation(csRogueMap, 3, 0, TerrainType.Floor);
+			CheckLocation(csRogueMap, 14, 0, TerrainType.Floor);
+			CheckLocation(csRogueMap, 15, 0, TerrainType.OffMap);
+			CheckLocation(csRogueMap, 14,3, TerrainType.Floor);
+			CheckLocation(csRogueMap, 15, 4, TerrainType.OffMap);
 		}
 
 		/// <summary>
@@ -97,11 +97,11 @@ namespace RogueTests
 		[TestMethod()]
 		public void ExcavateByGridTest()
 		{
-			Map map1 = new Map();
+			CsRogueMap map1 = new CsRogueMap();
 			GridExcavator excavator = new GridExcavator(seed : 0);
 			excavator.Excavate(map1);
 			string str1 = map1.ToString();
-			Map map2 = new Map();
+			CsRogueMap map2 = new CsRogueMap();
 			excavator.Excavate(map2);
 			string str2 = map2.ToString();
 			Assert.AreEqual(str1, str2);

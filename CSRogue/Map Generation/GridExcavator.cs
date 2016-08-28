@@ -107,7 +107,7 @@ namespace CSRogue.Map_Generation
 		///
 		/// <param name="map">	The map to be excavated. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public void Excavate(IMap map)
+		public void Excavate(IRoomsMap map)
 		{
 			// Seed the random number generator properly
 			_rnd = new Rnd(_seed);
@@ -169,7 +169,7 @@ namespace CSRogue.Map_Generation
 		///
 		/// <param name="map">	The map to be excavated. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private void ExcavateRoomConnections(IMap map)
+		private void ExcavateRoomConnections(IRoomsMap map)
 		{
 			// For every connection
 			foreach (var info in _connections.Connections.Where(ci => ci.IsConnected))
@@ -267,7 +267,7 @@ namespace CSRogue.Map_Generation
 		/// <param name="bottomRoom">	The bottom room. </param>
 		/// <param name="dir">			The dir. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private void ExcavateMerge(IMap map, RectangularRoom topRoom, RectangularRoom bottomRoom, Dir dir)
+		private void ExcavateMerge(IRoomsMap map, RectangularRoom topRoom, RectangularRoom bottomRoom, Dir dir)
 		{
 			// Get the opposite direction
 			Dir dirOther = MapCoordinates.OtherDirection(dir);
@@ -462,7 +462,7 @@ namespace CSRogue.Map_Generation
 		/// <param name="map">	The map to be excavated. </param>
 		/// <param name="room">	The room to carve out of the map. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private static void ExcavateRoom(IMap map, RectangularRoom room)
+		private static void ExcavateRoom(IRoomsMap map, RectangularRoom room)
 		{
 			// For each column in the room
 			for (var iColumn = room.Left + 1; iColumn < room.Right; iColumn++)
@@ -493,7 +493,7 @@ namespace CSRogue.Map_Generation
 		/// <param name="groom">	The room being prepared for this corridor. </param>
 		/// <param name="dir">		The direction of the corridor. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private static void ExcavateCorridorRun(IMap map, int column, int endRow1, int endRow2, GenericRoom groom, Dir dir)
+		private static void ExcavateCorridorRun(IRoomsMap map, int column, int endRow1, int endRow2, GenericRoom groom, Dir dir)
 		{
 			// We work with small and large coords rather than start and end
 			int startRow = Math.Min(endRow1, endRow2);
@@ -534,7 +534,7 @@ namespace CSRogue.Map_Generation
 		/// <param name="groom">		The room being prepared for this corridor. </param>
 		/// <param name="dir">			The direction the bend is supposed to run. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private static void ExcavateBend(IMap map, int startColumn, int endColumn, int startRow, int endRow, int bend, GenericRoom groom, Dir dir)
+		private static void ExcavateBend(IRoomsMap map, int startColumn, int endColumn, int startRow, int endRow, int bend, GenericRoom groom, Dir dir)
 		{
 			Dir otherDir = MapCoordinates.OtherDirection(dir);
 
@@ -558,7 +558,7 @@ namespace CSRogue.Map_Generation
 		/// <param name="roomBottom">	The second room. </param>
 		/// <param name="dir">			The direction to excavate in. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private void ExcavateCorridor(IMap map, RectangularRoom roomTop, RectangularRoom roomBottom, Dir dir)
+		private void ExcavateCorridor(IRoomsMap map, RectangularRoom roomTop, RectangularRoom roomBottom, Dir dir)
 		{
 			// Locals
 			MapCoordinates bottomEntrance, topEntrance;
@@ -612,7 +612,7 @@ namespace CSRogue.Map_Generation
 		/// <param name="bottomEntrance">	The large coordinate entrance. </param>
 		/// <param name="groom">			The room being prepared for this corridor. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private void CreateBend(IMap map, Dir dir, MapCoordinates topEntrance, MapCoordinates bottomEntrance, GenericRoom groom)
+		private void CreateBend(IRoomsMap map, Dir dir, MapCoordinates topEntrance, MapCoordinates bottomEntrance, GenericRoom groom)
 		{
 			// locals
 			Dir otherDir = MapCoordinates.OtherDirection(dir);
@@ -672,7 +672,7 @@ namespace CSRogue.Map_Generation
 		///
 		/// <param name="map">	The map to be excavated. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private void LocateRooms(IMap map)
+		private void LocateRooms(IRoomsMap map)
 		{
 			// Max number of cells we can fit with at least base cell size
 			int gridWidth = map.Width / _baseCellWidth;
@@ -790,7 +790,7 @@ namespace CSRogue.Map_Generation
 		///
 		/// <param name="map">	The map. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private void PostProcess(IMap map)
+		private void PostProcess(IRoomsMap map)
 		{
 			// Complete all the walls
 			CompleteWalls(map);
@@ -809,7 +809,7 @@ namespace CSRogue.Map_Generation
 		///
 		/// <param name="map">	The map. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private void AssignRoomsToCells(IMap map)
+		private void AssignRoomsToCells(IRoomsMap map)
 		{
 			// For each room
 			foreach (var groom in _mapRoomToGenericRooms.Values)
@@ -830,7 +830,7 @@ namespace CSRogue.Map_Generation
 			}
 		}
 
-		private static void AssignTilesInRoom(IMap map, GenericRoom groom)
+		private static void AssignTilesInRoom(IRoomsMap map, GenericRoom groom)
 		{
 			// Is this room being newly added to the map?
 			if (map.Rooms.Add(groom))
@@ -851,7 +851,7 @@ namespace CSRogue.Map_Generation
 		///
 		/// <param name="map">	The map. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private static void CompleteWalls(IMap map)
+		private static void CompleteWalls(IRoomsMap map)
 		{
 			for (int iRow = 0; iRow < map.Height; iRow++)
 			{
@@ -884,7 +884,7 @@ namespace CSRogue.Map_Generation
 		///
 		/// <param name="map">	The map. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private void PlaceStairs(IMap map)
+		private void PlaceStairs(IRoomsMap map)
 		{
 			RectangularRoom downRoom = RoomAt(_connections.FirstRoomConnected);
 			RectangularRoom upRoom = RoomAt(_connections.LastRoomConnected);

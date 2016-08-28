@@ -17,14 +17,14 @@ namespace CSRogue.Map_Generation
 
 		#region Public Properties
 		public int Depth { get; }
-		public Map Map { get; }
+		public IGameMap Map { get; }
 		#endregion
 
 		#region Constructor
-		public Level(int depth, int width, int height, Game game = null, IExcavator excavator = null, int seed = -1)
+		public Level(int depth, IGameMap map, Game game = null, IExcavator excavator = null, int seed = -1)
 		{
 			_game = game;
-			Map = new Map(width, height, _game);
+			Map = map;
 			Depth = depth;
 			if (excavator == null)
 			{

@@ -70,10 +70,10 @@ namespace RogueTests
 		{
 			MemoryStream stream = new MemoryStream(Encoding.Default.GetBytes(mapString));
 			FileExcavator excavator = new FileExcavator(stream);
-			Map map = new Map();
-			excavator.Excavate(map);
+			CsRogueMap csRogueMap = new CsRogueMap();
+			excavator.Excavate(csRogueMap);
 
-			FOV fov = new FOV(map, maxRow);
+			FOV fov = new FOV(csRogueMap, maxRow);
 			fov.Scan(location);
 			Assert.AreEqual(countSeen, fov.NewlySeen.ToList().Count);
 			return fov;

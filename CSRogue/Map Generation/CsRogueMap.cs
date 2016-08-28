@@ -15,19 +15,21 @@ namespace CSRogue.Map_Generation
 	///
 	/// <remarks>	Darrellp, 9/16/2011. </remarks>
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	public class Map : IMap
+	public class CsRogueMap : IMap, IGameMap
 	{
 		#region Private variables
-		private readonly MapLocationData[][] _map;
-		private FOV _fov;
-		private readonly Game _game;
-        public HashSet<GenericRoom> _rooms  = new HashSet<GenericRoom>();
+		private readonly MapLocationData[][] _mapLocationData;
+        private HashSet<GenericRoom> _rooms  = new HashSet<GenericRoom>();
         #endregion
 
         #region Properties
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets the player. </summary>
+	    public FOV Fov { get; set; }
+
+	    public Game Game { get; private set; }
+
+	    /// <summary>   Gets the player. </summary>
         ///
         /// <value> The player. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,11 +82,11 @@ namespace CSRogue.Map_Generation
 		{
 			get
 			{
-				return _fov;
+				return Fov;
 			}
 			set
 			{
-				_fov = value;
+				Fov = value;
 			}
 		}
 		#endregion
@@ -95,7 +97,7 @@ namespace CSRogue.Map_Generation
 		///
 		/// <remarks>	Darrellp, 9/15/2011. </remarks>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public Map(Game game = null) : this(150, 100, game)
+		public CsRogueMap(Game game = null) : this(150, 100, game)
 		{
 		}
 
@@ -108,21 +110,21 @@ namespace CSRogue.Map_Generation
 		/// <param name="height">	The height. </param>
 		/// <param name="game">		The game we're involved in. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public Map(int width, int height, Game game = null)
+		public CsRogueMap(int width, int height, Game game = null)
 		{
 			Player = new Player();
 			Width = width;
 			Height = height;
-			_game = game;
-			_fov = null;
+			Game = game;
+			Fov = null;
 
-			_map = new MapLocationData[Width][];
+			_mapLocationData = new MapLocationData[Width][];
 			for (int iCol = 0; iCol < Width; iCol++)
 			{
-				_map[iCol] = new MapLocationData[Height];
+				_mapLocationData[iCol] = new MapLocationData[Height];
 				for (int iRow = 0; iRow < Height; iRow++)
 				{
-					_map[iCol][iRow] = new MapLocationData();
+					_mapLocationData[iCol][iRow] = new MapLocationData();
 				}
 			}
 		}
@@ -140,11 +142,11 @@ namespace CSRogue.Map_Generation
 		{
 			get
 			{
-				return _map[iCol][iRow];
+				return _mapLocationData[iCol][iRow];
 			}
 			set
 			{
-				_map[iCol][iRow] = value;
+				_mapLocationData[iCol][iRow] = value;
 			}
 		}
 
@@ -159,11 +161,11 @@ namespace CSRogue.Map_Generation
 		{
 			get
 			{
-				return _map[location.Column][location.Row];
+				return _mapLocationData[location.Column][location.Row];
 			}
 			set
 			{
-				_map[location.Column][location.Row] = value;
+				_mapLocationData[location.Column][location.Row] = value;
 			}
 		} 
 
@@ -171,74 +173,17 @@ namespace CSRogue.Map_Generation
 
 		#region Modification
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Checks the terrain to see if the creature can move there. </summary>
-		///
-		/// <remarks>	Darrellp, 10/15/2011. </remarks>
-		///
-		/// <param name="location">	The location to check. </param>
-		///
-		/// <returns>	true if it succeeds, false if it fails. </returns>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal bool IsWalkable(MapCoordinates location)
-		{
-			return this[location].Terrain != TerrainType.Wall;
-		}
-
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Query if there is a creature at a location. </summary>
-		///
-		/// <remarks>	Darrellp, 10/15/2011. </remarks>
-		///
-		/// <param name="location">	The location to check. </param>
-		///
-		/// <returns>	The creature at location or null if no creature there. </returns>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal Creature CreatureAt(MapCoordinates location)
-		{
-			// Find a creature, if any, at the destination
-			return this[location].Items.FirstOrDefault(i => ItemInfo.GetItemInfo(i).IsCreature) as Creature;
-		}
-
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	querty if there's a creature at a particular location. </summary>
-		///
-		/// <remarks>	Darrellp, 10/15/2011. </remarks>
-		///
-		/// <param name="location">	The location to check. </param>
-		///
-		/// <returns>	true if creature, false if not. </returns>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal bool IsCreatureAt(MapCoordinates location)
-		{
-			return CreatureAt(location) != null;
-		}
-
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Returns true if we want the creature to continue running in this direction. </summary>
-		///
-		/// <remarks>	Darrellp, 10/15/2011. </remarks>
-		///
-		/// <param name="location">	The location to be checked. </param>
-		///
-		/// <returns>	true if it succeeds, false if it fails. </returns>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal bool ValidRunningMove(MapCoordinates location)
-		{
-			return IsWalkable(location) && !IsCreatureAt(location);
-		}
-
-		////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Marks the newly lit and formerly lit spots on the map. </summary>
 		///
 		/// <remarks>	Darrellp, 10/15/2011. </remarks>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		private void Relight()
 		{
-			foreach (var newlyLitLocation in _fov.NewlySeen)
+			foreach (var newlyLitLocation in Fov.NewlySeen)
 			{
 				this[newlyLitLocation].LitState = LitState.InView;
 			}
-			foreach (var previouslyLitLocation in _fov.NewlyUnseen)
+			foreach (var previouslyLitLocation in Fov.NewlyUnseen)
 			{
 				this[previouslyLitLocation].LitState = LitState.Remembered;
 			}
@@ -263,8 +208,8 @@ namespace CSRogue.Map_Generation
 			List<MapCoordinates> litAtStartOfRun = null)
 		{
 			// Get the data from the current location
-			MapLocationData data = this[creature.Location];
-			MapCoordinates oldPosition = creature.Location;
+			var data = this[creature.Location];
+			var oldPosition = creature.Location;
 
 			// Remove the creature from this location
 			data.RemoveItem(creature);
@@ -274,16 +219,16 @@ namespace CSRogue.Map_Generation
 			this[creature.Location].AddItem(creature);
 
 			// If it's the player and there's a FOV to be calculated
-			if (creature.IsPlayer && !run && _fov != null)
+			if (creature.IsPlayer && !run && Fov != null)
 			{
 				// Rescan for FOV
-				_fov.Scan(HeroPosition);
+				Fov.Scan(HeroPosition);
 				Relight();
 			}
 
 			// If we've got a game object
 		    // Invoke the move event through it
-		    _game?.InvokeEvent(EventType.CreatureMove, this,
+		    Game?.InvokeEvent(EventType.CreatureMove, this,
 		        new CreatureMoveEventArgs(
 		            this, 
 		            creature, 
@@ -305,7 +250,7 @@ namespace CSRogue.Map_Generation
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		internal void NotifyOfBlockage(Creature creature, MapCoordinates blockedLocation)
 		{
-			_game.InvokeEvent(EventType.CreatureMove, this,
+			Game.InvokeEvent(EventType.CreatureMove, this,
 				new CreatureMoveEventArgs(
 					this,
 					creature,
@@ -339,54 +284,13 @@ namespace CSRogue.Map_Generation
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		public void SetFov(int rowCount, MapCoordinates playerLocation, Func<MapCoordinates, MapCoordinates, bool> filter = null)
 		{
-			_fov = new FOV(this, rowCount, filter);
-			_fov.Scan(playerLocation);
+			Fov = new FOV(this, rowCount, filter);
+			Fov.Scan(playerLocation);
 			Relight();
 		}
 		#endregion
 
 		#region Positional information
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Drops an item in the map. </summary>
-		///
-		/// <remarks>	Darrellp, 9/16/2011. </remarks>
-		///
-		/// <param name="iRow">	The row to drop in. </param>
-		/// <param name="iCol">	The col to drop in. </param>
-		/// <param name="item">	The item to drop. </param>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal void Drop(int iCol, int iRow, Item item)
-		{
-			_map[iCol][iRow].AddItem(item);
-		}
-
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Drops an item in the map. </summary>
-		///
-		/// <remarks>	Darrellp, 9/16/2011. </remarks>
-		///
-		/// <param name="location">	The location. </param>
-		/// <param name="item">		The item to drop. </param>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal void Drop(MapCoordinates location, Item item)
-		{
-			Drop(location.Column, location.Row, item);
-		}
-
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Removes an item from the map. </summary>
-		///
-		/// <remarks>	Darrellp, 9/16/2011. </remarks>
-		///
-		/// <param name="iRow">	The row to remove from. </param>
-		/// <param name="iCol">	The col to remove from. </param>
-		/// <param name="item">	The item to remove. </param>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal void Remove(int iCol, int iRow, Item item)
-		{
-			_map[iCol][iRow].RemoveItem(item);
-		}
-
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Get the list of items at a position. </summary>
 		///
@@ -399,7 +303,7 @@ namespace CSRogue.Map_Generation
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		internal List<Item> Items(int iCol, int iRow)
 		{
-			return _map[iCol][iRow].Items;
+			return _mapLocationData[iCol][iRow].Items;
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -414,7 +318,7 @@ namespace CSRogue.Map_Generation
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		internal TerrainType Terrain(int iCol, int iRow)
 		{
-			return _map[iCol][iRow].Terrain;
+			return _mapLocationData[iCol][iRow].Terrain;
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -429,35 +333,6 @@ namespace CSRogue.Map_Generation
 		internal TerrainType Terrain(MapCoordinates location)
 		{
 			return Terrain(location.Column, location.Row);
-		}
-
-
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Find a random floor location. </summary>
-		///
-		/// <remarks>	Darrellp, 10/3/2011. </remarks>
-		///
-		/// <returns>	The location found. </returns>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public MapCoordinates RandomFloorLocation(bool restrictToRooms = false)
-		{
-			// Locals
-			Rnd rnd = Rnd.Global;
-			int row, column;
-			MapLocationData data;
-
-			do
-			{
-				// Try a random spot
-				row = rnd.Next(Height);
-				column = rnd.Next(Width);
-				data = this[column, row];
-			}
-			// We find one that's on some floor terrain
-			while (data.Terrain != TerrainType.Floor && (!restrictToRooms || !data.Room.IsCorridor));
-
-			// Return it
-			return new MapCoordinates(column, row);
 		}
 		#endregion
 
@@ -474,7 +349,7 @@ namespace CSRogue.Map_Generation
 				for (int iColumn = 0; iColumn < Width; iColumn++)
 				{
 					// Retrieve the data
-					MapLocationData data = _map[iColumn][iRow];
+					MapLocationData data = _mapLocationData[iColumn][iRow];
 
 					// Are there items here?
 					if (data.Items.Count != 0)
@@ -486,7 +361,7 @@ namespace CSRogue.Map_Generation
 					else
 					{
 						// Draw the terrain character
-						sb.Append(TerrainFactory.TerrainToChar(_map[iColumn][iRow].Terrain));
+						sb.Append(TerrainFactory.TerrainToChar(_mapLocationData[iColumn][iRow].Terrain));
 					}
 				}
 

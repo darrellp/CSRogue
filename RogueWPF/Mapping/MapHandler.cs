@@ -44,7 +44,7 @@ namespace RogueWPF.Mapping
 		#endregion
 
 		#region Properties
-		public Map Map
+		public CsRogueMap CsRogueMap
 		{
 			get
 			{
@@ -88,12 +88,12 @@ namespace RogueWPF.Mapping
 			string monster = string.Empty;
 
 			DrawCell(e.VictimLocation);
-			if (e.Attacker == Map.Player)
+			if (e.Attacker == CsRogueMap.Player)
 			{
 				monster = ItemInfo.GetItemInfo(e.Victim).Name;
 				message = string.Format("You hit the {0}.", monster);
 			}
-			else if (e.Victim == Map.Player)
+			else if (e.Victim == CsRogueMap.Player)
 			{
 				monster = ItemInfo.GetItemInfo(e.Attacker).Name;
 				message = string.Format("The {0} hit you.", monster);
@@ -101,7 +101,7 @@ namespace RogueWPF.Mapping
 
 			if (e.VictimDied)
 			{
-				if (e.Victim == Map.Player)
+				if (e.Victim == CsRogueMap.Player)
 				{
 					// We died!!!
 				}
@@ -119,7 +119,7 @@ namespace RogueWPF.Mapping
 			RecalculateSize();
 
 			// Is this is the initial resize or have we gone off the screen?
-			if (!_onScreen.Inflate(-1).Contains(new Vec(Map.HeroPosition.Column, Map.HeroPosition.Row)) || _initialResize)
+			if (!_onScreen.Inflate(-1).Contains(new Vec(CsRogueMap.HeroPosition.Column, CsRogueMap.HeroPosition.Row)) || _initialResize)
 			{
 				// Center the player on the screen
 				CenterPlayer();
@@ -151,13 +151,13 @@ namespace RogueWPF.Mapping
 		private void EnsurePlayerIsOnScreen(bool forceRecenter = false)
 		{
 			// Are we missing a map or a terminal?
-			if ((_onScreen.Width == 0) || Map == null || _terminal == null)
+			if ((_onScreen.Width == 0) || CsRogueMap == null || _terminal == null)
 			{
 				return;
 			}
 
 			// Find out where the player is
-			MapCoordinates hero = Map.HeroPosition;
+			MapCoordinates hero = CsRogueMap.HeroPosition;
 
 			// Are we still on the screen and not asked to recenter?
 			if (!forceRecenter && _onScreen.Inflate(-1).Contains(new Vec(hero.Column, hero.Row)))
@@ -206,12 +206,12 @@ namespace RogueWPF.Mapping
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		private void CenterPlayer()
 		{
-			if (Map == null || _terminal == null)
+			if (CsRogueMap == null || _terminal == null)
 			{
 				return;
 			}
-			int dleft = _onScreen.Width / 2 - (Map.HeroPosition.Column - _onScreen.Left);
-			int dtop = _onScreen.Height / 2 - (Map.HeroPosition.Row - _onScreen.Top);
+			int dleft = _onScreen.Width / 2 - (CsRogueMap.HeroPosition.Column - _onScreen.Left);
+			int dtop = _onScreen.Height / 2 - (CsRogueMap.HeroPosition.Row - _onScreen.Top);
 			ScrollBy(dleft, dtop);
 		}
 
@@ -242,7 +242,7 @@ namespace RogueWPF.Mapping
 			int adjustedColumn = location.X + _onScreen.Left;
 			int adjustedRow = location.Y + _onScreen.Top;
 
-			return Map.Contains(adjustedColumn, adjustedRow) ? CharacterFromCell(adjustedColumn, adjustedRow) : _spaceChar;
+			return CsRogueMap.Contains(adjustedColumn, adjustedRow) ? CharacterFromCell(adjustedColumn, adjustedRow) : _spaceChar;
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -258,7 +258,7 @@ namespace RogueWPF.Mapping
 		private Character CharacterFromCell(int column, int row)
 		{
 			// Get the data at this location
-			MapLocationData data = Map[column, row];
+			MapLocationData data = CsRogueMap[column, row];
 
 			// Are there items here?
 			if (data.Items.Count > 0)
@@ -319,9 +319,9 @@ namespace RogueWPF.Mapping
 
 		private void DrawMap()
 		{
-			for (int iColumn = 0; iColumn < Map.Width; iColumn++)
+			for (int iColumn = 0; iColumn < CsRogueMap.Width; iColumn++)
 			{
-				for (int iRow = 0; iRow < Map.Height; iRow++)
+				for (int iRow = 0; iRow < CsRogueMap.Height; iRow++)
 				{
 					DrawCell(iColumn, iRow);
 				}
@@ -340,14 +340,14 @@ namespace RogueWPF.Mapping
 			{
 				if (e.IsBlocked)
 				{
-					TerrainType terrain = Map[e.CreatureDestination].Terrain;
+					TerrainType terrain = CsRogueMap[e.CreatureDestination].Terrain;
 					SendMessage(string.Format("There is a {0} in the way.", terrain));
 				}
 				else
 				{
 					IEnumerable<MapCoordinates> redrawLighting = e.LitAtStartOfRun != null
-					    ? e.LitAtStartOfRun.Concat(e.Map.FOV.CurrentlySeen)
-					    : e.Map.FOV.NewlySeen.Concat(e.Map.FOV.NewlyUnseen);
+					    ? e.LitAtStartOfRun.Concat(e.gameMap.FOV.CurrentlySeen)
+					    : e.gameMap.FOV.NewlySeen.Concat(e.gameMap.FOV.NewlyUnseen);
 
 					foreach (var newlyLit in redrawLighting)
 					{

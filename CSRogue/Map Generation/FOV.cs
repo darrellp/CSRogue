@@ -11,7 +11,7 @@ namespace CSRogue.Map_Generation
 		private HashSet<MapCoordinates> _currentFOV = new HashSet<MapCoordinates>();
 		private HashSet<MapCoordinates> _previousFOV = new HashSet<MapCoordinates>();
 		private MapCoordinates _location;
-		private readonly IMap _map;
+		private readonly IMap _csRogueMap;
 		private readonly int _lightRadius;
 		#endregion
 
@@ -66,13 +66,13 @@ namespace CSRogue.Map_Generation
 		/// of it as opaque.  This speeds up performance. Darrellp, 10/2/2011. 
 		/// </remarks>
 		///
-		/// <param name="map">		    The map we're viewing. </param>
+		/// <param name="csRogueMap">		    The map we're viewing. </param>
 		/// <param name="lightRadius">	Distance light can reach. </param>
 		/// <param name="filter">	    Filter function to determine which values are allowed. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public FOV(Map map, int lightRadius, Func<MapCoordinates, MapCoordinates, bool> filter = null)
+		public FOV(IMap csRogueMap, int lightRadius, Func<MapCoordinates, MapCoordinates, bool> filter = null)
 		{
-			_map = map;
+			_csRogueMap = csRogueMap;
 			_lightRadius = lightRadius;
 			if (filter == null)
 			{
@@ -467,11 +467,11 @@ namespace CSRogue.Map_Generation
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         private bool IsOpaqueAt(MapCoordinates location)
 		{
-			if (!Filter(_location, location) || !_map.Contains(location))
+			if (!Filter(_location, location) || !_csRogueMap.Contains(location))
 			{
 				return true;
 			}
-			var terrain = _map[location].Terrain;
+			var terrain = _csRogueMap[location].Terrain;
 			return terrain == TerrainType.Wall || terrain == TerrainType.OffMap;
 		} 
         #endregion

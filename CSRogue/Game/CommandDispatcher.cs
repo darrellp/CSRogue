@@ -4,6 +4,7 @@ using CSRogue.GameControl.Commands;
 using CSRogue.Items;
 using CSRogue.Map_Generation;
 using CSRogue.RogueEventArgs;
+using CSRogue.Utilities;
 
 namespace CSRogue.GameControl
 {
@@ -27,7 +28,7 @@ namespace CSRogue.GameControl
 		#endregion
 
 		#region Properties
-		Map Map => _game.CurrentLevel.Map;
+		IGameMap Map => _game.CurrentLevel.Map;
 
 	    #endregion
 
@@ -123,8 +124,8 @@ namespace CSRogue.GameControl
 				if (run)
 				{
 					// Locals
-					MapCoordinates proposedLocation = Map.HeroPosition + offset;
-					MapCoordinates maybeBlocksUs = proposedLocation + offset;
+					var proposedLocation = Map.Player.Location + offset;
+					var maybeBlocksUs = proposedLocation + offset;
 
 					// If we're blocked before we start...
 					if (!Map.ValidRunningMove(proposedLocation))
@@ -133,7 +134,7 @@ namespace CSRogue.GameControl
 						return true;
 					}
 
-					List<MapCoordinates> litAtStartOfRun = _game.Map.FOV.CurrentlySeen.ToList();
+					List<MapCoordinates> litAtStartOfRun = _game.Map.Fov.CurrentlySeen.ToList();
 
 					// While we're not blocked ahead
 					while (Map.ValidRunningMove(maybeBlocksUs))

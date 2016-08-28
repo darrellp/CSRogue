@@ -70,7 +70,7 @@ namespace RogueTests
 		[TestMethod()]
 		public void MapConstructorTest()
 		{
-			Map target = new Map();
+			CsRogueMap target = new CsRogueMap();
 			for (int iCol = 0; iCol < target.Width; iCol++)
 			{
 				for (int iRow = 0; iRow < target.Height; iRow++)

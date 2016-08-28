@@ -40,7 +40,7 @@ namespace CSRogue.GameControl
 		///
 		/// <value>	The map. </value>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public Map Map => CurrentLevel.Map;
+		public IGameMap Map => CurrentLevel.Map;
 
 	    #endregion
 
@@ -126,10 +126,9 @@ namespace CSRogue.GameControl
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		internal void SetLevel(NewLevelCommand levelCommand)
 		{
-			CurrentLevel = new Level(levelCommand.Level, levelCommand.Width, levelCommand.Height, this, levelCommand.Excavator);
-			MapCoordinates playerLocation = LocateStairwell();
-			Map.SetFov(levelCommand.FOVRows, playerLocation, levelCommand.Filter);
-			Map.MoveCreatureTo(Map.Player, playerLocation, true);
+			CurrentLevel = new Level(levelCommand.Level, Map, this, levelCommand.Excavator);
+            Map.Fov = new FOV(Map, levelCommand.FOVRows, levelCommand.Filter);
+			Map.MoveCreatureTo(Map.Player, LocateStairwell(), true);
 			InvokeEvent(EventType.NewLevel, this);
 		}
 
@@ -148,7 +147,7 @@ namespace CSRogue.GameControl
 			{
 				for (int iColumn = 0; iColumn < Map.Width; iColumn++)
 				{
-					if (Map.Terrain(iColumn, iRow) == TerrainType.StairsUp)
+					if (Map[iColumn, iRow].Terrain == TerrainType.StairsUp)
 					{
 						return new MapCoordinates(iColumn, iRow);
 					}

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using SadConsole.Game;
 using SadConsole.Consoles;
 using CSRogue.Map_Generation;
+using CSRogue.Utilities;
 using RogueSC.Map_Objects;
 using RogueSC.Utilities;
 using Console = SadConsole.Consoles.Console;
@@ -31,7 +32,7 @@ namespace RogueSC.Consoles
 
         #region Private Variables
         /// <summary>   The CSRogue map. </summary>
-        private Map _map;
+        private CsRogueMap _csRogueMap;
 
         /// <summary>   Information describing the map.  Not sure that this isn't
         ///             subsumed by the _map information.  Probably is. </summary>
@@ -114,9 +115,9 @@ namespace RogueSC.Consoles
 
         private void GenerateMap()
         {
-            _map = new Map(Width, Height);
+            _csRogueMap = new CsRogueMap(Width, Height);
             var excavator = new GridExcavator();
-            excavator.Excavate(_map);
+            excavator.Excavate(_csRogueMap);
             // Create the local cache of map data
             // 
             _mapData = new MapObject[Width, Height];
@@ -126,19 +127,19 @@ namespace RogueSC.Consoles
             {
                 for (var iRow = 0; iRow < Height; iRow++)
                 {
-                    var terrain = _map[iCol, iRow].Terrain;
+                    var terrain = _csRogueMap[iCol, iRow].Terrain;
                     if (terrain == TerrainType.OffMap)
                     {
                         continue;
                     }
-                    string str = MapTerrainToAppearance[_map[iCol, iRow].Terrain];
+                    string str = MapTerrainToAppearance[_csRogueMap[iCol, iRow].Terrain];
                     var obj = _mapData[iCol, iRow] = new MapObject(MapObjectFactory.ObjectNameToAppearance[str]);
                     obj.Appearance.CopyAppearanceTo(this[iCol, iRow]);
                     obj.RemoveCellFromView(this[iCol, iRow]);
                 }
             }
 
-            Player.Position = _map.RandomFloorLocation().ToPoint();
+            Player.Position = _csRogueMap.RandomFloorLocation().ToPoint();
 
             // Center the veiw area
             TextSurface.RenderArea = new Rectangle(Player.Position.X - (TextSurface.RenderArea.Width / 2),
@@ -146,7 +147,7 @@ namespace RogueSC.Consoles
                                                     TextSurface.RenderArea.Width, TextSurface.RenderArea.Height);
 
             Player.RenderOffset = Position - TextSurface.RenderArea.Location;
-            _fov = new FOV(_map, FovDistance);
+            _fov = new FOV(_csRogueMap, FovDistance);
             _fov.Scan(Player.Position.ToMapCoordinates());
             foreach (var loc in _fov.CurrentlySeen)
             {
@@ -169,14 +170,14 @@ namespace RogueSC.Consoles
         {
             // Get the position the player will be at
             var newPosition = Player.Position + amount;
-            var terrain = _map[newPosition.X, newPosition.Y].Terrain;
+            var terrain = _csRogueMap[newPosition.X, newPosition.Y].Terrain;
 
             // Check to see if the position is within the map
             if (new Rectangle(0, 0, Width, Height).Contains(newPosition) && terrain != TerrainType.Wall)
             {
                 // Move the player
                 Player.Position += amount;
-                _map.Player.Location = Player.Position.ToMapCoordinates();
+                _csRogueMap.Player.Location = Player.Position.ToMapCoordinates();
 
                 // Scroll the view area to center the player on the screen
                 TextSurface.RenderArea = new Rectangle(Player.Position.X - (TextSurface.RenderArea.Width / 2),
@@ -192,14 +193,14 @@ namespace RogueSC.Consoles
                     _mapData[loc.Column, loc.Row].RenderToCell(
                         this[loc.Column, loc.Row],
                         true,
-                        _map[loc.Column, loc.Row].LitState == LitState.Remembered);
+                        _csRogueMap[loc.Column, loc.Row].LitState == LitState.Remembered);
                 }
                 foreach (var loc in _fov.NewlyUnseen)
                 {
                     _mapData[loc.Column, loc.Row].RenderToCell(
                         this[loc.Column, loc.Row],
                         false,
-                        _map[loc.Column, loc.Row].LitState == LitState.Remembered);
+                        _csRogueMap[loc.Column, loc.Row].LitState == LitState.Remembered);
                 }
             }
         }

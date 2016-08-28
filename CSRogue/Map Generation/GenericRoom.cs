@@ -39,20 +39,28 @@ namespace CSRogue.Map_Generation
 
 	    /// <summary>   Gives coordinates for all the exits </summary>
 	    public IEnumerable<MapCoordinates> ExitCoordinates => ExitMap.Keys;
+
         /// <summary>   The neighboring rooms. </summary>
 	    public IEnumerable<GenericRoom> NeighborRooms => ExitMap.Values;
+
         /// <summary>   Returns true if this is a corridor. </summary>
 	    public virtual bool IsCorridor => false;
+
         /// <summary>   The width of the room's layout. </summary>
         public int Width => Layout.Length;
+
         /// <summary>   The height of the room's layout. </summary>
         public int Height => Layout[0].Length;
+
         /// <summary>   The left coordinate for the room. </summary>
         public int Left => Location.Column;
+
         /// <summary>   The top coordinate for the room. </summary>
         public int Top => Location.Row;
+
         /// <summary>   The right coordinate for the room. </summary>
         public int Right => Left + Width - 1;
+
         /// <summary>   The bottom coordinate for the room. </summary>
 	    public int Bottom => Top + Height - 1;
 
