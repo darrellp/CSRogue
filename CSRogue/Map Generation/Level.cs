@@ -21,7 +21,7 @@ namespace CSRogue.Map_Generation
 		#endregion
 
 		#region Constructor
-		public Level(int depth, int width, int height, Game game = null, Excavator excavator = null, int seed = -1)
+		public Level(int depth, int width, int height, Game game = null, IExcavator excavator = null, int seed = -1)
 		{
 			_game = game;
 			Map = new Map(width, height, _game);

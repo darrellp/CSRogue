@@ -15,15 +15,16 @@ namespace CSRogue.Map_Generation
 	///
 	/// <remarks>	Darrellp, 9/16/2011. </remarks>
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	public class Map
+	public class Map : IMap
 	{
 		#region Private variables
 		private readonly MapLocationData[][] _map;
 		private FOV _fov;
 		private readonly Game _game;
-		#endregion
+        public HashSet<GenericRoom> _rooms  = new HashSet<GenericRoom>();
+        #endregion
 
-		#region Properties
+        #region Properties
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Gets the player. </summary>
@@ -31,7 +32,7 @@ namespace CSRogue.Map_Generation
         /// <value> The player. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		public Player Player { get; }
+        public Player Player { get; }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Gets the map width. </summary>
@@ -53,18 +54,21 @@ namespace CSRogue.Map_Generation
 		public MapCoordinates HeroPosition => Player.Location;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets the room or rooms that make up the map. </summary>
-        ///
-        /// <remarks> The map has separated, linked areas known as "rooms" which this property returns.
-        ///           Potentially, the entire level is one giant room with no exits but everything on the
-        ///           level should be contained in one of these rooms.  Currently there are two types of
-        ///           rooms - corridors and normal rooms.  Darrellp, 8/25/2016 
-        ///          </remarks>
-        /// 
-        /// <value> The rooms. </value>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+	    /// <summary>   Gets the room or rooms that make up the map. </summary>
+	    ///
+	    /// <remarks> The map has separated, linked areas known as "rooms" which this property returns.
+	    ///           Potentially, the entire level is one giant room with no exits but everything on the
+	    ///           level should be contained in one of these rooms.  Currently there are two types of
+	    ///           rooms - corridors and normal rooms.  Darrellp, 8/25/2016 
+	    ///          </remarks>
+	    /// 
+	    /// <value> The rooms. </value>
+	    ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	    public HashSet<GenericRoom> Rooms { get; }
+	    public ISet<GenericRoom> Rooms
+	    {
+	        get { return _rooms; }
+	    }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Gets or sets the fov information for the map. </summary>
@@ -109,7 +113,6 @@ namespace CSRogue.Map_Generation
 			Player = new Player();
 			Width = width;
 			Height = height;
-			Rooms = new HashSet<GenericRoom>();
 			_game = game;
 			_fov = null;
 
@@ -320,7 +323,7 @@ namespace CSRogue.Map_Generation
 		///
 		/// <returns>	true if the room has already been added, false if it hasn't. </returns>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal bool AddRoom(GenericRoom groom)
+		public bool AddRoom(GenericRoom groom)
 		{
 			return Rooms.Add(groom);
 		}
@@ -343,37 +346,6 @@ namespace CSRogue.Map_Generation
 		#endregion
 
 		#region Positional information
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Place terrain on the map. </summary>
-		///
-		/// <remarks>	Darrellp, 9/19/2011. </remarks>
-		///
-		/// <param name="iRow">			The row to place the terrain on. </param>
-		/// <param name="iCol">			The col to place the terrain on. </param>
-		/// <param name="terrainType">	Type of the terrain. </param>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal void PlaceTerrain(int iCol, int iRow, TerrainType terrainType)
-		{
-			if (iCol < 0 || iRow < 0 || iCol >= _map.Length || iRow >= _map[0].Length)
-			{
-				throw new ArgumentException("Out of bounds in PlaceTerrain");
-			}
-			_map[iCol][iRow].Terrain = terrainType;
-		}
-
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Place terrain on the map. </summary>
-		///
-		/// <remarks>	Darrellp, 9/22/2011. </remarks>
-		///
-		/// <param name="location">		The location to place the terrain. </param>
-		/// <param name="terrainType">	Type of the terrain. </param>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal void PlaceTerrain(MapCoordinates location, TerrainType terrainType)
-		{
-			PlaceTerrain(location.Column, location.Row, terrainType);
-		}
-
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Drops an item in the map. </summary>
 		///
@@ -459,39 +431,6 @@ namespace CSRogue.Map_Generation
 			return Terrain(location.Column, location.Row);
 		}
 
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Return all neighbors of a cell taking the borders into account. </summary>
-		///
-		/// <remarks>	Darrellp, 9/26/2011. </remarks>
-		///
-		/// <param name="column">	The location's columns. </param>
-		/// <param name="row">		The location's row. </param>
-		///
-		/// <returns>	An enumerable of all neighbors. </returns>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal IEnumerable<MapCoordinates> Neighbors(int column, int row)
-		{
-			int minRowOffset = row == 0 ? 0 : -1;
-			int maxRowOffset = row == Height - 1 ? 0 : 1;
-			int minColumnOffset = column == 0 ? 0 : -1;
-			int maxColumnOffset = column == Width - 1 ? 0 : 1;
-
-			for (int iRowOffset = minRowOffset; iRowOffset <= maxRowOffset; iRowOffset++)
-			{
-				for (int iColumnOffset = minColumnOffset; iColumnOffset <= maxColumnOffset; iColumnOffset++)
-				{
-					if (iRowOffset != 0 || iColumnOffset != 0)
-					{
-						yield return new MapCoordinates(column + iColumnOffset, row + iRowOffset);
-					}
-				}
-			}
-		}
-
-		internal IEnumerable<MapCoordinates> Neighbors(MapCoordinates location)
-		{
-			return Neighbors(location.Column, location.Row);
-		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Find a random floor location. </summary>
@@ -520,17 +459,6 @@ namespace CSRogue.Map_Generation
 			// Return it
 			return new MapCoordinates(column, row);
 		}
-
-		public bool Contains(int column, int row)
-		{
-			return column >= 0 && row >= 0 && column < Width && row < Height;
-		}
-
-		public bool Contains(MapCoordinates location)
-		{
-			return Contains(location.Column, location.Row);
-		}
-
 		#endregion
 
 		#region Display

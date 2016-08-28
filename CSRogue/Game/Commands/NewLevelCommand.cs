@@ -15,7 +15,7 @@ namespace CSRogue.GameControl.Commands
 		public int Height { get; set; }
 		public int FOVRows { get; set; }
 		public Func<MapCoordinates, MapCoordinates, bool> Filter { get; set; }
-		public Excavator Excavator { get; set; }
+		public IExcavator Excavator { get; set; }
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Constructor. </summary>

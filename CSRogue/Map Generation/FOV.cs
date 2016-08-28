@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CSRogue.Utilities;
 
 namespace CSRogue.Map_Generation
 {
@@ -10,8 +11,8 @@ namespace CSRogue.Map_Generation
 		private HashSet<MapCoordinates> _currentFOV = new HashSet<MapCoordinates>();
 		private HashSet<MapCoordinates> _previousFOV = new HashSet<MapCoordinates>();
 		private MapCoordinates _location;
-		private readonly Map _map;
-		private readonly int _rowCount;
+		private readonly IMap _map;
+		private readonly int _lightRadius;
 		#endregion
 
 		#region Properties
@@ -23,14 +24,14 @@ namespace CSRogue.Map_Generation
 		public Func<MapCoordinates, MapCoordinates, bool> Filter { get; set; }
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Return an enumeration of newly visible tile locations. </summary>
+		/// <summary>	Return an enumeration of currently visible tile locations. </summary>
 		///
-		/// <value>	The newly seen. </value>
+		/// <value>	The currently seen tile locations. </value>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		public IEnumerable<MapCoordinates> CurrentlySeen => _currentFOV;
 
 	    ////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Return an enumeration of newly visible tile locations. </summary>
+		/// <summary>	Return an enumeration of newly seen tile locations. </summary>
 		///
 		/// <value>	The newly seen. </value>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,7 +44,7 @@ namespace CSRogue.Map_Generation
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Return an enumeration of tiles which were visible but are now infisible </summary>
+		/// <summary>	Return an enumeration of newly invisible tile locations </summary>
 		///
 		/// <value>	The now unseen. </value>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,14 +66,14 @@ namespace CSRogue.Map_Generation
 		/// of it as opaque.  This speeds up performance. Darrellp, 10/2/2011. 
 		/// </remarks>
 		///
-		/// <param name="map">		The map we're viewing. </param>
-		/// <param name="rowCount">	Number of rows max to scan. </param>
-		/// <param name="filter">	Filter function to determine which values are allowed. </param>
+		/// <param name="map">		    The map we're viewing. </param>
+		/// <param name="lightRadius">	Distance light can reach. </param>
+		/// <param name="filter">	    Filter function to determine which values are allowed. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public FOV(Map map, int rowCount, Func<MapCoordinates, MapCoordinates, bool> filter = null)
+		public FOV(Map map, int lightRadius, Func<MapCoordinates, MapCoordinates, bool> filter = null)
 		{
 			_map = map;
-			_rowCount = rowCount;
+			_lightRadius = lightRadius;
 			if (filter == null)
 			{
 				filter = (locHero, locTile) => true;
@@ -447,7 +448,7 @@ namespace CSRogue.Map_Generation
             _currentFOV.Add(location);
             for (int octant = 0; octant < 8; octant++)
             {
-                Compute(octant, location, _rowCount, 1, new Slope(1, 1), new Slope(0, 1));
+                Compute(octant, location, _lightRadius, 1, new Slope(1, 1), new Slope(0, 1));
             }
         }
 

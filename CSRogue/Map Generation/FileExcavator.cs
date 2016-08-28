@@ -14,7 +14,7 @@ namespace CSRogue.Map_Generation
 	///
 	/// <remarks>	Darrellp, 9/16/2011. </remarks>
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	class FileExcavator : Excavator
+	class FileExcavator : IExcavator
 	{
 		#region Private variables
 		private readonly List<string> _asciiLines = new List<string>();
@@ -42,7 +42,7 @@ namespace CSRogue.Map_Generation
 		///
 		/// <param name="map">		The map to be excavated. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public override void Excavate(Map map)
+		public void Excavate(IMap map)
 		{
 			// For each line in the file
 			for (int iRow = 0; iRow < _asciiLines.Count && iRow < map.Height; iRow++)
@@ -65,7 +65,7 @@ namespace CSRogue.Map_Generation
 		/// <param name="currentLine">	The current line read from the stream. </param>
 		/// <param name="iRow">			The row to modify. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private static void InsertRow(Map map, string currentLine, int iRow)
+		private static void InsertRow(IMap map, string currentLine, int iRow)
 		{
 			// For each character in the read line
 			for (int iCol = 0; iCol < Math.Min(map.Width, currentLine.Length); iCol++)
