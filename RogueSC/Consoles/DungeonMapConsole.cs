@@ -26,7 +26,7 @@ namespace RogueSC.Consoles
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         public GameObject Player { get; }
 
-        public int FovDistance { get; set; } = 7;
+        public int FovDistance { get; set; } = 10;
         #endregion
 
         #region Private Variables
@@ -93,7 +93,7 @@ namespace RogueSC.Consoles
         #region Mapping
 
         /// <summary>   Maps terrain types to appearance for that terrain. </summary>
-        private static readonly Dictionary<TerrainType, string> _mapTerrainToAppearance = new Dictionary
+        private static readonly Dictionary<TerrainType, string> MapTerrainToAppearance = new Dictionary
             <TerrainType, string>()
         {
             {TerrainType.Floor, "floor"},
@@ -131,7 +131,7 @@ namespace RogueSC.Consoles
                     {
                         continue;
                     }
-                    string str = _mapTerrainToAppearance[_map[iCol, iRow].Terrain];
+                    string str = MapTerrainToAppearance[_map[iCol, iRow].Terrain];
                     var obj = _mapData[iCol, iRow] = new MapObject(MapObjectFactory.ObjectNameToAppearance[str]);
                     obj.Appearance.CopyAppearanceTo(this[iCol, iRow]);
                     obj.RemoveCellFromView(this[iCol, iRow]);
