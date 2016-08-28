@@ -6,6 +6,81 @@ namespace CSRogue.Map_Generation
 {
     public class FOV
 	{
+        #region Private Variables
+		private HashSet<MapCoordinates> _currentFOV = new HashSet<MapCoordinates>();
+		private HashSet<MapCoordinates> _previousFOV = new HashSet<MapCoordinates>();
+		private MapCoordinates _location;
+		private readonly Map _map;
+		private readonly int _rowCount;
+		#endregion
+
+		#region Properties
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		/// <summary>	Gets or sets the filter for where light goes. </summary>
+		///
+		/// <value>	The filter. </value>
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		public Func<MapCoordinates, MapCoordinates, bool> Filter { get; set; }
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		/// <summary>	Return an enumeration of newly visible tile locations. </summary>
+		///
+		/// <value>	The newly seen. </value>
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		public IEnumerable<MapCoordinates> CurrentlySeen => _currentFOV;
+
+	    ////////////////////////////////////////////////////////////////////////////////////////////////////
+		/// <summary>	Return an enumeration of newly visible tile locations. </summary>
+		///
+		/// <value>	The newly seen. </value>
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		public IEnumerable<MapCoordinates> NewlySeen
+		{
+			get
+			{
+				return _currentFOV.Where(loc => !_previousFOV.Contains(loc));
+			}
+		}
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		/// <summary>	Return an enumeration of tiles which were visible but are now infisible </summary>
+		///
+		/// <value>	The now unseen. </value>
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		public IEnumerable<MapCoordinates> NewlyUnseen
+		{
+			get
+			{
+				return _previousFOV.Where(loc => !_currentFOV.Contains(loc));
+			}
+		} 
+		#endregion
+
+		#region Constructor
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		/// <summary>	Constructor. </summary>
+		///
+		/// <remarks>	
+		/// The filter function must form a starlike shape around the hero since we mark anything outside
+		/// of it as opaque.  This speeds up performance. Darrellp, 10/2/2011. 
+		/// </remarks>
+		///
+		/// <param name="map">		The map we're viewing. </param>
+		/// <param name="rowCount">	Number of rows max to scan. </param>
+		/// <param name="filter">	Filter function to determine which values are allowed. </param>
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		public FOV(Map map, int rowCount, Func<MapCoordinates, MapCoordinates, bool> filter = null)
+		{
+			_map = map;
+			_rowCount = rowCount;
+			if (filter == null)
+			{
+				filter = (locHero, locTile) => true;
+			}
+			Filter = filter;
+		}
+        #endregion
+
         #region Scanning
         // This scanning modified from Adam Milazzo's code at this page:
         //  http://www.adammil.net/blog/v125_roguelike_vision_algorithms.html
@@ -323,8 +398,7 @@ namespace CSRogue.Map_Generation
                 case 6: nx += y; ny += x; break;
                 case 7: nx += x; ny += y; break;
             }
-            bool blocked;
-            return IsOpaqueAt(_map, new MapCoordinates(nx, ny), out blocked);
+            return IsOpaqueAt(new MapCoordinates(nx, ny));
         }
 
         void SetVisible(int x, int y, int octant, MapCoordinates origin)
@@ -348,84 +422,7 @@ namespace CSRogue.Map_Generation
         {
             return x * x + y * y;
         }
-        #endregion
 
-        #region Private Variables
-		private HashSet<MapCoordinates> _currentFOV = new HashSet<MapCoordinates>();
-		private HashSet<MapCoordinates> _previousFOV = new HashSet<MapCoordinates>();
-		private MapCoordinates _location;
-		private readonly Map _map;
-		private readonly int _rowCount;
-		#endregion
-
-		#region Properties
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Gets or sets the filter for where light goes. </summary>
-		///
-		/// <value>	The filter. </value>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public Func<MapCoordinates, MapCoordinates, bool> Filter { get; set; }
-
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Return an enumeration of newly visible tile locations. </summary>
-		///
-		/// <value>	The newly seen. </value>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public IEnumerable<MapCoordinates> CurrentlySeen => _currentFOV;
-
-	    ////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Return an enumeration of newly visible tile locations. </summary>
-		///
-		/// <value>	The newly seen. </value>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public IEnumerable<MapCoordinates> NewlySeen
-		{
-			get
-			{
-				return _currentFOV.Where(loc => !_previousFOV.Contains(loc));
-			}
-		}
-
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Return an enumeration of tiles which were visible but are now infisible </summary>
-		///
-		/// <value>	The now unseen. </value>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public IEnumerable<MapCoordinates> NewlyUnseen
-		{
-			get
-			{
-				return _previousFOV.Where(loc => !_currentFOV.Contains(loc));
-			}
-		} 
-		#endregion
-
-		#region Constructor
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Constructor. </summary>
-		///
-		/// <remarks>	
-		/// The filter function must form a starlike shape around the hero since we mark anything outside
-		/// of it as opaque.  This speeds up performance. Darrellp, 10/2/2011. 
-		/// </remarks>
-		///
-		/// <param name="map">		The map we're viewing. </param>
-		/// <param name="rowCount">	Number of rows max to scan. </param>
-		/// <param name="filter">	Filter function to determine which values are allowed. </param>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public FOV(Map map, int rowCount, Func<MapCoordinates, MapCoordinates, bool> filter = null)
-		{
-			_map = map;
-			_rowCount = rowCount;
-			if (filter == null)
-			{
-				filter = (locHero, locTile) => true;
-			}
-			Filter = filter;
-		}
-        #endregion
-
-        #region Scanning
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>	Scans the map for visible tiles.  </summary>
         ///
@@ -455,32 +452,27 @@ namespace CSRogue.Map_Generation
         }
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	
-		/// Query if the map is clear to view at a particular location. It may not be because it's
-		/// outside the boundaries of the map or outside the filter function or off the map.  The out
-		/// parameter blocked will be true when it's actually blocked rather than opaque for one of these
-		/// other reasons. 
-		/// </summary>
-		///
-		/// <remarks>	Darrellp, 10/2/2011. </remarks>
-		///
-		/// <param name="map">		The map we're viewing. </param>
-		/// <param name="location">	The viewpoint from which visibility is calculated. </param>
-		/// <param name="blocked">	[out] True if the view is actually blocked. </param>
-		///
-		/// <returns>	true if opaque at, false if not. </returns>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private bool IsOpaqueAt(Map map, MapCoordinates location, out bool blocked)
+        ///  <summary>	
+        ///  Query if the map is clear to view at a particular location. It may not be because it's
+        ///  outside the boundaries of the map or outside the filter function or off the map.  The out
+        ///  parameter blocked will be true when it's actually blocked rather than opaque for one of these
+        ///  other reasons. 
+        ///  </summary>
+        /// 
+        ///  <remarks>	Darrellp, 10/2/2011. </remarks>
+        /// <param name="location">	The viewpoint from which visibility is calculated. </param>
+        /// 
+        ///  <returns>	true if opaque at, false if not. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        private bool IsOpaqueAt(MapCoordinates location)
 		{
-			if (!Filter(_location, location) || !map.Contains(location))
+			if (!Filter(_location, location) || !_map.Contains(location))
 			{
-				blocked = false;
 				return true;
 			}
-			MapLocationData data = map[location];
-			blocked = data.Terrain == TerrainType.Wall;
-			return blocked || data.Terrain == TerrainType.OffMap;
+			var terrain = _map[location].Terrain;
+			return terrain == TerrainType.Wall || terrain == TerrainType.OffMap;
 		} 
-#endregion
+        #endregion
 	}
 }
