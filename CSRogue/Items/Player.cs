@@ -1,4 +1,5 @@
 ﻿using CSRogue.Item_Handling;
+using CSRogue.Map_Generation;
 
 namespace CSRogue.Items
 {
@@ -11,14 +12,14 @@ namespace CSRogue.Items
 	public class Player : Creature
 	{
 		#region Constructor
-		public Player() : base(ItemType.Player) { }
-		#endregion
+		public Player() : base(ItemType.Player, Item.HeroId) { }
+        #endregion
 
-		#region Produce a random player
-		internal override Item RandomItem()
-		{
-			return new Player();
-		} 
-		#endregion
-	}
+        #region Produce a random player
+        public override Item RandomItem()
+        {
+            return new Player();
+        }
+        #endregion
+    }
 }

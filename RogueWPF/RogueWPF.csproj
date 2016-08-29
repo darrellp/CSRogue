@@ -71,6 +71,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Mapping\ItemFactory.cs" />
+    <Compile Include="Rat.cs" />
     <Compile Include="UI\KeyboardHandler.cs" />
     <Compile Include="Utilities\PixelConversions.cs" />
     <Page Include="MainWindow.xaml">

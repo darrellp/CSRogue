@@ -6,6 +6,7 @@ using Bramble.Core;
 using CSRogue.RogueEventArgs;
 using CSRogue.GameControl;
 using CSRogue.GameControl.Commands;
+using CSRogue.Items;
 using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
 using Malison.Core;
@@ -65,6 +66,7 @@ namespace RogueWPF.Mapping
 			        Height = RowCount,
 			        FOVRows = 20,
 			        Filter = (locHero, locSite) => MapCoordinates.Within(locHero, locSite, 15, 10, 12),
+                    ItemFactory = new ItemFactory(),
 			        Level = 0
 			    };
 			_game.EnqueueAndProcess(levelCommand);
@@ -259,21 +261,20 @@ namespace RogueWPF.Mapping
 			if (data.Items.Count > 0)
 			{
 				// Are any of them the player?
-				if (data.Items.Any(i => ItemInfo.GetItemInfo(i).IsPlayer))
+				if (data.Items.Any(i => (i as Player) != null))
 				{
 					// Return the smiley face
 					return new Character(Glyph.Face, TermColor.White);
 				}
 
 				// Otherwise, use the first item in the list
-				Item itemCur = data.Items[0];
-				ItemInfo info = ItemInfo.GetItemInfo(itemCur);
+			    Creature creature = data.Items[0] as Creature;
 
 				// Is it a creature?
-				if (info.IsCreature)
+				if (creature != null)
 				{
 					// Get it's color and character and return the glyph
-					return new Character(info.Character, (TermColor)(info.CreatureInfo.Color));
+					return new Character('r', TermColor.Red);
 				}
 			}
 

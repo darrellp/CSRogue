@@ -13,12 +13,12 @@ namespace CSRogue.Utilities
 			DieSides = dieSides;
 		}
 
-		internal DieRoll(int dieCount, int dieSides)
+		public DieRoll(int dieCount, int dieSides)
 		{
 			Set(dieCount, dieSides);
 		}
 
-		internal DieRoll(string roll)
+		public DieRoll(string roll)
 		{
 			var sides = roll.Split('d');
 			Set(short.Parse(sides[0]), short.Parse(sides[1]));

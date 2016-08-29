@@ -11,7 +11,7 @@ namespace CSRogue.Item_Handling
 		public int Speed { get; set; }
 		public int ArmorClass { get; set; }
 
-		internal CreatureInfo(
+		public CreatureInfo(
 			string hitPoints = "1d1",
 			int level = 0,
 			int rarity = 1,

@@ -1,4 +1,5 @@
-﻿using CSRogue.Item_Handling;
+﻿using System;
+using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
 
 namespace CSRogue.Items
@@ -41,17 +42,26 @@ namespace CSRogue.Items
 		///
 		/// <param name="itemType">	Type of the item to be constructed. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		protected Creature(ItemType itemType)
-			: base(itemType)
+		protected Creature(ItemType itemType, Guid itemId = default(Guid), Level level = null)
+			: base(itemType, itemId)
 		{
-			ItemInfo info = ItemInfo.GetItemInfo(GetType());
+		    ItemInfo info;
+
+            if (itemType != ItemType.Nothing)
+		    {
+		        info = ItemInfo.GetItemInfo(GetType());
+		    }
+            else
+            {
+                info = level._itemFactory.InfoFromId[itemId];
+            }
 			HitPoints = info.CreatureInfo.HitPoints.Roll();
-			IsPlayer = itemType == ItemType.Player;
+			IsPlayer = itemId == Item.HeroId;
 		} 
 		#endregion
 
 		#region Overrides
-		internal abstract override Item RandomItem(); 
+		//public abstract override Item RandomItem(); 
 		#endregion
 	}
 }

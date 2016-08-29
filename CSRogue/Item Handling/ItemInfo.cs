@@ -19,7 +19,10 @@ namespace CSRogue.Item_Handling
 		///
 		/// <value>	true if this object is creature, false if not. </value>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public bool IsCreature => CreatureInfo != null;
+		public bool IsCreature
+		{
+		    get { return CreatureInfo != null; }
+		}
 
 	    ////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Gets a value indicating whether this object is player. </summary>
@@ -41,6 +44,7 @@ namespace CSRogue.Item_Handling
 		/// <value>	The type of the item. </value>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		public ItemType ItemType { get; set; }
+        public Guid ItemId { get; set; }
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Gets or sets the name. </summary>
@@ -75,7 +79,7 @@ namespace CSRogue.Item_Handling
 		///
 		/// <value>	Information describing the creature. </value>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public CreatureInfo CreatureInfo { get; private set; } 
+		public CreatureInfo CreatureInfo { get; set; } 
 		#endregion
 
 		#region Private variables
@@ -286,7 +290,8 @@ namespace CSRogue.Item_Handling
 		#endregion
 
 		#region Constructor
-		internal ItemInfo(
+
+	    public ItemInfo(
 			ItemType itemType = ItemType.Nothing,
 			string name = null,
 			char character = ' ',

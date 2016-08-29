@@ -61,6 +61,8 @@
     <Compile Include="Game\CommandType.cs" />
     <Compile Include="Game\Game.cs" />
     <Compile Include="Game\Commands\MovementCommand.cs" />
+    <Compile Include="Item Handling\IItem.cs" />
+    <Compile Include="Item Handling\IItemFactory.cs" />
     <Compile Include="Map Generation\IGameMap.cs" />
     <Compile Include="Map Generation\IMap.cs" />
     <Compile Include="Item Handling\CreatureInfo.cs" />

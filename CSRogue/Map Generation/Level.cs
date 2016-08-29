@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CSRogue.GameControl;
 using CSRogue.GameControl.Commands;
@@ -13,6 +14,7 @@ namespace CSRogue.Map_Generation
 		#region Private fields
 		private readonly Game _game;
 		private readonly List<Creature> _creatures = new List<Creature>();
+	    internal readonly IItemFactory _itemFactory;
 		#endregion
 
 		#region Public Properties
@@ -21,7 +23,7 @@ namespace CSRogue.Map_Generation
 		#endregion
 
 		#region Constructor
-		public Level(int depth, IGameMap map, Game game = null, IExcavator excavator = null, int seed = -1)
+		public Level(int depth, IGameMap map, Game game = null, IExcavator excavator = null, IItemFactory itemFactory = null, int seed = -1 )
 		{
 			_game = game;
 		    Map = map ?? new CsRogueMap(_game);
@@ -32,6 +34,7 @@ namespace CSRogue.Map_Generation
 				excavator = new GridExcavator(seed);
 			}
 			excavator.Excavate(Map);
+		    _itemFactory = itemFactory;
 			DistributeItems();
 		}
 
@@ -52,8 +55,37 @@ namespace CSRogue.Map_Generation
 
 		protected virtual void DistributeCreatures()
 		{
-			// Get the creatures allowable on this level
-			List<ItemInfo> creatureInfoList = ItemInfo.CreatureListForLevel(Depth);
+            // Figure out how many monsters on this level
+            int creatureCount = CreatureCount();
+
+            if (_itemFactory != null)
+		    {
+		        var infoFromIds = _itemFactory.InfoFromId;
+		        var creatureInfoListFactory = infoFromIds.Values;
+		        var sumRarity = 
+                    infoFromIds.
+                    Values.
+                    Where(i => i.IsCreature).
+                    Select(i => i.CreatureInfo.Rarity).
+                    Sum();
+
+		        if (sumRarity == 0)
+		        {
+		            return;
+		        }
+
+                // For each creature
+                for (var iCreature = 0; iCreature < creatureCount; iCreature++)
+                {
+                    // Select a creature
+                    Creature creature = SelectFactoryCreature(creatureInfoListFactory, sumRarity);
+
+                    // Place the selected creature
+                    PlaceCreature(creature);
+                }
+            }
+            // Get the creatures allowable on this level
+            List<ItemInfo> creatureInfoList = ItemInfo.CreatureListForLevel(Depth);
 
 			// Get the sum of their rarities
 			int sumOfRarities = creatureInfoList.Sum(creatureItemInfo => creatureItemInfo.CreatureInfo.Rarity);
@@ -63,9 +95,6 @@ namespace CSRogue.Map_Generation
 			{
 				return;
 			}
-
-			// Figure out how many monsters on this level
-			int creatureCount = CreatureCount();
 
 			// For each creature
 			for (int iCreature = 0; iCreature < creatureCount; iCreature++)
@@ -94,7 +123,23 @@ namespace CSRogue.Map_Generation
 			throw new RogueException("Couldn't find creature in SelectCreature");
 		}
 
-		private void PlaceCreature(Creature creature)
+        private Creature SelectFactoryCreature(IEnumerable<ItemInfo> creatureList, int sumOfRarities)
+        {
+            int cumulationLimit = Rnd.Global.Next(sumOfRarities);
+            int rarityCumulation = 0;
+
+            foreach (ItemInfo creature in creatureList)
+            {
+                rarityCumulation += creature.CreatureInfo.Rarity;
+                if (rarityCumulation > cumulationLimit)
+                {
+                    return (Creature) _itemFactory.Create(creature.ItemId, this);
+                }
+            }
+            throw new RogueException("Couldn't find creature in SelectCreature");
+        }
+
+        private void PlaceCreature(Creature creature)
 		{
 			// Find a random floor location
 			MapCoordinates location = Map.RandomFloorLocation();

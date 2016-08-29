@@ -12,14 +12,14 @@ namespace CSRogue.Items
 	class Rat : Creature
 	{
 		#region Constructor
-		public Rat() : base(ItemType.Rat) { } 
-		#endregion
+		public Rat() : base(ItemType.Rat) { }
+        #endregion
 
-		#region Produce a random rat
-		internal override Item RandomItem()
-		{
-			return new Rat();
-		} 
-		#endregion
-	}
+        #region Produce a random rat
+	    public override Item RandomItem()
+        {
+            return new Rat();
+        }
+        #endregion
+    }
 }
