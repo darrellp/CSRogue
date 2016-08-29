@@ -40,7 +40,7 @@ namespace CSRogue.GameControl
 		///
 		/// <value>	The map. </value>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public IGameMap Map => CurrentLevel.Map;
+		public IGameMap Map => CurrentLevel?.Map;
 
 	    #endregion
 

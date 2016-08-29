@@ -11,6 +11,7 @@ using CSRogue.Map_Generation;
 using Malison.Core;
 using Malison.WinForms;
 using RogueWPF.Utilities;
+using CSRogue.Utilities;
 using Rect = Bramble.Core.Rect;
 
 namespace RogueWPF.Mapping
@@ -44,14 +45,8 @@ namespace RogueWPF.Mapping
 		#endregion
 
 		#region Properties
-		public CsRogueMap CsRogueMap
-		{
-			get
-			{
-				return _game.CurrentLevel.Map;
-			}
-		}
-		#endregion
+		public CsRogueMap GameMap => (CsRogueMap)_game.CurrentLevel.Map;
+	    #endregion
 
 		#region Constructor
 		public MapHandler(TerminalControl terminalCtl, WindowsFormsHost mapHost, Game game)
@@ -88,12 +83,12 @@ namespace RogueWPF.Mapping
 			string monster = string.Empty;
 
 			DrawCell(e.VictimLocation);
-			if (e.Attacker == CsRogueMap.Player)
+			if (e.Attacker == GameMap.Player)
 			{
 				monster = ItemInfo.GetItemInfo(e.Victim).Name;
 				message = string.Format("You hit the {0}.", monster);
 			}
-			else if (e.Victim == CsRogueMap.Player)
+			else if (e.Victim == GameMap.Player)
 			{
 				monster = ItemInfo.GetItemInfo(e.Attacker).Name;
 				message = string.Format("The {0} hit you.", monster);
@@ -101,7 +96,7 @@ namespace RogueWPF.Mapping
 
 			if (e.VictimDied)
 			{
-				if (e.Victim == CsRogueMap.Player)
+				if (e.Victim == GameMap.Player)
 				{
 					// We died!!!
 				}
@@ -119,7 +114,7 @@ namespace RogueWPF.Mapping
 			RecalculateSize();
 
 			// Is this is the initial resize or have we gone off the screen?
-			if (!_onScreen.Inflate(-1).Contains(new Vec(CsRogueMap.HeroPosition.Column, CsRogueMap.HeroPosition.Row)) || _initialResize)
+			if (!_onScreen.Inflate(-1).Contains(new Vec(GameMap.Player.Location.Column, GameMap.Player.Location.Row)) || _initialResize)
 			{
 				// Center the player on the screen
 				CenterPlayer();
@@ -151,13 +146,13 @@ namespace RogueWPF.Mapping
 		private void EnsurePlayerIsOnScreen(bool forceRecenter = false)
 		{
 			// Are we missing a map or a terminal?
-			if ((_onScreen.Width == 0) || CsRogueMap == null || _terminal == null)
+			if ((_onScreen.Width == 0) || GameMap == null || _terminal == null)
 			{
 				return;
 			}
 
 			// Find out where the player is
-			MapCoordinates hero = CsRogueMap.HeroPosition;
+			MapCoordinates hero = GameMap.HeroPosition;
 
 			// Are we still on the screen and not asked to recenter?
 			if (!forceRecenter && _onScreen.Inflate(-1).Contains(new Vec(hero.Column, hero.Row)))
@@ -206,12 +201,12 @@ namespace RogueWPF.Mapping
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		private void CenterPlayer()
 		{
-			if (CsRogueMap == null || _terminal == null)
+			if (GameMap == null || _terminal == null)
 			{
 				return;
 			}
-			int dleft = _onScreen.Width / 2 - (CsRogueMap.HeroPosition.Column - _onScreen.Left);
-			int dtop = _onScreen.Height / 2 - (CsRogueMap.HeroPosition.Row - _onScreen.Top);
+			int dleft = _onScreen.Width / 2 - (GameMap.HeroPosition.Column - _onScreen.Left);
+			int dtop = _onScreen.Height / 2 - (GameMap.HeroPosition.Row - _onScreen.Top);
 			ScrollBy(dleft, dtop);
 		}
 
@@ -242,7 +237,7 @@ namespace RogueWPF.Mapping
 			int adjustedColumn = location.X + _onScreen.Left;
 			int adjustedRow = location.Y + _onScreen.Top;
 
-			return CsRogueMap.Contains(adjustedColumn, adjustedRow) ? CharacterFromCell(adjustedColumn, adjustedRow) : _spaceChar;
+			return GameMap.Contains(adjustedColumn, adjustedRow) ? CharacterFromCell(adjustedColumn, adjustedRow) : _spaceChar;
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -258,7 +253,7 @@ namespace RogueWPF.Mapping
 		private Character CharacterFromCell(int column, int row)
 		{
 			// Get the data at this location
-			MapLocationData data = CsRogueMap[column, row];
+			MapLocationData data = GameMap[column, row];
 
 			// Are there items here?
 			if (data.Items.Count > 0)
@@ -319,9 +314,9 @@ namespace RogueWPF.Mapping
 
 		private void DrawMap()
 		{
-			for (int iColumn = 0; iColumn < CsRogueMap.Width; iColumn++)
+			for (int iColumn = 0; iColumn < GameMap.Width; iColumn++)
 			{
-				for (int iRow = 0; iRow < CsRogueMap.Height; iRow++)
+				for (int iRow = 0; iRow < GameMap.Height; iRow++)
 				{
 					DrawCell(iColumn, iRow);
 				}
@@ -340,14 +335,14 @@ namespace RogueWPF.Mapping
 			{
 				if (e.IsBlocked)
 				{
-					TerrainType terrain = CsRogueMap[e.CreatureDestination].Terrain;
+					TerrainType terrain = GameMap[e.CreatureDestination].Terrain;
 					SendMessage(string.Format("There is a {0} in the way.", terrain));
 				}
 				else
 				{
 					IEnumerable<MapCoordinates> redrawLighting = e.LitAtStartOfRun != null
-					    ? e.LitAtStartOfRun.Concat(e.gameMap.FOV.CurrentlySeen)
-					    : e.gameMap.FOV.NewlySeen.Concat(e.gameMap.FOV.NewlyUnseen);
+					    ? e.LitAtStartOfRun.Concat(e.GameMap.Fov.CurrentlySeen)
+					    : e.GameMap.Fov.NewlySeen.Concat(e.GameMap.Fov.NewlyUnseen);
 
 					foreach (var newlyLit in redrawLighting)
 					{

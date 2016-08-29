@@ -14,6 +14,7 @@ namespace CSRogue.GameControl.Commands
 		public int Width { get; set; }
 		public int Height { get; set; }
 		public int FOVRows { get; set; }
+        public IGameMap Map { get; set; }
 		public Func<MapCoordinates, MapCoordinates, bool> Filter { get; set; }
 		public IExcavator Excavator { get; set; }
 

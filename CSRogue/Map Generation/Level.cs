@@ -24,8 +24,9 @@ namespace CSRogue.Map_Generation
 		public Level(int depth, IGameMap map, Game game = null, IExcavator excavator = null, int seed = -1)
 		{
 			_game = game;
-			Map = map;
-			Depth = depth;
+		    Map = map ?? new CsRogueMap(_game);
+
+            Depth = depth;
 			if (excavator == null)
 			{
 				excavator = new GridExcavator(seed);
