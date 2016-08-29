@@ -2,4 +2,5 @@
 	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
   &lt;Assembly Path="C:\Users\Darrell\Documents\Visual Studio 2015\Projects\Github\CSRogue\CSRogue\External Dependencies\Malison.Core.dll" /&gt;&#xD;
   &lt;Assembly Path="C:\Users\Darrell\Documents\Visual Studio 2015\Projects\Github\CSRogue\packages\SadConsole.Core.4.2.1\lib\net45\SadConsole.Core.Windows.dll" /&gt;&#xD;
+  &lt;Assembly Path="C:\Windows\Microsoft.NET\Framework\v4.0.30319\mscorlib.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String></wpf:ResourceDictionary>

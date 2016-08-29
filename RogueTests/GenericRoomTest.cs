@@ -92,7 +92,7 @@ namespace RogueTests
 			string layoutConnect =
 @"........
 ........
-		";
+        ";
 			GenericRoom roomConnect = new GenericRoom(layoutConnect, new MapCoordinates(10, 7), null);
 			string layout1 =
 @"    
