@@ -2,46 +2,43 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using CSRogue.Utilities;
 
 namespace CSRogue.Item_Handling
 {
 	class ReadCreatureData
 	{
-		private static readonly char[] Tabs = new[] { '\t' };
+		private static readonly char[] Tabs = { '\t' };
 
-		internal static Dictionary<ItemType, CreatureInfo> GetData()
+		internal static Dictionary<Guid, CreatureInfo> GetData(TextReader input)
 		{
-			Assembly assembly = Assembly.GetExecutingAssembly();
-		    // ReSharper disable once AssignNullToNotNullAttribute
-			StreamReader dataReader = new StreamReader(assembly.GetManifestResourceStream("CSRogue.Data_Files.CreatureData.txt"));
-			if (dataReader == null)
-			{
-				throw new RogueException("Couldn't find CreatureData.txt in resources");
-			}
-			Dictionary<ItemType, CreatureInfo> infoList = new Dictionary<ItemType, CreatureInfo>();
+			var infoList = new Dictionary<Guid, CreatureInfo>();
 
 			// While there are lines to read
-			while (!dataReader.EndOfStream)
+			while (true)
 			{
-				ProcessLine(infoList, dataReader.ReadLine());
+			    var line = input.ReadLine();
+			    if (line == null)
+			    {
+			        break;
+			    }
+				ProcessLine(infoList, line);
 			}
 			return infoList;
 		}
 
-		private static void ProcessLine(IDictionary<ItemType, CreatureInfo> infoList, string readLine)
+		private static void ProcessLine(IDictionary<Guid, CreatureInfo> infoList, string readLine)
 		{
-			if (readLine.StartsWith("//"))
-			{
-				return;
-			}
-			CreatureInfo info = new CreatureInfo();
-			List<string> values = readLine.Split(Tabs).Where(s => s != string.Empty).ToList();
-			ItemType itemType = (ItemType) Enum.Parse(typeof (ItemType), values[0]);
-			infoList[itemType] = info;
+            if (readLine.Trim() == string.Empty || readLine.StartsWith("//"))
+            {
+                return;
+            }
+			var info = new CreatureInfo();
+			var values = readLine.Split(Tabs).Where(s => s != string.Empty).ToList();
+            var itemId = new Guid(values[1]);
+            infoList[itemId] = info;
 
-			for (int iField = 1; iField < values.Count; iField++)
+			for (var iField = 1; iField < values.Count; iField++)
 			{
 				ProcessField(info, iField, values[iField]);
 			}
@@ -49,23 +46,25 @@ namespace CSRogue.Item_Handling
 
 		private static readonly List<Action<string, CreatureInfo>> DispatchTable = new List<Action<string, CreatureInfo>>
 		    {
+                (s, i) => { },
 				(s, i) => { },
 				(s, i) => i.HitPoints = new DieRoll(s),
-				(s, i) => i.Level = Int32.Parse(s),
-				(s, i) => i.Rarity = Int32.Parse(s),
+				(s, i) => i.Level = int.Parse(s),
+				(s, i) => i.Rarity = int.Parse(s),
 				(s, i) => i.Color = (RogueColor)Enum.Parse(typeof(RogueColor), s),
-				(s, i) => i.Speed = Int32.Parse(s),
-				(s, i) => i.ArmorClass = Int32.Parse(s)
+				(s, i) => i.Speed = int.Parse(s),
+				(s, i) => i.ArmorClass = int.Parse(s)
 		    };
 
 		private static readonly List<Action<string, CreatureInfo>> DefaultDispatchTable = new List<Action<string, CreatureInfo>>
 		    {
-				(s, i) => {},
-				(s, i) => {},
-				(s, i) => {},
-				(s, i) => {},
-				(s, i) => {},
-				(s, i) => {},
+                (s, i) => { },
+                (s, i) => { },
+				(s, i) => { },
+				(s, i) => { },
+				(s, i) => { },
+				(s, i) => { },
+				(s, i) => { },
 		    };
 
 		private static void ProcessField(CreatureInfo info, int iField, string value)

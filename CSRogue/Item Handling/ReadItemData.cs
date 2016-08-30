@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using CSRogue.Utilities;
 
 namespace CSRogue.Item_Handling
 {
@@ -37,8 +35,8 @@ namespace CSRogue.Item_Handling
 			}
 			if (readLine[0] == '\t')
 			{
-				string strContinue = readLine.Trim(Tabs);
-				string strOldDescription = lastInfo.Description;
+				var strContinue = readLine.Trim(Tabs);
+				var strOldDescription = lastInfo.Description;
 				lastInfo.Description = strOldDescription + " " + strContinue;
 				return lastInfo;
 			}
