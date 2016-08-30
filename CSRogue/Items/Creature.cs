@@ -35,33 +35,34 @@ namespace CSRogue.Items
 		#endregion
 
 		#region Constructor
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Constructor. </summary>
-		///
-		/// <remarks>	Darrellp, 9/16/2011. </remarks>
-		///
-		/// <param name="itemType">	Type of the item to be constructed. </param>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		protected Creature(ItemType itemType, Guid itemId = default(Guid), Level level = null)
-			: base(itemType, itemId)
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Constructor. </summary>
+        ///
+        /// <remarks>   Darrellp, 9/16/2011. </remarks>
+        ///
+        /// <param name="itemId">   (Optional) Item ID. </param>
+        /// <param name="level">    (Optional) the level. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	    protected Creature(Guid itemId = default(Guid), Level level = null)
+			: base(itemId)
 		{
 		    ItemInfo info;
 
-            if (itemType != ItemType.Nothing)
-		    {
-		        info = ItemInfo.GetItemInfo(GetType());
-		    }
-            else
+			IsPlayer = itemId == HeroId;
+            if (level != null)
             {
-                info = level._itemFactory.InfoFromId[itemId];
+                info = level.Factory.InfoFromId[itemId];
+			    HitPoints = info.CreatureInfo.HitPoints.Roll();
             }
-			HitPoints = info.CreatureInfo.HitPoints.Roll();
-			IsPlayer = itemId == Item.HeroId;
-		} 
-		#endregion
+		}
+        #endregion
 
-		#region Overrides
-		//public abstract override Item RandomItem(); 
-		#endregion
-	}
+        #region Virtual methods
+        public virtual void InvokeAi()
+	    {
+	    }
+        #endregion  
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
+using CSRogue.Utilities;
 
 namespace CSRogue.Items
 {
@@ -12,7 +13,11 @@ namespace CSRogue.Items
 	public class Player : Creature
 	{
 		#region Constructor
-		public Player() : base(ItemType.Player, Item.HeroId) { }
+
+	    public Player() : base(Item.HeroId)
+	    {
+	        HitPoints = new DieRoll(1, 6).Roll();
+	    }
         #endregion
 
         #region Produce a random player

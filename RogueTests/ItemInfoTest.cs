@@ -58,16 +58,6 @@ namespace RogueTests
 			Assert.IsNotNull(creatureInfo);
 			Assert.AreEqual(2, creatureInfo.HitPoints.DieCount);
 			Assert.AreEqual(6, creatureInfo.HitPoints.DieSides);
-
-			item = new Rat();
-			info = ItemInfo.GetItemInfo(item);
-			Assert.AreEqual("Rat", info.Name);
-			Assert.AreEqual('r', info.Character);
-			Assert.IsFalse(info.IsPlayer);
-			creatureInfo = info.CreatureInfo;
-			Assert.IsNotNull(creatureInfo);
-			Assert.AreEqual(2, creatureInfo.HitPoints.DieCount);
-			Assert.AreEqual(6, creatureInfo.HitPoints.DieSides);
 		}
 	}
 }

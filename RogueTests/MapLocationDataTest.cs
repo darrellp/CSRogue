@@ -71,22 +71,6 @@ namespace RogueTests
 		///A test for MapLocationData Constructor
 		///</summary>
 		[TestMethod()]
-		public void MapLocationDataConstructorTest()
-		{
-			TerrainType terrain = TerrainType.VerticalWall;
-			List<Item> items = new List<Item>() { new Player(), new Rat() };
-
-			MapLocationData target = new MapLocationData(terrain, items);
-			Assert.AreEqual(TerrainType.VerticalWall, target.Terrain);
-			Assert.AreEqual(2, target.Items.Count);
-			Assert.AreEqual(ItemType.Player, target.Items[0].ItemType);
-			Assert.AreEqual(ItemType.Rat, target.Items[1].ItemType);
-		}
-
-		/// <summary>
-		///A test for MapLocationData Constructor
-		///</summary>
-		[TestMethod()]
 		public void MapLocationDataConstructorTest1()
 		{
 			MapLocationData target = new MapLocationData();
@@ -120,20 +104,6 @@ namespace RogueTests
 			Assert.AreEqual(ItemType.Player, target.Items[0].ItemType);
 			target.RemoveItem(item);
 			Assert.AreEqual(0, target.Items.Count);
-		}
-
-		/// <summary>
-		///A test for FindItemType
-		///</summary>
-		[TestMethod()]
-		public void FindItemTypeTest()
-		{
-			TerrainType terrain = TerrainType.HorizontalWall;
-			List<Item> items = new List<Item>() { new Player(), new Rat() };
-
-			MapLocationData target = new MapLocationData(terrain, items);
-			Assert.AreEqual(ItemType.Player, target.FindItemType(ItemType.Player).ItemType);
-			Assert.AreEqual(ItemType.Rat, target.FindItemType(ItemType.Rat).ItemType);
 		}
 	}
 }

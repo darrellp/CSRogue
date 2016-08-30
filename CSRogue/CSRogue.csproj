@@ -69,6 +69,7 @@
     <Compile Include="EventArgs\CreatureMoveEventArgs.cs" />
     <Compile Include="Map Generation\IRoomsMap.cs" />
     <Compile Include="Map Generation\Level.cs" />
+    <Compile Include="Map Generation\NullExcavator.cs" />
     <Compile Include="Utilities\BresenhamStepper.cs" />
     <Compile Include="Utilities\DieRoll.cs" />
     <Compile Include="Item Handling\ReadCreatureData.cs" />
@@ -84,7 +85,6 @@
     <Compile Include="Item Handling\ItemInfo.cs" />
     <Compile Include="Items\Creature.cs" />
     <Compile Include="Items\Player.cs" />
-    <Compile Include="Items\Rat.cs" />
     <Compile Include="Map Generation\GridExcavator.cs" />
     <Compile Include="Map Generation\CsRogueMap.cs" />
     <Compile Include="Map Generation\MapCoordinates.cs" />

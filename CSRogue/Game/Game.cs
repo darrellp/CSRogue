@@ -1,6 +1,7 @@
 ﻿using System;
 using CSRogue.RogueEventArgs;
 using CSRogue.GameControl.Commands;
+using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
 using CSRogue.Utilities;
 
@@ -111,13 +112,16 @@ namespace CSRogue.GameControl
 		#endregion
 
 		#region Modification
-		public Game(CommandDispatcher commandDispatcher = null)
+		public Game(IItemFactory factory, CommandDispatcher commandDispatcher = null)
 		{
+		    Factory = factory;
 			_commandDispatcher = commandDispatcher ?? new CommandDispatcher(this);
 			_commandQueue = new CommandQueue(this);
 		}
 
-		////////////////////////////////////////////////////////////////////////////////////////////////////
+	    public IItemFactory Factory { get; set; }
+
+	    ////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Sets a level. </summary>
 		///
 		/// <remarks>	Should normally be invoked only by a command.  Darrellp, 10/8/2011. </remarks>
@@ -126,7 +130,7 @@ namespace CSRogue.GameControl
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		internal void SetLevel(NewLevelCommand levelCommand)
 		{
-			CurrentLevel = new Level(levelCommand.Level, Map, this, levelCommand.Excavator, levelCommand.ItemFactory);
+			CurrentLevel = new Level(levelCommand.Level, Map, levelCommand.ItemFactory, levelCommand.Excavator);
             Map.Fov = new FOV(Map, levelCommand.FOVRows, levelCommand.Filter);
 			Map.MoveCreatureTo(Map.Player, LocateStairwell(), true);
 			InvokeEvent(EventType.NewLevel, this);

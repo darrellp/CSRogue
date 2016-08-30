@@ -30,17 +30,16 @@ namespace CSRogue.Item_Handling
         #endregion
 
         #region Constructor
-        internal Item(ItemType type, Guid id = default(Guid))
+        internal Item(Guid id = default(Guid))
 		{
             if (id == default(Guid))
             {
                 id = NothingId;
             }
             ItemId = id;
-			ItemType = type;
 		} 
 
-		internal Item() : this(ItemType.Nothing) { }
+		internal Item() : this(NothingId) { }
 		#endregion
 
 		#region Produce random item
