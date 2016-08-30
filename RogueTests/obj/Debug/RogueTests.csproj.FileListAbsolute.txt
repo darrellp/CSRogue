@@ -22,3 +22,4 @@ C:\Users\Darrell\Documents\Visual Studio 2015\Projects\Github\CSRogue\RogueTests
 C:\Users\Darrell\Documents\Visual Studio 2015\Projects\Github\CSRogue\RogueTests\obj\Debug\RogueTests.csprojResolveAssemblyReference.cache
 C:\Users\Darrell\Documents\Visual Studio 2015\Projects\Github\CSRogue\RogueTests\obj\Debug\RogueTests.dll
 C:\Users\Darrell\Documents\Visual Studio 2015\Projects\Github\CSRogue\RogueTests\obj\Debug\RogueTests.pdb
+C:\Users\Darrell\Documents\Visual Studio 2015\Projects\Github\CSRogue\RogueTests\bin\Debug\Malison.Core.dll

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
 
@@ -19,6 +20,7 @@ namespace CSRogue.GameControl.Commands
 		public Func<MapCoordinates, MapCoordinates, bool> Filter { get; set; }
 		public IExcavator Excavator { get; set; }
         public IItemFactory ItemFactory { get; set; }
+        public Dictionary<Guid, int> Rarity { get; set; }
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Constructor. </summary>

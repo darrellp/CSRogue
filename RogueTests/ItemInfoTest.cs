@@ -41,23 +41,5 @@ namespace RogueTests
 		{
 		}
 		#endregion
-
-
-		/// <summary>
-		///A test for GetItemInfo
-		///</summary>
-		[TestMethod()]
-		public void GetItemInfoTest()
-		{
-			Item item = new Player();
-			ItemInfo info = ItemInfo.GetItemInfo(item);
-			Assert.AreEqual("Player", info.Name);
-			Assert.AreEqual('@', info.Character);
-			Assert.IsTrue(info.IsPlayer);
-			CreatureInfo creatureInfo = info.CreatureInfo;
-			Assert.IsNotNull(creatureInfo);
-			Assert.AreEqual(2, creatureInfo.HitPoints.DieCount);
-			Assert.AreEqual(6, creatureInfo.HitPoints.DieSides);
-		}
 	}
 }

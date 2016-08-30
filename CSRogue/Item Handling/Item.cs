@@ -1,5 +1,6 @@
 ﻿using System;
 using CSRogue.Map_Generation;
+using Malison.Core;
 
 namespace CSRogue.Item_Handling
 {
@@ -25,8 +26,9 @@ namespace CSRogue.Item_Handling
         public static readonly Guid HeroId = new Guid("0D583F58-FA20-4292-A272-37919917644A");
 
         #region Properties
-        public ItemType ItemType { get; private set; }
-        public Guid ItemId { get; }
+        public Guid ItemTypeId { get; }
+        public MapCoordinates Location { get; set; }
+        public Character Ch { get; set; }
         #endregion
 
         #region Constructor
@@ -36,7 +38,7 @@ namespace CSRogue.Item_Handling
             {
                 id = NothingId;
             }
-            ItemId = id;
+            ItemTypeId = id;
 		} 
 
 		internal Item() : this(NothingId) { }

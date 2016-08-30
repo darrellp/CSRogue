@@ -131,7 +131,7 @@ namespace CSRogue.Utilities
         /// <param name="item"> The item to drop. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public static void Drop(this IMap map, int iCol, int iRow, Item item)
+        public static void Drop(this IMap map, int iCol, int iRow, IItem item)
         {
             map[iCol,iRow].AddItem(item);
         }
@@ -144,7 +144,7 @@ namespace CSRogue.Utilities
         /// <param name="location">	The location. </param>
         /// <param name="item">		The item to drop. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        public static void Drop(this IMap map, MapCoordinates location, Item item)
+        public static void Drop(this IMap map, MapCoordinates location, IItem item)
         {
             map.Drop(location.Column, location.Row, item);
         }
@@ -158,7 +158,7 @@ namespace CSRogue.Utilities
         /// <param name="iCol">	The col to remove from. </param>
         /// <param name="item">	The item to remove. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        public static void Remove(this IMap map, int iCol, int iRow, Item item)
+        public static void Remove(this IMap map, int iCol, int iRow, IItem item)
         {
             map[iCol, iRow].RemoveItem(item);
         }

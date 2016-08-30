@@ -1,4 +1,4 @@
-﻿//type		ch	name		weight	value	description
-Player		@	.			.		.		The Player
-Rat			r	.			.		.		A vile little sewer rat.
-											These rodents seem to be everywhere!
+﻿//type										ch	name		weight	value	description
+0D583F58-FA20-4292-A272-37919917644A		@	.			.		.		The Player
+1BA9B9C4-6133-4CD3-92A6-233F0F26CBC0		r	.			.		.		A vile little sewer rat.
+																			These rodents seem to be everywhere!

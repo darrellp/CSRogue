@@ -77,33 +77,5 @@ namespace RogueTests
 			Assert.AreEqual(0, target.Items.Count);
 			Assert.AreEqual(TerrainType.OffMap, target.Terrain);
 		}
-
-		/// <summary>
-		///A test for AddItem
-		///</summary>
-		[TestMethod()]
-		public void AddItemTest()
-		{
-			MapLocationData target = new MapLocationData();
-			Item item = new Player();
-			target.AddItem(item);
-			Assert.AreEqual(1, target.Items.Count);
-			Assert.AreEqual(ItemType.Player, target.Items[0].ItemType);
-		}
-
-		/// <summary>
-		///A test for RemoveItem
-		///</summary>
-		[TestMethod()]
-		public void RemoveItemTest()
-		{
-			MapLocationData target = new MapLocationData();
-			Item item = new Player();
-			target.AddItem(item);
-			Assert.AreEqual(1, target.Items.Count);
-			Assert.AreEqual(ItemType.Player, target.Items[0].ItemType);
-			target.RemoveItem(item);
-			Assert.AreEqual(0, target.Items.Count);
-		}
 	}
 }

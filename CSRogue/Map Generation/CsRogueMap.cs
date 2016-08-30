@@ -102,27 +102,28 @@ namespace CSRogue.Map_Generation
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Constructor with width and height. </summary>
-		///
-		/// <remarks>	Darrellp, 9/19/2011. </remarks>
-		///
-		/// <param name="width">	The width. </param>
-		/// <param name="height">	The height. </param>
-		/// <param name="game">		The game we're involved in. </param>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public CsRogueMap(int width, int height, Game game = null)
+	    ///  <summary>	Constructor with width and height. </summary>
+	    /// 
+	    ///  <remarks>	Darrellp, 9/19/2011. </remarks>
+	    /// 
+	    ///  <param name="width">	The width. </param>
+	    ///  <param name="height">	The height. </param>
+	    ///  <param name="game">	The game we're involved in. </param>
+	    ///  <param name="player">  The player. </param>
+	    ////////////////////////////////////////////////////////////////////////////////////////////////////
+	    public CsRogueMap(int width, int height, Game game = null, Player player = null)
 		{
-			Player = new Player();
+			Player = player ?? new Player();
 			Width = width;
 			Height = height;
 			Game = game;
 			Fov = null;
 
 			_mapLocationData = new MapLocationData[Width][];
-			for (int iCol = 0; iCol < Width; iCol++)
+			for (var iCol = 0; iCol < Width; iCol++)
 			{
 				_mapLocationData[iCol] = new MapLocationData[Height];
-				for (int iRow = 0; iRow < Height; iRow++)
+				for (var iRow = 0; iRow < Height; iRow++)
 				{
 					_mapLocationData[iCol][iRow] = new MapLocationData();
 				}
@@ -301,7 +302,7 @@ namespace CSRogue.Map_Generation
 		///
 		/// <returns>	. </returns>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal List<Item> Items(int iCol, int iRow)
+		internal List<IItem> Items(int iCol, int iRow)
 		{
 			return _mapLocationData[iCol][iRow].Items;
 		}
@@ -355,8 +356,7 @@ namespace CSRogue.Map_Generation
 					if (data.Items.Count != 0)
 					{
 						// Draw the first item's character
-						ItemInfo info = ItemInfo.GetItemInfo(data.Items[0]);
-						sb.Append(info.Character);
+						sb.Append(data.Items[0].Ch);
 					}
 					else
 					{

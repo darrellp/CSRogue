@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace RogueTests
 {
@@ -66,14 +67,14 @@ namespace RogueTests
 
 		void TestItemInfo(
 			ItemInfo info, 
-			ItemType itemType = ItemType.Nothing,
+			Guid itemId = default(Guid),
 			string name = null,
 			char character = ' ',
 			double weight = 0,
 			int value = 0,
 			string description = "A singularly uninteresting item")
 		{
-			Assert.AreEqual(itemType, info.ItemType);
+			Assert.AreEqual(itemId, info.ItemId);
 			Assert.AreEqual(name, info.Name);
 			Assert.AreEqual(character, info.Character);
 			Assert.AreEqual(weight, info.Weight);
@@ -87,9 +88,18 @@ namespace RogueTests
 		[TestMethod()]
 		public void GetDataTest()
 		{
-			Dictionary<ItemType, ItemInfo> infoList = ReadItemData.GetData();
-			TestItemInfo(infoList[ItemType.Player], name:"Player", itemType:ItemType.Player, character:'@', description:"The Player");
-			TestItemInfo(infoList[ItemType.Rat], name:"Rat", itemType:ItemType.Rat, character:'r', description:"A vile little sewer rat. These rodents seem to be everywhere!");
+		    var input = @"
+//type										ch	name		weight	value	description
+0D583F58-FA20-4292-A272-37919917644A		@	Player		.		.		The Player
+1BA9B9C4-6133-4CD3-92A6-233F0F26CBC0		r	Rat			.		.		A vile little sewer rat.
+																			These rodents seem to be everywhere!
+";
+		    TextReader reader = new StringReader(input);
+            Dictionary<Guid, ItemInfo> infoList = ReadItemData.GetData(reader);
+            var heroId = new Guid("0D583F58-FA20-4292-A272-37919917644A");
+            var ratId = new Guid("1BA9B9C4-6133-4CD3-92A6-233F0F26CBC0");
+			TestItemInfo(infoList[heroId], name:"Player", itemId:heroId, character:'@', description:"The Player");
+			TestItemInfo(infoList[ratId], name:"Rat", itemId:ratId, character:'r', description:"A vile little sewer rat. These rodents seem to be everywhere!");
 		}
 	}
 }

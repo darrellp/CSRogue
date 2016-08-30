@@ -20,7 +20,7 @@ namespace CSRogue.Map_Generation
         /// <value> The items. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		public List<Item> Items { get; }
+		public List<IItem> Items { get; }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Gets or sets the type of terrain at this location. </summary>
@@ -56,12 +56,12 @@ namespace CSRogue.Map_Generation
 
 		internal MapLocationData()
 		{
-			Items = new List<Item>();
+			Items = new List<IItem>();
 			Terrain = TerrainType.OffMap;
 			LitState = LitState.FogOfWar;
 		}
 
-		internal MapLocationData(TerrainType terrain, List<Item> items = null)
+		internal MapLocationData(TerrainType terrain, List<IItem> items = null)
 			: this()
 		{
 			if (items != null)
@@ -79,7 +79,7 @@ namespace CSRogue.Map_Generation
         /// <param name="item"> The item to be added. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		public void AddItem(Item item)
+		public void AddItem(IItem item)
 		{
 			Items.Add(item);
 		}
@@ -92,24 +92,9 @@ namespace CSRogue.Map_Generation
         /// <param name="item"> The item to be removed. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		public void RemoveItem(Item item)
+		public void RemoveItem(IItem item)
 		{
 			Items.Remove(item);
-		}
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Searches for the first item with a given item type. </summary>
-        ///
-        /// <remarks>   Darrellp, 8/25/2016. </remarks>
-        ///
-        /// <param name="itemType"> Type of the item being searched for. </param>
-        ///
-        /// <returns>   The found item. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-		internal Item FindItemType(ItemType itemType)
-		{
-			return Items.First(item => item.ItemType == itemType);
 		}
 	}
 }

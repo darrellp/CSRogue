@@ -63,17 +63,5 @@ namespace RogueTests
 		//}
 		//
 		#endregion
-
-
-		/// <summary>
-		///A test for Item Constructor
-		///</summary>
-		[TestMethod()]
-		public void ItemConstructorTest()
-		{
-			Item target = new Player();
-			Assert.IsNotNull(target);
-			Assert.AreEqual(ItemType.Player, target.ItemType);
-		}
 	}
 }

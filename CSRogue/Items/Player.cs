@@ -19,12 +19,5 @@ namespace CSRogue.Items
 	        HitPoints = new DieRoll(1, 6).Roll();
 	    }
         #endregion
-
-        #region Produce a random player
-        public override Item RandomItem()
-        {
-            return new Player();
-        }
-        #endregion
     }
 }

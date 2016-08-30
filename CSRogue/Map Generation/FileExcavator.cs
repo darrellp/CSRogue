@@ -73,7 +73,7 @@ namespace CSRogue.Map_Generation
 				// Produce the data for that character
 				TerrainType terrain = TerrainFactory.ProduceTerrain(currentLine[iCol]);
 				Item item = ItemInfo.NewItemFromChar(currentLine[iCol]);
-				List<Item> items = item == null ? null : new List<Item> { item };
+				List<IItem> items = item == null ? null : new List<IItem> { item };
 				MapLocationData data = new MapLocationData(terrain, items);
 
 				// and place it in the map

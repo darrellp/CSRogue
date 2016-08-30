@@ -1,6 +1,7 @@
 ﻿using System;
 using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
+using Malison.Core;
 
 namespace CSRogue.Items
 {
@@ -9,7 +10,7 @@ namespace CSRogue.Items
 	///
 	/// <remarks>	Darrellp, 9/16/2011. </remarks>
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	public abstract class Creature : Item
+	public abstract class Creature : IItem
 	{
 		#region Internal properties
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -19,14 +20,24 @@ namespace CSRogue.Items
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		internal int HitPoints { get; set; }
 
+	    public Guid ItemTypeId { get; }
+
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Gets or sets the location. </summary>
+	    /// <summary>	Gets or sets the location. </summary>
 		///
 		/// <value>	The location. </value>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		public MapCoordinates Location { get; set; }
 
-		////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Gets or sets the character representing the creature. </summary>
+        ///
+        /// <value> The character. </value>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	    public Character Ch { get; set; }
+
+	    ////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Gets or sets a value indicating whether this object is the player. </summary>
 		///
 		/// <value>	true if this object is player, false if not. </value>
@@ -41,19 +52,19 @@ namespace CSRogue.Items
         ///
         /// <remarks>   Darrellp, 9/16/2011. </remarks>
         ///
-        /// <param name="itemId">   (Optional) Item ID. </param>
+        /// <param name="itemTypeId">   (Optional) Item ID. </param>
         /// <param name="level">    (Optional) the level. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	    protected Creature(Guid itemId = default(Guid), Level level = null)
-			: base(itemId)
+	    protected Creature(Guid itemTypeId = default(Guid), Level level = null)
 		{
 		    ItemInfo info;
+            ItemTypeId = itemTypeId;
 
-			IsPlayer = itemId == HeroId;
+			IsPlayer = itemTypeId == Item.HeroId;
             if (level != null)
             {
-                info = level.Factory.InfoFromId[itemId];
+                info = level.Factory.InfoFromId[itemTypeId];
 			    HitPoints = info.CreatureInfo.HitPoints.Roll();
             }
 		}

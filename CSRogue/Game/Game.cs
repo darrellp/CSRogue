@@ -130,7 +130,7 @@ namespace CSRogue.GameControl
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		internal void SetLevel(NewLevelCommand levelCommand)
 		{
-			CurrentLevel = new Level(levelCommand.Level, Map, levelCommand.ItemFactory, levelCommand.Excavator);
+			CurrentLevel = new Level(levelCommand.Level, Map, levelCommand.ItemFactory, levelCommand.Rarity, levelCommand.Excavator);
             Map.Fov = new FOV(Map, levelCommand.FOVRows, levelCommand.Filter);
 			Map.MoveCreatureTo(Map.Player, LocateStairwell(), true);
 			InvokeEvent(EventType.NewLevel, this);

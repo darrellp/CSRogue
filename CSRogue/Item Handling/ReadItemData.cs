@@ -11,31 +11,29 @@ namespace CSRogue.Item_Handling
 	{
 		private static readonly char[] Tabs = new[] {'\t'};
 
-		internal static Dictionary<ItemType, ItemInfo> GetData()
+		public static Dictionary<Guid, ItemInfo> GetData(TextReader input)
 		{
-			Assembly assembly = Assembly.GetExecutingAssembly();
-		    // ReSharper disable once AssignNullToNotNullAttribute
-			StreamReader dataReader = new StreamReader(assembly.GetManifestResourceStream("CSRogue.Data_Files.ItemData.txt"));
-			if (dataReader == null)
-			{
-				throw new RogueException("Can't find ItemData.txt in resources.");
-			}
-			Dictionary<ItemType, ItemInfo> mapItemTypeToInfo = new Dictionary<ItemType, ItemInfo>();
+			var mapItemTypeToInfo = new Dictionary<Guid, ItemInfo>();
 			ItemInfo lastInfo = null;
 
 			// While there are lines to read
-			while (!dataReader.EndOfStream)
+			while (true)
 			{
-				lastInfo = ProcessLine(mapItemTypeToInfo, dataReader.ReadLine(), lastInfo);
+			    var line = input.ReadLine();
+			    if (line == null)
+			    {
+			        break;
+			    }
+				lastInfo = ProcessLine(mapItemTypeToInfo, line, lastInfo);
 			}
 			return mapItemTypeToInfo;
 		}
 
-		private static ItemInfo ProcessLine(IDictionary<ItemType, ItemInfo> mapItemTypeToInfo, string readLine, ItemInfo lastInfo)
+		private static ItemInfo ProcessLine(IDictionary<Guid, ItemInfo> mapItemTypeToInfo, string readLine, ItemInfo lastInfo)
 		{
-			if (readLine.StartsWith("//"))
+			if (readLine.Trim() == string.Empty || readLine.StartsWith("//"))
 			{
-				return null;
+				return lastInfo;
 			}
 			if (readLine[0] == '\t')
 			{
@@ -44,20 +42,20 @@ namespace CSRogue.Item_Handling
 				lastInfo.Description = strOldDescription + " " + strContinue;
 				return lastInfo;
 			}
-			ItemInfo info = new ItemInfo();
-			List<string> values = readLine.Split(Tabs).Where(s => s != string.Empty).ToList();
-			ItemType itemType = (ItemType) Enum.Parse(typeof (ItemType), values[0]);
-			for (int iField = 0; iField < values.Count; iField++)
+			var info = new ItemInfo();
+			var values = readLine.Split(Tabs).Where(s => s != string.Empty).ToList();
+		    var itemId = new Guid(values[0]);
+			for (var iField = 0; iField < values.Count; iField++)
 			{
 				ProcessField(info, iField, values[iField]);
 			}
-			mapItemTypeToInfo[itemType] = info;
+			mapItemTypeToInfo[itemId] = info;
 			return info;
 		}
 
 		private static readonly List<Action<string, ItemInfo>> DispatchTable = new List<Action<string, ItemInfo>>
 		    {
-				(s, i) => i.ItemType = (ItemType)Enum.Parse(typeof(ItemType), s),
+				(s, i) => i.ItemId = new Guid(s),
 				(s, i) => i.Character = s[0],
 				(s, i) => i.Name = s,
 				(s, i) => i.Weight = Double.Parse(s),
@@ -67,12 +65,12 @@ namespace CSRogue.Item_Handling
 
 		private static readonly List<Action<string, ItemInfo>> DefaultDispatchTable = new List<Action<string, ItemInfo>>
 		    {
-				(s, i) => {},
-				(s, i) => {},
-				(s, i) => i.Name = i.ItemType.ToString(),
-				(s, i) => {},
-				(s, i) => {},
-				(s, i) => {},
+				(s, i) => { },
+				(s, i) => { },
+		        (s, i) => { },
+				(s, i) => { },
+				(s, i) => { },
+				(s, i) => { },
 		    };
 
 		private static void ProcessField(ItemInfo info, int iField, string value)

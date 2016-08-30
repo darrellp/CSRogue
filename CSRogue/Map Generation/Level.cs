@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CSRogue.GameControl;
 using CSRogue.GameControl.Commands;
@@ -62,7 +63,7 @@ namespace CSRogue.Map_Generation
         /// <param name="seed">         (Optional) the seed. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		public Level(int depth, IGameMap map, IItemFactory factory, IExcavator excavator = null, int seed = -1 )
+		public Level(int depth, IGameMap map, IItemFactory factory, Dictionary<Guid, int> rarity, IExcavator excavator = null, int seed = -1 )
 		{
 			_factory = factory;
 		    Map = map ?? new CsRogueMap();
@@ -72,13 +73,13 @@ namespace CSRogue.Map_Generation
                 excavator = new GridExcavator(seed);
 			}
 			excavator.Excavate(Map);
-			DistributeItems();
+			DistributeItems(rarity);
 		}
         #endregion
 
         #region Map Distribution
         // TODO: Allow for more flexibility here
-        protected virtual int CreatureCount()
+        protected virtual int ItemCount(bool areCreatures)
 		{
 			return Map.Width * Map.Height / 1000 + Rnd.Global.Next(7) - 3;
 		}
@@ -89,45 +90,50 @@ namespace CSRogue.Map_Generation
         /// <remarks>   Darrell, 8/29/2016. </remarks>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		private void DistributeItems()
-		{
-			DistributeCreatures();
-			DistributeInanimate();
+		private void DistributeItems(Dictionary<Guid, int> rarity)
+        {
+            var itemInfoList = rarity.Keys.Select(guid => _factory.InfoFromId[guid]);
+            var creatureInfoList = new List<ItemInfo>();
+            var inanimateInfoList = new List<ItemInfo>();
+
+            foreach (var itemInfo in itemInfoList)
+            {
+                if (itemInfo.IsCreature)
+                {
+                    creatureInfoList.Add(itemInfo);
+                }
+                else
+                {
+                    inanimateInfoList.Add(itemInfo);
+                }
+            }
+
+			DistributeItems(rarity, creatureInfoList, true);
+			DistributeItems(rarity, inanimateInfoList, false);
 		}
 
-		protected virtual void DistributeInanimate()
-		{
-		}
-
-		protected virtual void DistributeCreatures()
+		protected virtual void DistributeItems(Dictionary<Guid, int> rarity, List<ItemInfo> itemInfoList, bool areCreatures)
 		{
             // Figure out how many monsters on this level
-            var creatureCount = CreatureCount();
+            var itemCount = ItemCount(areCreatures);
 
             if (_factory != null)
 		    {
-		        var infoFromIds = _factory.InfoFromId;
-		        var creatureInfoListFactory = infoFromIds.Values;
-		        var sumRarity = 
-                    infoFromIds.
-                    Values.
-                    Where(i => i.IsCreature).
-                    Select(i => i.CreatureInfo.Rarity).
-                    Sum();
+		        var sumRarity = rarity.Values.Sum();
 
 		        if (sumRarity == 0)
 		        {
 		            return;
 		        }
 
-                // For each creature
-                for (var iCreature = 0; iCreature < creatureCount; iCreature++)
+                // For each item
+                for (var iItem = 0; iItem < itemCount; iItem++)
                 {
-                    // Select a creature
-                    var creature = SelectFactoryCreature(creatureInfoListFactory, sumRarity);
+                    // Select an item
+                    var item = SelectItem(rarity, itemInfoList, sumRarity);
 
                     // Place the selected creature
-                    PlaceCreature(creature);
+                    PlaceItem(item, areCreatures);
                 }
             }
 		}
@@ -139,44 +145,48 @@ namespace CSRogue.Map_Generation
         ///
         /// <exception cref="RogueException">   Thrown when a Rogue error condition occurs. </exception>
         ///
-        /// <param name="creatureList">     List of creatures. </param>
+        /// <param name="itemList">         List of items. </param>
         /// <param name="sumOfRarities">    The sum of rarities. </param>
         ///
         /// <returns>   A Creature. </returns>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        private Creature SelectFactoryCreature(IEnumerable<ItemInfo> creatureList, int sumOfRarities)
+        private IItem SelectItem(Dictionary<Guid, int> rarity, List<ItemInfo> itemList, int sumOfRarities)
         {
             var cumulationLimit = Rnd.Global.Next(sumOfRarities);
             var rarityCumulation = 0;
 
-            foreach (ItemInfo creature in creatureList)
+            foreach (ItemInfo info in itemList)
             {
-                rarityCumulation += creature.CreatureInfo.Rarity;
+                rarityCumulation += rarity[info.ItemId];
                 if (rarityCumulation > cumulationLimit)
                 {
-                    return (Creature) _factory.Create(creature.ItemId, this);
+                    return _factory.Create(info.ItemId, this);
                 }
             }
             throw new RogueException("Couldn't find creature in SelectCreature");
         }
 
-        private void PlaceCreature(Creature creature)
+        private void PlaceItem(IItem item, bool isCreature)
 		{
 			// Find a random floor location
 			var location = Map.RandomFloorLocation();
 
 			// Is there a creature there?
-			while (Map[location].Items.Any(item => _factory.InfoFromId[item.ItemId].IsCreature))
+			while (Map[location].Items.Any(i => _factory.InfoFromId[i.ItemTypeId].IsCreature))
 			{
 				// Find another position
 				location = Map.RandomFloorLocation();
 			}
 
-			// Place the monster on the map
-			Map.Drop(location, creature);
-			creature.Location = location;
-			_creatures.Add(creature);
+			// Place the item on the map
+			Map.Drop(location, item);
+			item.Location = location;
+
+            if (isCreature)
+            {
+                _creatures.Add((Creature)item);
+            }
 		}
         #endregion
 
