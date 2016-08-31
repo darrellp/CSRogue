@@ -68,12 +68,12 @@ namespace RogueTests
 
 		public FOV Test(string mapString, MapCoordinates location, int maxRow, int countSeen)
 		{
-			MemoryStream stream = new MemoryStream(Encoding.Default.GetBytes(mapString));
-			FileExcavator excavator = new FileExcavator(stream);
-			CsRogueMap csRogueMap = new CsRogueMap();
+            var reader = new StringReader(mapString);
+			var excavator = new FileExcavator(reader, null);
+			var csRogueMap = new CsRogueMap();
 			excavator.Excavate(csRogueMap);
 
-			FOV fov = new FOV(csRogueMap, maxRow);
+			var fov = new FOV(csRogueMap, maxRow);
 			fov.Scan(location);
 			Assert.AreEqual(countSeen, fov.NewlySeen.ToList().Count);
 			return fov;

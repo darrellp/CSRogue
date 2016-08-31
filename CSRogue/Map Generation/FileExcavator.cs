@@ -18,18 +18,27 @@ namespace CSRogue.Map_Generation
 	{
 		#region Private variables
 		private readonly List<string> _asciiLines = new List<string>();
+	    private readonly IItemFactory _factory;
+        private Dictionary<char, Guid> _charToId = new Dictionary<char, Guid>();
 		#endregion
 
 		#region Constructor
-		internal FileExcavator(Stream stream)
+		internal FileExcavator(TextReader reader, IItemFactory factory)
 		{
-			StreamReader reader = new StreamReader(stream);
-
 			// While there are lines to read
-			while (!reader.EndOfStream)
+			while (true)
 			{
-				// Read a line
-				_asciiLines.Add(reader.ReadLine());
+			    var line = reader.ReadLine();
+			    if (line == null)
+			    {
+			        break;
+			    }
+				_asciiLines.Add(line);
+			    _factory = factory;
+			    foreach (var itemInfo in factory.InfoFromId)
+			    {
+			        _charToId[itemInfo.Value.Character] = itemInfo.Key;
+			    }
 			}
 		} 
 		#endregion
@@ -45,10 +54,10 @@ namespace CSRogue.Map_Generation
 		public void Excavate(IRoomsMap map)
 		{
 			// For each line in the file
-			for (int iRow = 0; iRow < _asciiLines.Count && iRow < map.Height; iRow++)
+			for (var iRow = 0; iRow < _asciiLines.Count && iRow < map.Height; iRow++)
 			{
 				// Read the line
-				string currentLine = _asciiLines[iRow];
+				var currentLine = _asciiLines[iRow];
 
 				// Insert the line into the current row
 				InsertRow(map, currentLine, iRow);
@@ -65,16 +74,18 @@ namespace CSRogue.Map_Generation
 		/// <param name="currentLine">	The current line read from the stream. </param>
 		/// <param name="iRow">			The row to modify. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private static void InsertRow(IMap map, string currentLine, int iRow)
+		private void InsertRow(IMap map, string currentLine, int iRow)
 		{
 			// For each character in the read line
-			for (int iCol = 0; iCol < Math.Min(map.Width, currentLine.Length); iCol++)
+			for (var iCol = 0; iCol < Math.Min(map.Width, currentLine.Length); iCol++)
 			{
 				// Produce the data for that character
-				TerrainType terrain = TerrainFactory.ProduceTerrain(currentLine[iCol]);
-				Item item = ItemInfo.NewItemFromChar(currentLine[iCol]);
-				List<IItem> items = item == null ? null : new List<IItem> { item };
-				MapLocationData data = new MapLocationData(terrain, items);
+				var terrain = TerrainFactory.ProduceTerrain(currentLine[iCol]);
+			    var item = _factory.Create(_charToId[currentLine[iCol]], null);
+                
+                //ItemInfo.NewItemFromChar(currentLine[iCol]);
+				var items = item == null ? null : new List<IItem> { item };
+				var data = new MapLocationData(terrain, items);
 
 				// and place it in the map
 				map[iCol, iRow] = data;
