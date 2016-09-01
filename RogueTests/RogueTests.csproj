@@ -59,7 +59,6 @@
     <Compile Include="FOVTest.cs" />
     <Compile Include="GenericRoomTest.cs" />
     <Compile Include="ItemInfoTest.cs" />
-    <Compile Include="ItemTest.cs" />
     <Compile Include="MapLocationDataTest.cs" />
     <Compile Include="MapTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
