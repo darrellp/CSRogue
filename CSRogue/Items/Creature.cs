@@ -1,7 +1,6 @@
 ﻿using System;
 using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
-using Malison.Core;
 
 namespace CSRogue.Items
 {
@@ -35,7 +34,7 @@ namespace CSRogue.Items
         /// <value> The character. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	    public Character Ch { get; set; }
+	    public char Ch { get; set; }
 
 	    ////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Gets or sets a value indicating whether this object is the player. </summary>

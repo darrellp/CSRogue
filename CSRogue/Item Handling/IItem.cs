@@ -1,6 +1,5 @@
 ﻿using System;
 using CSRogue.Map_Generation;
-using Malison.Core;
 
 namespace CSRogue.Item_Handling
 {
@@ -9,6 +8,6 @@ namespace CSRogue.Item_Handling
         // Guid which uniquely represents the type of this item
         Guid ItemTypeId { get; }
         MapCoordinates Location { get; set; }
-        Character Ch { get; set; }
+        char Ch { get; set; }
     }
 }
