@@ -1,15 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CSRogue.Item_Handling;
 
 namespace CSRogue.Map_Generation
 {
     // TODO: Is this sufficient or should we allow the user to define their own lit states?
-	public enum LitState
+   [Flags]
+	public enum TerrainState
 	{
-		InView,
-		Remembered,
-		FogOfWar
+		InView = 0x1,
+		Remembered = 0x2,
+		FogOfWar = 0x4,
+      BlocksView = 0x8,
+      Walkable = 0x10
 	}
 
 	public class MapLocationData
@@ -36,7 +40,7 @@ namespace CSRogue.Map_Generation
         /// <value> The lit state. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		public LitState LitState { get; internal set; }
+		public TerrainState TerrainState { get; internal set; }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Gets or sets the room this location is located in. </summary>
@@ -58,7 +62,7 @@ namespace CSRogue.Map_Generation
 		{
 			Items = new List<IItem>();
 			Terrain = TerrainType.OffMap;
-			LitState = LitState.FogOfWar;
+			TerrainState = TerrainState.FogOfWar;
 		}
 
 		internal MapLocationData(TerrainType terrain, List<IItem> items = null)

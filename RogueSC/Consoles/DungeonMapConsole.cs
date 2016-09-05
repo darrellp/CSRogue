@@ -193,14 +193,14 @@ namespace RogueSC.Consoles
                     _mapData[loc.Column, loc.Row].RenderToCell(
                         this[loc.Column, loc.Row],
                         true,
-                        _csRogueMap[loc.Column, loc.Row].LitState == LitState.Remembered);
+                        _csRogueMap[loc.Column, loc.Row].TerrainState == TerrainState.Remembered);
                 }
                 foreach (var loc in _fov.NewlyUnseen)
                 {
                     _mapData[loc.Column, loc.Row].RenderToCell(
                         this[loc.Column, loc.Row],
                         false,
-                        _csRogueMap[loc.Column, loc.Row].LitState == LitState.Remembered);
+                        _csRogueMap[loc.Column, loc.Row].TerrainState == TerrainState.Remembered);
                 }
             }
         }

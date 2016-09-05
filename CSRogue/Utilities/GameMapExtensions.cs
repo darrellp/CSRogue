@@ -17,11 +17,11 @@ namespace CSRogue.Utilities
         {
             foreach (var newlyLitLocation in map.Fov.NewlySeen)
             {
-                map[newlyLitLocation].LitState = LitState.InView;
+                map[newlyLitLocation].TerrainState = TerrainState.InView;
             }
             foreach (var previouslyLitLocation in map.Fov.NewlyUnseen)
             {
-                map[previouslyLitLocation].LitState = LitState.Remembered;
+                map[previouslyLitLocation].TerrainState = TerrainState.Remembered;
             }
         }
 

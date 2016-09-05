@@ -182,11 +182,11 @@ namespace CSRogue.Map_Generation
 		{
 			foreach (var newlyLitLocation in Fov.NewlySeen)
 			{
-				this[newlyLitLocation].LitState = LitState.InView;
+				this[newlyLitLocation].TerrainState = TerrainState.InView;
 			}
 			foreach (var previouslyLitLocation in Fov.NewlyUnseen)
 			{
-				this[previouslyLitLocation].LitState = LitState.Remembered;
+				this[previouslyLitLocation].TerrainState = TerrainState.Remembered;
 			}
 		}
 
