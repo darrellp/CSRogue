@@ -161,7 +161,7 @@ namespace CSRogue.GameControl
 					_game.CurrentLevel.InvokeMonsterAI();
 				}
 				// Else if this is valid terrain
-				else if (Map.IsWalkable(newLocation))
+				else if (Map.Walkable(newLocation))
 				{
 					// Move the player
 					MakePlayerMove(newLocation);

@@ -136,6 +136,7 @@ namespace CSRogue.Map_Generation
 			return new RectangularRoom(location, gridLocation, sizeInDir, sizeInOtherDir);
 		}
 		#endregion
+
 		#region Info
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Serves as a hash function for a room. </summary>
@@ -202,8 +203,8 @@ namespace CSRogue.Map_Generation
 			if (wall == Wall.Top || wall == Wall.Bottom)
 			{
 				// Pick a random column
-				int left = Left + cornerBump;
-				int right = Right - cornerBump;
+				var left = Left + cornerBump;
+				var right = Right - cornerBump;
 				column = rnd.Next(left, right + 1);
 
 				// Set row to top or bottom

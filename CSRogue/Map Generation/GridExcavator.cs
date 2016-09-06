@@ -835,16 +835,23 @@ namespace CSRogue.Map_Generation
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		private static void CompleteWalls(IMap map)
 		{
-			for (int iRow = 0; iRow < map.Height; iRow++)
+			for (var iRow = 0; iRow < map.Height; iRow++)
 			{
 				// For each Column
-				for (int iColumn = 0; iColumn < map.Width; iColumn++)
+				for (var iColumn = 0; iColumn < map.Width; iColumn++)
 				{
+					var terrain = map[iColumn, iRow].Terrain;
 					// Is there a no floor here?
-					if (map[iColumn, iRow].Terrain != TerrainType.Floor)
+					if (terrain != TerrainType.Floor &&
+						terrain != TerrainType.Door &&
+						terrain != TerrainType.StairsDown &&
+						terrain != TerrainType.StairsUp)
 					{
+						map.SetWalkable(iColumn, iRow, false);
 						continue;
 					}
+
+					map.SetWalkable(iColumn, iRow);
 
 					// Get the neighboring off map locations
 					var offmapLocations = map.Neighbors(iColumn, iRow).Where(location => map[location].Terrain == TerrainType.OffMap);

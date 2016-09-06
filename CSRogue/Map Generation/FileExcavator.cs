@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using CSRogue.Item_Handling;
+using CSRogue.Utilities;
 
 namespace CSRogue.Map_Generation
 {
@@ -97,6 +98,17 @@ namespace CSRogue.Map_Generation
 
 				// and place it in the map
 				map[iCol, iRow] = data;
+				if (terrain != TerrainType.Floor &&
+				    terrain != TerrainType.Door &&
+				    terrain != TerrainType.StairsDown &&
+				    terrain != TerrainType.StairsUp)
+				{
+					map.SetBlocksView(iCol, iRow);
+				}
+				else
+				{
+					map.SetBlocksView(iCol, iRow, false);
+				}
 			}
 		}
 		#endregion

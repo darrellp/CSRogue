@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using CSRogue.GameControl;
 using CSRogue.Items;
 using CSRogue.Item_Handling;
@@ -141,9 +142,11 @@ namespace CSRogue.Utilities
         ///
         /// <remarks>	Darrellp, 9/16/2011. </remarks>
         ///
+        /// <param name="map">	   	The map we're dropping on </param>
         /// <param name="location">	The location. </param>
-        /// <param name="item">		The item to drop. </param>
+        /// <param name="item">	   	The item to drop. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
+
         public static void Drop(this IMap map, MapCoordinates location, IItem item)
         {
             map.Drop(location.Column, location.Row, item);
@@ -154,10 +157,12 @@ namespace CSRogue.Utilities
         ///
         /// <remarks>	Darrellp, 9/16/2011. </remarks>
         ///
-        /// <param name="iRow">	The row to remove from. </param>
+        /// <param name="map"> 	The map we're removing from. </param>
         /// <param name="iCol">	The col to remove from. </param>
+        /// <param name="iRow">	The row to remove from. </param>
         /// <param name="item">	The item to remove. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
+
         public static void Remove(this IMap map, int iCol, int iRow, IItem item)
         {
             map[iCol, iRow].RemoveItem(item);
@@ -197,20 +202,6 @@ namespace CSRogue.Utilities
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>	Checks the terrain to see if the creature can move there. </summary>
-        ///
-        /// <remarks>	Darrellp, 10/15/2011. </remarks>
-        ///
-        /// <param name="location">	The location to check. </param>
-        ///
-        /// <returns>	true if it succeeds, false if it fails. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        public static bool IsWalkable(this IMap map, MapCoordinates location)
-        {
-            return map[location].Terrain != TerrainType.Wall;
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>	Returns true if we want the creature to continue running in this direction. </summary>
         ///
         /// <remarks>	Darrellp, 10/15/2011. </remarks>
@@ -221,7 +212,181 @@ namespace CSRogue.Utilities
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         public static bool ValidRunningMove(this IMap map, MapCoordinates location)
         {
-            return map.IsWalkable(location) && !map.IsCreatureAt(location);
+            return map.Walkable(location) && !map.IsCreatureAt(location);
         }
-    }
+
+
+		#region Terrain States
+		#region In View
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool InView(this IMap map, int x, int y)
+		{
+			return map.Value(TerrainState.InView, x, y);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool InView(this IMap map, MapCoordinates crd)
+		{
+			return map.Value(TerrainState.InView, crd);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void SetInView(this IMap map, int x, int y, bool fOn = true)
+		{
+			map.Set(TerrainState.InView, x, y, fOn);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void SetInView(this IMap map, MapCoordinates crd, bool fOn = true)
+		{
+			map.Set(TerrainState.InView, crd, fOn);
+		}
+		#endregion
+
+		#region Remembered
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool Remembered(this IMap map, int x, int y)
+		{
+			return map.Value(TerrainState.Remembered, x, y);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool Remembered(this IMap map, MapCoordinates crd)
+		{
+			return map.Value(TerrainState.Remembered, crd);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void SetRemembered(this IMap map, int x, int y, bool fOn = true)
+		{
+			map.Set(TerrainState.Remembered, x, y, fOn);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void SetRemembered(this IMap map, MapCoordinates crd, bool fOn = true)
+		{
+			map.Set(TerrainState.Remembered, crd, fOn);
+		}
+		#endregion
+
+		#region FogOfWar
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool FogOfWar(this IMap map, int x, int y)
+		{
+			return map.Value(TerrainState.FogOfWar, x, y);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool FogOfWar(this IMap map, MapCoordinates crd)
+		{
+			return map.Value(TerrainState.FogOfWar, crd);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void SetFogOfWar(this IMap map, int x, int y, bool fOn = true)
+		{
+			map.Set(TerrainState.FogOfWar, x, y, fOn);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void SetFogOfWar(this IMap map, MapCoordinates crd, bool fOn = true)
+		{
+			map.Set(TerrainState.FogOfWar, crd, fOn);
+		}
+		#endregion
+
+		#region BlocksView
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool BlocksView(this IMap map, int x, int y)
+		{
+			return map.Value(TerrainState.BlocksView, x, y);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool BlocksView(this IMap map, MapCoordinates crd)
+		{
+			return map.Value(TerrainState.BlocksView, crd);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void SetBlocksView(this IMap map, int x, int y, bool fOn = true)
+		{
+			map.Set(TerrainState.BlocksView, x, y, fOn);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void SetBlocksView(this IMap map, MapCoordinates crd, bool fOn = true)
+		{
+			map.Set(TerrainState.BlocksView, crd, fOn);
+		}
+		#endregion
+
+		#region Walkable
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool Walkable(this IMap map, int x, int y)
+		{
+			return map.Value(TerrainState.Walkable, x, y);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool Walkable(this IMap map, MapCoordinates crd)
+		{
+			return map.Value(TerrainState.Walkable, crd);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void SetWalkable(this IMap map, int x, int y, bool fOn = true)
+		{
+			map.Set(TerrainState.Walkable, x, y, fOn);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void SetWalkable(this IMap map, MapCoordinates crd, bool fOn = true)
+		{
+			map.Set(TerrainState.Walkable, crd, fOn);
+		}
+		#endregion
+
+		#region Generic
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool Value(this IMap map, TerrainState state, int x, int y)
+		{
+			return (map[x, y].TerrainState & state) != 0;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool Value(this IMap map, TerrainState state, MapCoordinates crd)
+		{
+			return (map[crd].TerrainState & state) != 0;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void Set(this IMap map, TerrainState state, int x, int y, bool fOn = true)
+		{
+			if (fOn)
+			{
+				map[x, y].TerrainState |= state;
+			}
+			else
+			{
+				map[x, y].TerrainState &= ~state;
+			}
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void Set(this IMap map, TerrainState state, MapCoordinates crd, bool fOn = true)
+		{
+			if (fOn)
+			{
+				map[crd].TerrainState |= state;
+			}
+			else
+			{
+				map[crd].TerrainState &= ~state;
+			}
+		}
+		#endregion
+		#endregion
+
+	}
 }
