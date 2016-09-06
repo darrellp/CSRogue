@@ -1,9 +1,13 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using CSRogue;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
+using System.Runtime.Remoting.Messaging;
 using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
+using static RogueTests.TestFactory;
 
 namespace RogueTests
 {
@@ -14,7 +18,7 @@ namespace RogueTests
 	///to contain all ExcavatorTest Unit Tests
 	///</summary>
 	[TestClass()]
-	public class ExcavatorTest
+	public partial class ExcavatorTest
 	{
 	    /// <summary>
 		///Gets or sets the test context which provides
@@ -66,46 +70,46 @@ namespace RogueTests
 			excavator.Excavate(map2);
 			string str2 = map2.ToString();
 			Assert.AreEqual(str1, str2);
-		}
+        }
 
-        //void CheckLocation(CsRogueMap csRogueMap, int iCol, int iRow, TerrainType terrain, ItemType itemType = ItemType.Nothing)
-        //{
-        //    if (itemType != ItemType.Nothing)
-        //    {
-        //        Assert.AreEqual(1, csRogueMap.Items(iCol, iRow).Count);
-        //        Assert.AreEqual(itemType, csRogueMap.Items(iCol, iRow)[0].ItemType);
-        //    }
-        //    else
-        //    {
-        //        Assert.AreEqual(0, csRogueMap.Items(iCol, iRow).Count);
-        //    }
-        //    Assert.AreEqual(terrain, csRogueMap.Terrain(iCol, iRow));
-        //}
+        void CheckLocation(CsRogueMap csRogueMap, int iCol, int iRow, TerrainType terrain, Guid itemId = default(Guid))
+        {
+            if (itemId != default(Guid))
+            {
+                Assert.AreEqual(1, csRogueMap.Items(iCol, iRow).Count);
+                Assert.AreEqual(itemId, csRogueMap.Items(iCol, iRow)[0].ItemTypeId);
+            }
+            else
+            {
+                Assert.AreEqual(0, csRogueMap.Items(iCol, iRow).Count);
+            }
+            Assert.AreEqual(terrain, csRogueMap.Terrain(iCol, iRow));
+        }
 
-        /// <summary>
+	    /// <summary>
         ///A test for Excavate
         ///</summary>
-//        [TestMethod()]
-//        public void ExcavateTest()
-//        {
-//            const string mapString =
-//@"@r-............
-//...............
-//...............
-//...............";
-//            StringReader stream = new StringReader(mapString);
-//            FileExcavator excavator = new FileExcavator(stream);
-//            CsRogueMap csRogueMap = new CsRogueMap();
-//            excavator.Excavate(csRogueMap);
-//            CheckLocation(csRogueMap, 0, 0, TerrainType.Floor, ItemType.Player);
-//            CheckLocation(csRogueMap, 1, 0, TerrainType.Floor, ItemType.Rat);
-//            CheckLocation(csRogueMap, 2, 0, TerrainType.HorizontalWall);
-//            CheckLocation(csRogueMap, 3, 0, TerrainType.Floor);
-//            CheckLocation(csRogueMap, 14, 0, TerrainType.Floor);
-//            CheckLocation(csRogueMap, 15, 0, TerrainType.OffMap);
-//            CheckLocation(csRogueMap, 14, 3, TerrainType.Floor);
-//            CheckLocation(csRogueMap, 15, 4, TerrainType.OffMap);
-//        }
+        [TestMethod()]
+        public void ExcavateTest()
+        {
+            const string mapString =
+@"@r-............
+...............
+...............
+...............";
 
+            StringReader stream = new StringReader(mapString);
+            FileExcavator excavator = new FileExcavator(stream, new TestFactory());
+            CsRogueMap csRogueMap = new CsRogueMap();
+            excavator.Excavate(csRogueMap);
+            CheckLocation(csRogueMap, 0, 0, TerrainType.Floor, PersonId);
+            CheckLocation(csRogueMap, 1, 0, TerrainType.Floor, RatId);
+            CheckLocation(csRogueMap, 2, 0, TerrainType.HorizontalWall);
+            CheckLocation(csRogueMap, 3, 0, TerrainType.Floor);
+            CheckLocation(csRogueMap, 14, 0, TerrainType.Floor);
+            CheckLocation(csRogueMap, 15, 0, TerrainType.OffMap);
+            CheckLocation(csRogueMap, 14, 3, TerrainType.Floor);
+            CheckLocation(csRogueMap, 15, 4, TerrainType.OffMap);
+        }
     }
 }

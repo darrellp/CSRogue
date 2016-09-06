@@ -1,6 +1,5 @@
 ﻿using System;
 using CSRogue.Map_Generation;
-using Malison.Core;
 
 namespace CSRogue.Item_Handling
 {
@@ -28,7 +27,7 @@ namespace CSRogue.Item_Handling
         #region Properties
         public Guid ItemTypeId { get; }
         public MapCoordinates Location { get; set; }
-        public Character Ch { get; set; }
+        public char Ch { get; set; }
         #endregion
 
         #region Constructor

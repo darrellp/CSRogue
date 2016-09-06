@@ -35,9 +35,12 @@ namespace CSRogue.Map_Generation
 			    }
 				_asciiLines.Add(line);
 			    _factory = factory;
-			    foreach (var itemInfo in factory.InfoFromId)
+			    if (_factory != null)
 			    {
-			        _charToId[itemInfo.Value.Character] = itemInfo.Key;
+			        foreach (var itemInfo in factory.InfoFromId)
+			        {
+			            _charToId[itemInfo.Value.Character] = itemInfo.Key;
+			        }
 			    }
 			}
 		} 
@@ -79,9 +82,15 @@ namespace CSRogue.Map_Generation
 			// For each character in the read line
 			for (var iCol = 0; iCol < Math.Min(map.Width, currentLine.Length); iCol++)
 			{
+                // TODO: Once we have varied walkable terrains, how do we get creatures and textures in the same spot?
+                // The answer might very well be "we don't".  This is a convenience function for use in special situations
+                // If you want something other than this default, place the monsters afterwards by hand.
+
 				// Produce the data for that character
 				var terrain = TerrainFactory.ProduceTerrain(currentLine[iCol]);
-			    var item = _factory.InfoFromId[_charToId[currentLine[iCol]]].CreateItem(null);
+
+			    var item = _charToId.ContainsKey(currentLine[iCol]) ? 
+                    _factory.Create(_charToId[currentLine[iCol]], null) : null;
                 
                 //ItemInfo.NewItemFromChar(currentLine[iCol]);
 				var items = item == null ? null : new List<IItem> { item };
