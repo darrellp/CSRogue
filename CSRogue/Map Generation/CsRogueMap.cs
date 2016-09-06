@@ -14,7 +14,7 @@ namespace CSRogue.Map_Generation
 	///
 	/// <remarks>	Darrellp, 9/16/2011. </remarks>
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	public class CsRogueMap : IMap, IGameMap
+	public class CsRogueMap : IGameMap
 	{
 		#region Private variables
 		private readonly MapLocationData[][] _mapLocationData;
@@ -23,11 +23,11 @@ namespace CSRogue.Map_Generation
 
         #region Properties
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
 	    public FOV Fov { get; set; }
 
 	    public Game Game { get; private set; }
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
 	    /// <summary>   Gets the player. </summary>
         ///
         /// <value> The player. </value>

@@ -77,7 +77,6 @@
     <Compile Include="Map Generation\GenericRoom.cs" />
     <Compile Include="Map Generation\GridConnections.cs" />
     <Compile Include="Item Handling\Item.cs" />
-    <Compile Include="Item Handling\ItemAttribute.cs" />
     <Compile Include="Item Handling\ItemInfo.cs" />
     <Compile Include="Items\Creature.cs" />
     <Compile Include="Items\Player.cs" />

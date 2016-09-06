@@ -10,11 +10,9 @@ namespace CSRogue.Items
 	///
 	/// <remarks>	Darrellp, 9/16/2011. </remarks>
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	[Item(ItemType.Player)]
 	public class Player : Creature
 	{
 		#region Constructor
-
 	    public Player() : base(default(Guid))
 	    {
 	        HitPoints = new DieRoll(1, 6).Roll();

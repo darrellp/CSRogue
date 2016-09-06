@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
+using CSRogue.Items;
 using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
 
@@ -11,12 +12,12 @@ namespace RogueTests
 		public Sword(Level l) { }
 	}
 
-	public class Person : Item
+	public class Person : Creature
 	{
 		public Person(Level l) { }
 	}
 
-	public class Rat : Item
+	public class Rat : Creature
 	{
 		public Rat(Level l) { }
 	}
