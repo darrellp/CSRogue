@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using CSRogue.GameControl;
 using CSRogue.Items;
 using CSRogue.Map_Generation;

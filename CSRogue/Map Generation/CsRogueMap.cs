@@ -18,14 +18,14 @@ namespace CSRogue.Map_Generation
 	{
 		#region Private variables
 		private readonly MapLocationData[][] _mapLocationData;
-        private HashSet<GenericRoom> _rooms  = new HashSet<GenericRoom>();
+        private readonly HashSet<GenericRoom> _rooms  = new HashSet<GenericRoom>();
         #endregion
 
         #region Properties
 
 	    public FOV Fov { get; set; }
 
-	    public Game Game { get; private set; }
+	    public Game Game { get; }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 	    /// <summary>   Gets the player. </summary>
@@ -66,12 +66,9 @@ namespace CSRogue.Map_Generation
 	    /// <value> The rooms. </value>
 	    ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	    public ISet<GenericRoom> Rooms
-	    {
-	        get { return _rooms; }
-	    }
+	    public ISet<GenericRoom> Rooms => _rooms;
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Gets or sets the fov information for the map. </summary>
         ///
         /// <value> The fov object for this map. </value>

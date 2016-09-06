@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Runtime.Serialization.Formatters;
 
 namespace CSRogue.Map_Generation
 {

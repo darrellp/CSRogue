@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using CSRogue.GameControl;
 using CSRogue.Items;
 using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
-using CSRogue.RogueEventArgs;
 
 namespace CSRogue.Utilities
 {
@@ -16,11 +14,13 @@ namespace CSRogue.Utilities
         ///
         /// <remarks>	Darrellp, 9/26/2011. </remarks>
         ///
+        /// <param name="map">   	The map. </param>
         /// <param name="column">	The location's columns. </param>
-        /// <param name="row">		The location's row. </param>
+        /// <param name="row">   	The location's row. </param>
         ///
         /// <returns>	An enumerable of all neighbors. </returns>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
+
         public static IEnumerable<MapCoordinates> Neighbors(this IMap map, int column, int row)
         {
             int minRowOffset = row == 0 ? 0 : -1;
@@ -202,14 +202,18 @@ namespace CSRogue.Utilities
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>	Returns true if we want the creature to continue running in this direction. </summary>
+        /// <summary>
+        /// Returns true if we want the creature to continue running in this direction.
+        /// </summary>
         ///
         /// <remarks>	Darrellp, 10/15/2011. </remarks>
         ///
+        /// <param name="map">	   	The map. </param>
         /// <param name="location">	The location to be checked. </param>
         ///
         /// <returns>	true if it succeeds, false if it fails. </returns>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
+
         public static bool ValidRunningMove(this IMap map, MapCoordinates location)
         {
             return map.Walkable(location) && !map.IsCreatureAt(location);

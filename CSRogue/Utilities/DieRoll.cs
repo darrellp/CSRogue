@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CSRogue.Utilities
+﻿namespace CSRogue.Utilities
 {
 	public class DieRoll
 	{

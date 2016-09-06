@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using CSRogue.Map_Generation;
 
 namespace CSRogue.Item_Handling
 {

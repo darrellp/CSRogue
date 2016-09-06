@@ -170,7 +170,6 @@ namespace RogueSC.Consoles
         {
             // Get the position the player will be at
             var newPosition = Player.Position + amount;
-            var terrain = _csRogueMap[newPosition.X, newPosition.Y].Terrain;
 
             // Check to see if the position is within the map
             if (new Rectangle(0, 0, Width, Height).Contains(newPosition) && _csRogueMap.Walkable(newPosition.X, newPosition.Y))
