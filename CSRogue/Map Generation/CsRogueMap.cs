@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using CSRogue.RogueEventArgs;
 using CSRogue.GameControl;
@@ -174,23 +173,6 @@ namespace CSRogue.Map_Generation
 
 		#region Modification
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Marks the newly lit and formerly lit spots on the map. </summary>
-		///
-		/// <remarks>	Darrellp, 10/15/2011. </remarks>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private void Relight()
-		{
-			foreach (var newlyLitLocation in Fov.NewlySeen)
-			{
-				this[newlyLitLocation].TerrainState = TerrainState.InView;
-			}
-			foreach (var previouslyLitLocation in Fov.NewlyUnseen)
-			{
-				this[previouslyLitLocation].TerrainState = TerrainState.Remembered;
-			}
-		}
-
-		////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Move creature to a new location. </summary>
 		///
 		/// <remarks>	Darrellp, 10/15/2011. </remarks>
@@ -224,7 +206,7 @@ namespace CSRogue.Map_Generation
 			{
 				// Rescan for FOV
 				Fov.Scan(HeroPosition);
-				Relight();
+				this.Relight();
 			}
 
 			// If we've got a game object
@@ -287,7 +269,7 @@ namespace CSRogue.Map_Generation
 		{
 			Fov = new FOV(this, rowCount, filter);
 			Fov.Scan(playerLocation);
-			Relight();
+			this.Relight();
 		}
 		#endregion
 

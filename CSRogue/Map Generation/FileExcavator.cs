@@ -81,7 +81,7 @@ namespace CSRogue.Map_Generation
 			{
 				// Produce the data for that character
 				var terrain = TerrainFactory.ProduceTerrain(currentLine[iCol]);
-			    var item = _factory.Create(_charToId[currentLine[iCol]], null);
+			    var item = _factory.InfoFromId[_charToId[currentLine[iCol]]].CreateItem(null);
                 
                 //ItemInfo.NewItemFromChar(currentLine[iCol]);
 				var items = item == null ? null : new List<IItem> { item };

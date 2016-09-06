@@ -12,8 +12,8 @@ namespace CSRogue.Map_Generation
 		InView = 0x1,
 		Remembered = 0x2,
 		FogOfWar = 0x4,
-      BlocksView = 0x8,
-      Walkable = 0x10
+		BlocksView = 0x8,
+		Walkable = 0x10
 	}
 
 	public class MapLocationData

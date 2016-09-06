@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
-using CSRogue.Items;
+using CSRogue.Map_Generation;
 
 namespace CSRogue.Item_Handling
 {
@@ -78,6 +77,14 @@ namespace CSRogue.Item_Handling
 		/// <value>	Information describing the creature. </value>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		public CreatureInfo CreatureInfo { get; set; } 
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		/// <summary>	Gets or sets the item. </summary>
+		///
+		/// <value>	An action to create the item. </value>
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		public Func<Level, IItem> CreateItem { get; set; }
 		#endregion
 
 		#region Private variables

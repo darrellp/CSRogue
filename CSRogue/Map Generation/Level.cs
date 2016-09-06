@@ -156,12 +156,12 @@ namespace CSRogue.Map_Generation
             var cumulationLimit = Rnd.Global.Next(sumOfRarities);
             var rarityCumulation = 0;
 
-            foreach (ItemInfo info in itemList)
+            foreach (var info in itemList)
             {
                 rarityCumulation += rarity[info.ItemId];
                 if (rarityCumulation > cumulationLimit)
                 {
-                    return _factory.Create(info.ItemId, this);
+                    return info.CreateItem(this);
                 }
             }
             throw new RogueException("Couldn't find creature in SelectCreature");

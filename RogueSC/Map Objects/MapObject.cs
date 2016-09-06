@@ -37,7 +37,7 @@ namespace RogueSC.Map_Objects
 
         public MapObject(Color foreground, Color background, int character) : this(new CellAppearance(foreground, background, character)) {}
 
-        public virtual void RenderToCell(Cell sadConsoleCell, bool isFov, bool isExplored)
+        public virtual void RenderToCell(Cell sadConsoleCell, bool isFov)
         {
             Appearance.CopyAppearanceTo(sadConsoleCell);
 
@@ -52,11 +52,6 @@ namespace RogueSC.Map_Objects
             {
                 // Do nothing if it's in view, it's a normal colored square
                 // You could do something later like check how far the cell is from the player and tint it
-            }
-            else if (isExplored)
-            {
-                sadConsoleCell.Effect = EffectHidden;
-                sadConsoleCell.Effect.Apply(sadConsoleCell);
             }
             else
             {

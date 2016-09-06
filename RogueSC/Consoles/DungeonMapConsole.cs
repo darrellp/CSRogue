@@ -151,7 +151,7 @@ namespace RogueSC.Consoles
             _fov.Scan(Player.Position.ToMapCoordinates());
             foreach (var loc in _fov.CurrentlySeen)
             {
-                _mapData[loc.Column, loc.Row].RenderToCell(this[loc.Column, loc.Row], true, true);
+                _mapData[loc.Column, loc.Row].RenderToCell(this[loc.Column, loc.Row], true);
             }
         }
         #endregion
@@ -190,17 +190,15 @@ namespace RogueSC.Consoles
                 _fov.Scan(Player.Position.ToMapCoordinates());
                 foreach (var loc in _fov.NewlySeen)
                 {
-                    _mapData[loc.Column, loc.Row].RenderToCell(
-                        this[loc.Column, loc.Row],
-                        true,
-                        _csRogueMap[loc.Column, loc.Row].TerrainState == TerrainState.Remembered);
+	                _mapData[loc.Column, loc.Row].RenderToCell(
+		                this[loc.Column, loc.Row],
+		                true);
                 }
                 foreach (var loc in _fov.NewlyUnseen)
                 {
                     _mapData[loc.Column, loc.Row].RenderToCell(
                         this[loc.Column, loc.Row],
-                        false,
-                        _csRogueMap[loc.Column, loc.Row].TerrainState == TerrainState.Remembered);
+                        false);
                 }
             }
         }
