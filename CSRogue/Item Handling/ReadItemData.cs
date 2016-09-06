@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using CSRogue.Map_Generation;
 
 namespace CSRogue.Item_Handling
 {
@@ -9,8 +11,13 @@ namespace CSRogue.Item_Handling
 	{
 		private static readonly char[] Tabs = new[] {'\t'};
 
-		public static Dictionary<Guid, ItemInfo> GetData(TextReader input)
+		private Assembly _typeAssembly;
+
+		public Dictionary<Guid, ItemInfo> GetData(TextReader input, Assembly typeAssembly = null)
 		{
+			_typeAssembly = typeAssembly ?? Assembly.GetCallingAssembly();
+
+
 			var mapItemTypeToInfo = new Dictionary<Guid, ItemInfo>();
 			ItemInfo lastInfo = null;
 
@@ -27,7 +34,7 @@ namespace CSRogue.Item_Handling
 			return mapItemTypeToInfo;
 		}
 
-		private static ItemInfo ProcessLine(IDictionary<Guid, ItemInfo> mapItemTypeToInfo, string readLine, ItemInfo lastInfo)
+		private ItemInfo ProcessLine(IDictionary<Guid, ItemInfo> mapItemTypeToInfo, string readLine, ItemInfo lastInfo)
 		{
 			if (readLine.Trim() == string.Empty || readLine.StartsWith("//"))
 			{
@@ -51,34 +58,47 @@ namespace CSRogue.Item_Handling
 			return info;
 		}
 
-		private static readonly List<Action<string, ItemInfo>> DispatchTable = new List<Action<string, ItemInfo>>
+		private readonly List<Action<ReadItemData, string, ItemInfo>> _dispatchTable = new List<Action<ReadItemData, string, ItemInfo>>
 		    {
-				(s, i) => i.ItemId = new Guid(s),
-				(s, i) => i.Character = s[0],
-				(s, i) => i.Name = s,
-				(s, i) => i.Weight = Double.Parse(s),
-				(s, i) => i.Value = Int32.Parse(s),
-				(s, i) => i.Description = s
+				(t, s, i) => i.ItemId = new Guid(s),
+				(t, s, i) => i.Character = s[0],
+				(t, s, i) => i.Name = s,
+				(t, s, i) => i.Weight = Double.Parse(s),
+				(t, s, i) => i.Value = Int32.Parse(s),
+				(t, s, i) => i.Description = s,
+				(t, s, i) => i.CreateItem = t.GetConstructor(i.ItemId, s)
 		    };
 
-		private static readonly List<Action<string, ItemInfo>> DefaultDispatchTable = new List<Action<string, ItemInfo>>
-		    {
-				(s, i) => { },
-				(s, i) => { },
-		        (s, i) => { },
-				(s, i) => { },
-				(s, i) => { },
-				(s, i) => { },
-		    };
+		private Func<Level, IItem> GetConstructor(Guid id, string s)
+		{
+			var type = _typeAssembly.GetType(s);
+			return l =>
+			{
+				var item = (IItem) Activator.CreateInstance(type, l);
+				item.ItemTypeId = id;
+				return item;
+			};
+		}
 
-		private static void ProcessField(ItemInfo info, int iField, string value)
+		private static readonly List<Action<ReadItemData, string, ItemInfo>> DefaultDispatchTable = new List<Action<ReadItemData, string, ItemInfo>>
+		    {
+				(t, s, i) => { },
+				(t, s, i) => { },
+		        (t, s, i) => { },
+				(t, s, i) => { },
+				(t, s, i) => { },
+				(t, s, i) => { },
+				(t, s, i) => { },
+			};
+
+		private void ProcessField(ItemInfo info, int iField, string value)
 		{
 			if (value == ".")
 			{
-				DefaultDispatchTable[iField](value, info);
+				DefaultDispatchTable[iField](this, value, info);
 				return;
 			}
-			DispatchTable[iField](value, info);
+			_dispatchTable[iField](this, value, info);
 		}
 	}
 }

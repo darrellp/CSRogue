@@ -5,8 +5,6 @@ using CSRogue.Map_Generation;
 
 namespace RogueTests
 {
-	
-	
 	/// <summary>
 	///This is a test class for MapTest and is intended
 	///to contain all MapTest Unit Tests
@@ -14,8 +12,6 @@ namespace RogueTests
 	[TestClass()]
 	public class MapTest
 	{
-
-
 		private TestContext testContextInstance;
 
 		/// <summary>

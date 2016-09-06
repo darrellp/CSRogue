@@ -25,7 +25,7 @@ namespace CSRogue.Item_Handling
         public static readonly Guid HeroId = new Guid("0D583F58-FA20-4292-A272-37919917644A");
 
         #region Properties
-        public Guid ItemTypeId { get; }
+        public Guid ItemTypeId { get; set; }
         public MapCoordinates Location { get; set; }
         public char Ch { get; set; }
         #endregion

@@ -3,22 +3,20 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using CSRogue.Map_Generation;
 using CSRogue.Utilities;
 
 namespace RogueTests
 {
-
-    /// <summary>
-    ///This is a test class for ReadItemDataTest and is intended
-    ///to contain all ReadItemDataTest Unit Tests
-    ///</summary>
-    [TestClass()]
+	/// <summary>
+	///This is a test class for ReadItemDataTest and is intended
+	///to contain all ReadItemDataTest Unit Tests
+	///</summary>
+	[TestClass()]
 	public class ReadItemDataTest
 	{
         static readonly Guid HeroId = new Guid("0D583F58-FA20-4292-A272-37919917644A");
         static readonly Guid RatId = new Guid("1BA9B9C4-6133-4CD3-92A6-233F0F26CBC0");
-
-
 
 		private TestContext _testContextInstance;
 
@@ -68,20 +66,20 @@ namespace RogueTests
 		//
 		#endregion
 
-        /// <summary>
+		/// <summary>
         ///A test for GetData
         ///</summary>
         [TestMethod()]
 		public void GetDataTest()
 		{
 		    var input = @"
-//type										ch	name		weight	value	description
-0D583F58-FA20-4292-A272-37919917644A		@	Player		.		.		The Player
-1BA9B9C4-6133-4CD3-92A6-233F0F26CBC0		r	Rat			.		.		A vile little sewer rat.
+//type										ch	name		weight	value	description								class
+0D583F58-FA20-4292-A272-37919917644A		@	Player		.		.		The Player								RogueTests.Person
+1BA9B9C4-6133-4CD3-92A6-233F0F26CBC0		r	Rat			.		.		A vile little sewer rat.				RogueTests.Rat
 																			These rodents seem to be everywhere!
 ";
 		    TextReader reader = new StringReader(input);
-            Dictionary<Guid, ItemInfo> infoList = ReadItemData.GetData(reader);
+            Dictionary<Guid, ItemInfo> infoList = (new ReadItemData()).GetData(reader);
 			TestItemInfo(infoList[HeroId], name:"Player", itemId:HeroId, character:'@', description:"The Player");
 			TestItemInfo(infoList[RatId], name:"Rat", itemId:RatId, character:'r', description:"A vile little sewer rat. These rodents seem to be everywhere!");
 		}

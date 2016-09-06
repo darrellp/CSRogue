@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using CSRogue;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
-using System.Runtime.Remoting.Messaging;
-using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
 using static RogueTests.TestFactory;
 
@@ -18,7 +13,7 @@ namespace RogueTests
 	///to contain all ExcavatorTest Unit Tests
 	///</summary>
 	[TestClass()]
-	public partial class ExcavatorTest
+	public class ExcavatorTest
 	{
 	    /// <summary>
 		///Gets or sets the test context which provides
