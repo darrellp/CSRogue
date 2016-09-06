@@ -63,6 +63,7 @@
     <Compile Include="Map Generation\IMap.cs" />
     <Compile Include="Item Handling\CreatureInfo.cs" />
     <Compile Include="EventArgs\CreatureMoveEventArgs.cs" />
+    <Compile Include="Map Generation\IRoom.cs" />
     <Compile Include="Map Generation\IRoomsMap.cs" />
     <Compile Include="Map Generation\Level.cs" />
     <Compile Include="Map Generation\NullExcavator.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Utilities\RogueException.cs" />
     <Compile Include="Map Generation\RectangularRoom.cs" />
     <Compile Include="Map Generation\TerrainFactory.cs" />
+    <Compile Include="Utilities\RoomExtensions.cs" />
     <Compile Include="Utilities\Selector.cs" />
   </ItemGroup>
   <ItemGroup>

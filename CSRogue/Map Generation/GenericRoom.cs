@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CSRogue.Utilities;
 
 namespace CSRogue.Map_Generation
 {
@@ -24,21 +25,33 @@ namespace CSRogue.Map_Generation
     /// global or map coordinates which index into the map that the room is embedded in. Darrellp, 8/25/2016
 	/// </remarks>
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	public class GenericRoom
+	public class GenericRoom : IRoom
 	{
-		#region Private variables
-		protected char[][] Layout;
-		protected MapCoordinates Location;
-		protected List<GenericRoom> Exits;
+		private char[][] _layout;
+		private MapCoordinates _location;
+		private List<GenericRoom> _exits;
+		private Dictionary<MapCoordinates, GenericRoom> _exitMap;
 
-	    #endregion
+		#region Private variables
+		#endregion
+
+		#region Public Properties
+
+		public char[][] Layout => _layout;
+
+		public MapCoordinates Location => _location;
+
+		public List<GenericRoom> Exits => _exits;
+
+		#endregion
 
 		#region Properties
-        /// <summary>   Matches global coordinates for exits to the rooms they lead to. </summary>
-		public Dictionary<MapCoordinates, GenericRoom> ExitMap { get; } = new Dictionary<MapCoordinates, GenericRoom>();
 
-	    /// <summary>   Gives coordinates for all the exits </summary>
-	    public IEnumerable<MapCoordinates> ExitCoordinates => ExitMap.Keys;
+		/// <summary>   Matches global coordinates for exits to the rooms they lead to. </summary>
+		public Dictionary<MapCoordinates, GenericRoom> ExitMap => _exitMap;
+
+		/// <summary>   Gives coordinates for all the exits </summary>
+		public IEnumerable<MapCoordinates> ExitCoordinates => ExitMap.Keys;
 
         /// <summary>   The neighboring rooms. </summary>
 	    public IEnumerable<GenericRoom> NeighborRooms => ExitMap.Values;
@@ -85,10 +98,10 @@ namespace CSRogue.Map_Generation
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		internal void Setup(char[][] layout, MapCoordinates location, List<GenericRoom> exits)
 		{
-			Layout = layout;
-			Exits = exits ?? new List<GenericRoom>();
-			Location = location;
-			MapExitsToRooms();
+			_layout = layout;
+			_exits = exits ?? new List<GenericRoom>();
+			_location = location;
+			_exitMap = this.MapExitsToRooms();
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,38 +161,6 @@ namespace CSRogue.Map_Generation
 				}
 			}
 			Setup(layoutArray, location, exits);
-		}
-
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Map exits (in local coordinates) to the rooms they exit to. </summary>
-		///
-		/// <remarks>	Darrellp, 9/27/2011. </remarks>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private void MapExitsToRooms()
-		{
-			// Clear out any current entries
-			ExitMap.Clear();
-
-			// For each column
-			for (int iColumn = 0; iColumn < Width; iColumn++)
-			{
-				// For each Row
-				for (int iRow = 0; iRow < Height; iRow++)
-				{
-					// Get the current terrain character
-					char thisCharacter = Layout[iColumn][iRow];
-
-					// Is it an exit?
-					if (thisCharacter >= 'a' && thisCharacter <= 'z')
-					{
-						// Get the corresponding room's index
-						int iRoom = thisCharacter - 'a';
-
-						// and map the location to the room it exits to
-						ExitMap[new MapCoordinates(iColumn, iRow) + Location] = Exits[iRoom];
-					}
-				}
-			}
 		}
 
 		protected GenericRoom()
@@ -332,14 +313,14 @@ namespace CSRogue.Map_Generation
 			int newWidth = newRight - newLeft + 1;
 
 			// Set our new location
-			Location = new MapCoordinates(newLeft, newTop);
+			_location = new MapCoordinates(newLeft, newTop);
 
 			// Clear our exits
 			// They'll come back in from the cloned room
-			Exits = new List<GenericRoom>();
+			_exits = new List<GenericRoom>();
 
 			// Allocate a new layout array
-			Layout = new char[newWidth][];
+			_layout = new char[newWidth][];
 
 			// For each column
 			for (int iColumn = 0; iColumn < newWidth; iColumn++)
@@ -358,7 +339,7 @@ namespace CSRogue.Map_Generation
 			UpdateConnectedRoomsToPointToUs(groom);
 
 			// Set up our exit map
-			MapExitsToRooms();
+			_exitMap = this.MapExitsToRooms();
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
