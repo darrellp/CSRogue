@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CSRogue.GameControl;
-using CSRogue.GameControl.Commands;
 using CSRogue.Item_Handling;
 using CSRogue.Items;
 using CSRogue.Utilities;
@@ -27,7 +25,6 @@ namespace CSRogue.Map_Generation
 		#endregion
 
 		#region Public Properties
-
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Gets the depth of the level. </summary>
         ///
@@ -43,25 +40,26 @@ namespace CSRogue.Map_Generation
 		public IGameMap Map { get; }
 
         public IItemFactory Factory => _factory;
-
         #endregion
 
 		#region Constructor
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Constructor. </summary>
-        ///
-        /// <remarks>   We are passing down a map but would expect to excavate it ourselves using the
-        ///             supplied excavator.  If you excavate the map by yourself that's fine but you
-        ///             need to pass down a NullExcavator.  Passing down null (the default) uses a
-        ///             GridExcavator.  Darrell, 8/29/2016. </remarks>
-        ///
-        /// <param name="depth">        The depth of the level. </param>
-        /// <param name="map">          The map for the level. </param>
-        /// <param name="game">         The game we're part of. </param>
-        /// <param name="excavator">    (Optional) the excavator to create the map. </param>
-        /// <param name="seed">         (Optional) the seed. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		/// <summary>	Constructor. </summary>
+		///
+		/// <remarks>
+		/// We are passing down a map but would expect to excavate it ourselves using the supplied
+		/// excavator.  If you excavate the map by yourself that's fine but you need to pass down a
+		/// NullExcavator.  Passing down null (the default) uses a GridExcavator.  Darrell, 8/29/2016.
+		/// </remarks>
+		///
+		/// <param name="depth">		The depth of the level. </param>
+		/// <param name="map">			The map for the level. </param>
+		/// <param name="factory">  	The items in our game. </param>
+		/// <param name="rarity">   	The rarity. </param>
+		/// <param name="excavator">	(Optional) the excavator to create the map. </param>
+		/// <param name="seed">			(Optional) the seed. </param>
+		////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		public Level(int depth, IGameMap map, IItemFactory factory, Dictionary<Guid, int> rarity, IExcavator excavator = null, int seed = -1 )
 		{
@@ -139,16 +137,17 @@ namespace CSRogue.Map_Generation
 		}
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Select a creature from the factory for inclusion in the level. </summary>
+        /// <summary>	Select a creature from the factory for inclusion in the level. </summary>
         ///
-        /// <remarks>   Darrell, 8/29/2016. </remarks>
+        /// <remarks>	Darrell, 8/29/2016. </remarks>
         ///
-        /// <exception cref="RogueException">   Thrown when a Rogue error condition occurs. </exception>
+        /// <exception cref="RogueException">	Thrown when a Rogue error condition occurs. </exception>
         ///
-        /// <param name="itemList">         List of items. </param>
-        /// <param name="sumOfRarities">    The sum of rarities. </param>
+        /// <param name="rarity">			The rarity. </param>
+        /// <param name="itemList">			List of items. </param>
+        /// <param name="sumOfRarities">	The sum of rarities. </param>
         ///
-        /// <returns>   A Creature. </returns>
+        /// <returns>	A Creature. </returns>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
         private IItem SelectItem(Dictionary<Guid, int> rarity, List<ItemInfo> itemList, int sumOfRarities)

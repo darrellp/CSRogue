@@ -2,7 +2,7 @@
 {
     class NullExcavator : IExcavator
     {
-        public void Excavate(IRoomsMap map)
+        public void Excavate(IMap map)
         {
             return;
         }

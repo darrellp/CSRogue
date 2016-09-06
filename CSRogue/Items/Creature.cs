@@ -19,6 +19,12 @@ namespace CSRogue.Items
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		internal int HitPoints { get; set; }
 
+	    ////////////////////////////////////////////////////////////////////////////////////////////////////
+	    /// <summary>	Gets or sets the identifier of the item type. </summary>
+	    ///
+	    /// <value>	The identifier of the item type. </value>
+	    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	    public Guid ItemTypeId { get; set; }
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -41,7 +47,7 @@ namespace CSRogue.Items
 		///
 		/// <value>	true if this object is player, false if not. </value>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public bool IsPlayer { get; set; }
+		public virtual bool IsPlayer => false;
 		#endregion
 
 		#region Constructor
@@ -57,14 +63,12 @@ namespace CSRogue.Items
 
 	    protected Creature(Guid itemTypeId = default(Guid), Level level = null)
 		{
-		    ItemInfo info;
-            ItemTypeId = itemTypeId;
+	        ItemTypeId = itemTypeId;
 
-			IsPlayer = itemTypeId == default(Guid);
             if (level != null)
             {
-                info = level.Factory.InfoFromId[itemTypeId];
-			    HitPoints = info.CreatureInfo.HitPoints.Roll();
+	            var info = level.Factory.InfoFromId[itemTypeId];
+	            HitPoints = info.CreatureInfo.HitPoints.Roll();
             }
 		}
         #endregion

@@ -15,6 +15,7 @@ namespace RogueTests
 	public class Person : Creature
 	{
 		public Person(Level l) { }
+		public override bool IsPlayer => true;
 	}
 
 	public class Rat : Creature

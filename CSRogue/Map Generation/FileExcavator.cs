@@ -54,7 +54,7 @@ namespace CSRogue.Map_Generation
 		///
 		/// <param name="map">		The map to be excavated. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public void Excavate(IRoomsMap map)
+		public void Excavate(IMap map)
 		{
 			// For each line in the file
 			for (var iRow = 0; iRow < _asciiLines.Count && iRow < map.Height; iRow++)
