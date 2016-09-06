@@ -1,13 +1,27 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
+using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
-using static RogueTests.TestFactory;
 
 namespace RogueTests
 {
-	
-	
+	public class Person : IItem
+	{
+		public Guid ItemTypeId { get; set; }
+		public MapCoordinates Location { get; set; }
+		public char Ch { get; } = '@';
+		public Person(Level l) { }
+	}
+
+	public class Rat : IItem
+	{
+		public Guid ItemTypeId { get; set; }
+		public MapCoordinates Location { get; set; }
+		public char Ch { get; } = 'r';
+		public Rat(Level l) { }
+	}
+
 	/// <summary>
 	///This is a test class for ExcavatorTest and is intended
 	///to contain all ExcavatorTest Unit Tests
@@ -81,24 +95,34 @@ namespace RogueTests
             Assert.AreEqual(terrain, csRogueMap.Terrain(iCol, iRow));
         }
 
+		readonly Guid _personId = new Guid("0D583F58-FA20-4292-A272-37919917644A");
+		readonly Guid _ratId = new Guid("1BA9B9C4-6133-4CD3-92A6-233F0F26CBC0");
+
 	    /// <summary>
         ///A test for Excavate
         ///</summary>
         [TestMethod()]
         public void ExcavateTest()
         {
-            const string mapString =
+		const string input = @"
+//type										ch	name		weight	value	description								class
+0D583F58-FA20-4292-A272-37919917644A		@	Player		.		.		The Player								RogueTests.Person
+1BA9B9C4-6133-4CD3-92A6-233F0F26CBC0		r	Rat			.		.		A vile little sewer rat.				RogueTests.Rat
+																			These rodents seem to be everywhere!
+";
+		const string mapString =
 @"@r-............
 ...............
 ...............
 ...............";
 
+			TextReader reader = new StringReader(input);
             StringReader stream = new StringReader(mapString);
-            FileExcavator excavator = new FileExcavator(stream, new TestFactory());
+            FileExcavator excavator = new FileExcavator(stream, new ItemFactory(reader));
             CsRogueMap csRogueMap = new CsRogueMap();
             excavator.Excavate(csRogueMap);
-            CheckLocation(csRogueMap, 0, 0, TerrainType.Floor, PersonId);
-            CheckLocation(csRogueMap, 1, 0, TerrainType.Floor, RatId);
+            CheckLocation(csRogueMap, 0, 0, TerrainType.Floor, _personId);
+            CheckLocation(csRogueMap, 1, 0, TerrainType.Floor, _ratId);
             CheckLocation(csRogueMap, 2, 0, TerrainType.HorizontalWall);
             CheckLocation(csRogueMap, 3, 0, TerrainType.Floor);
             CheckLocation(csRogueMap, 14, 0, TerrainType.Floor);
