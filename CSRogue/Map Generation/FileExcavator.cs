@@ -19,7 +19,7 @@ namespace CSRogue.Map_Generation
 		#region Private variables
 		private readonly List<string> _asciiLines = new List<string>();
 	    private readonly IItemFactory _factory;
-        private Dictionary<char, Guid> _charToId = new Dictionary<char, Guid>();
+        private readonly Dictionary<char, Guid> _charToId = new Dictionary<char, Guid>();
 		#endregion
 
 		#region Constructor
@@ -89,10 +89,9 @@ namespace CSRogue.Map_Generation
 				// Produce the data for that character
 				var terrain = TerrainFactory.ProduceTerrain(currentLine[iCol]);
 
-			    var item = _charToId.ContainsKey(currentLine[iCol]) ? 
-                    _factory.Create(_charToId[currentLine[iCol]], null) : null;
+				var item = _charToId.ContainsKey(currentLine[iCol])
+					? _factory.InfoFromId[_charToId[currentLine[iCol]]].CreateItem(null) : null;
                 
-                //ItemInfo.NewItemFromChar(currentLine[iCol]);
 				var items = item == null ? null : new List<IItem> { item };
 				var data = new MapLocationData(terrain, items);
 
