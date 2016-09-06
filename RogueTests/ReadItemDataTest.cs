@@ -77,6 +77,10 @@ namespace RogueTests
 0D583F58-FA20-4292-A272-37919917644A		@	Player		.		.		The Player								RogueTests.Person
 1BA9B9C4-6133-4CD3-92A6-233F0F26CBC0		r	Rat			.		.		A vile little sewer rat.				RogueTests.Rat
 																			These rodents seem to be everywhere!
+-----------------------------------------------------------------------------------------------------------------------------------------
+//name  type										HP		Lvl	Rarity	Color	Speed	AC
+player	0D583F58-FA20-4292-A272-37919917644A		2d6		.	.		.		.		8
+rat		1BA9B9C4-6133-4CD3-92A6-233F0F26CBC0		2d6		0	2		Red		.		3
 ";
 		    TextReader reader = new StringReader(input);
             Dictionary<Guid, ItemInfo> infoList = (new ReadItemData()).GetData(reader);

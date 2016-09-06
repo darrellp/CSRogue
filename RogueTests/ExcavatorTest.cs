@@ -6,19 +6,18 @@ using CSRogue.Map_Generation;
 
 namespace RogueTests
 {
-	public class Person : IItem
+	public class Sword : Item
 	{
-		public Guid ItemTypeId { get; set; }
-		public MapCoordinates Location { get; set; }
-		public char Ch { get; } = '@';
+		public Sword(Level l) { }
+	}
+
+	public class Person : Item
+	{
 		public Person(Level l) { }
 	}
 
-	public class Rat : IItem
+	public class Rat : Item
 	{
-		public Guid ItemTypeId { get; set; }
-		public MapCoordinates Location { get; set; }
-		public char Ch { get; } = 'r';
 		public Rat(Level l) { }
 	}
 
@@ -109,6 +108,11 @@ namespace RogueTests
 0D583F58-FA20-4292-A272-37919917644A		@	Player		.		.		The Player								RogueTests.Person
 1BA9B9C4-6133-4CD3-92A6-233F0F26CBC0		r	Rat			.		.		A vile little sewer rat.				RogueTests.Rat
 																			These rodents seem to be everywhere!
+36BC6779-846D-4949-8F30-7C5F97E5E729		!	Sword		10		15		A sharp, pointy, hurty thingy			RogueTests.Sword
+-----------------------------------------------------------------------------------------------------------------------------------------
+//name  type										HP		Lvl	Rarity	Color	Speed	AC
+player	0D583F58-FA20-4292-A272-37919917644A		2d6		.	.		.		.		8
+rat		1BA9B9C4-6133-4CD3-92A6-233F0F26CBC0		2d6		0	2		Red		.		3
 ";
 		const string mapString =
 @"@r-............

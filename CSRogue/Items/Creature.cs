@@ -60,7 +60,7 @@ namespace CSRogue.Items
 		    ItemInfo info;
             ItemTypeId = itemTypeId;
 
-			IsPlayer = itemTypeId == Item.HeroId;
+			IsPlayer = itemTypeId == default(Guid);
             if (level != null)
             {
                 info = level.Factory.InfoFromId[itemTypeId];

@@ -1,4 +1,5 @@
-﻿using CSRogue.Item_Handling;
+﻿using System;
+using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
 using CSRogue.Utilities;
 
@@ -14,7 +15,7 @@ namespace CSRogue.Items
 	{
 		#region Constructor
 
-	    public Player() : base(Item.HeroId)
+	    public Player() : base(default(Guid))
 	    {
 	        HitPoints = new DieRoll(1, 6).Roll();
 	    }
