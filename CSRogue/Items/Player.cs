@@ -8,12 +8,11 @@ namespace CSRogue.Items
 	///
 	/// <remarks>	Darrellp, 9/16/2011. </remarks>
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	public class Player : Creature
+	public class Player : Creature, IPlayer
 	{
 		#region Constructor
 	    public Player()
 	    {
-	        HitPoints = new DieRoll(1, 6).Roll();
 	    }
         #endregion
     }

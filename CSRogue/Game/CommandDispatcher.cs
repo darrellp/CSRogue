@@ -184,7 +184,7 @@ namespace CSRogue.GameControl
 			_game.Process();
 		}
 
-		public virtual void MakeAttack(Creature attacker, Creature victim)
+		public virtual void MakeAttack(ICreature attacker, ICreature victim)
 		{
 			// Determine damage
 			var damage = victim.IsPlayer ? 0 : victim.HitPoints;
@@ -206,7 +206,7 @@ namespace CSRogue.GameControl
 			_game.InvokeEvent(EventType.Attack, _game, attackArgs);
 		}
 
-		private static void HitCreatureFor(Creature victim, int damage)
+		private static void HitCreatureFor(ICreature victim, int damage)
 		{
 			victim.HitPoints -= damage;
 		}

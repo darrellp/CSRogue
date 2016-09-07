@@ -12,10 +12,9 @@ namespace RogueTests
 		public Sword(Level l) { }
 	}
 
-	public class Person : Creature
+	public class Person : Creature, IPlayer
 	{
 		public Person(Level l) { }
-		public override bool IsPlayer => true;
 	}
 
 	public class Rat : Creature

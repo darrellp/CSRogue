@@ -16,7 +16,7 @@ namespace CSRogue.GameControl.Commands
 		///
 		/// <value>	The creature. </value>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public Creature Creature { get; private set; }
+		public ICreature Creature { get; private set; }
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 	    ///  <summary>	Constructor. </summary>
@@ -27,7 +27,7 @@ namespace CSRogue.GameControl.Commands
 	    ///  <param name="shouldRun">	true if we should run. </param>
 	    /// <param name="creature">     Creature for this command </param>
 	    ////////////////////////////////////////////////////////////////////////////////////////////////////
-	    public MovementCommand(CommandType commandType, bool shouldRun = false, Creature creature = null) : base (commandType)
+	    public MovementCommand(CommandType commandType, bool shouldRun = false, ICreature creature = null) : base (commandType)
 		{
 			Run = shouldRun;
 			Creature = creature;

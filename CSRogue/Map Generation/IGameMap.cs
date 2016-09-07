@@ -8,6 +8,6 @@ namespace CSRogue.Map_Generation
     {
         FOV Fov { get; set; }
         Game Game { get; }
-        Player Player { get; }
+        IPlayer Player { get; }
     }
 }

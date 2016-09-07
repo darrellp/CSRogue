@@ -10,7 +10,7 @@ namespace CSRogue.GameControl.Commands
 		///
 		/// <value>	The creature. </value>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public Creature Creature { get; private set; }
+		public ICreature Creature { get; private set; }
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Gets or sets the location the creature is to be moved to. </summary>
@@ -27,7 +27,7 @@ namespace CSRogue.GameControl.Commands
 		/// <param name="creature">	The creature to be moved. </param>
 		/// <param name="location">	The location to move the creature to. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public MoveToCommand(Creature creature, MapCoordinates location)
+		public MoveToCommand(ICreature creature, MapCoordinates location)
 			: base(CommandType.MoveTo)
 		{
 			Creature = creature;

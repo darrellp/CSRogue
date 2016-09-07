@@ -9,7 +9,7 @@ namespace CSRogue.Items
 	///
 	/// <remarks>	Darrellp, 9/16/2011. </remarks>
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	public abstract class Creature : IItem
+	public abstract class Creature : IItem, ICreature
 	{
 		#region Internal properties
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -17,7 +17,7 @@ namespace CSRogue.Items
 		///
 		/// <value>	The hit points. </value>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal int HitPoints { get; set; }
+		public int HitPoints { get; set; }
 
 	    ////////////////////////////////////////////////////////////////////////////////////////////////////
 	    /// <summary>	Gets or sets the identifier of the item type. </summary>
@@ -47,7 +47,7 @@ namespace CSRogue.Items
 		///
 		/// <value>	true if this object is player, false if not. </value>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public virtual bool IsPlayer => false;
+		public bool IsPlayer => this is IPlayer;
 		#endregion
 
 		#region Constructor
@@ -74,7 +74,7 @@ namespace CSRogue.Items
         #endregion
 
         #region Virtual methods
-        public virtual void InvokeAi()
+        public void InvokeAi()
 	    {
 	    }
         #endregion  

@@ -42,7 +42,7 @@ namespace CSRogue.Utilities
 
         public static void MoveCreatureTo(
             this IGameMap map,
-            Creature creature,
+            ICreature creature,
             MapCoordinates newLocation,
             bool firstTimeHeroPlacement = false,
             bool run = false,
@@ -91,7 +91,7 @@ namespace CSRogue.Utilities
         /// <param name="blockedLocation">	The blocked location. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public static void NotifyOfBlockage(this IGameMap map, Creature creature, MapCoordinates blockedLocation)
+        public static void NotifyOfBlockage(this IGameMap map, IPlayer creature, MapCoordinates blockedLocation)
         {
             map.Game.InvokeEvent(EventType.CreatureMove, map,
                 new CreatureMoveEventArgs(

@@ -21,7 +21,7 @@ namespace CSRogue.Map_Generation
         private readonly IItemFactory _factory;
 
         /// <summary>   The creatures on this level. </summary>
-		private readonly List<Creature> _creatures = new List<Creature>();
+		private readonly List<ICreature> _creatures = new List<ICreature>();
 		#endregion
 
 		#region Public Properties
@@ -198,7 +198,7 @@ namespace CSRogue.Map_Generation
         /// <param name="victim">   The victim. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public void KillCreature(Creature victim)
+        public void KillCreature(ICreature victim)
 		{
 			Map.Remove(victim.Location.Column, victim.Location.Row, victim);
 			_creatures.Remove(victim);

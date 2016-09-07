@@ -17,7 +17,7 @@ namespace CSRogue.RogueEventArgs
 
 		public CreatureMoveEventArgs(
 			IGameMap gameMap,
-			Creature creature,
+			ICreature creature,
 			MapCoordinates previousCreatureLocation,
 			MapCoordinates creatureDestination,
 			bool isFirstTimePlacement = false,
