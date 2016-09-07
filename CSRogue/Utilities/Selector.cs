@@ -11,7 +11,7 @@ namespace CSRogue.Utilities
 			{
 				return;
 			}
-			T temp = list[i1];
+			var temp = list[i1];
 			list[i1] = list[i2];
 			list[i2] = temp;
 		}
@@ -44,11 +44,11 @@ namespace CSRogue.Utilities
 			}
 
 			// Initialize a list to return
-			List<T> ret = new List<T>();
-			int available = list.Count;
+			var ret = new List<T>();
+			var available = list.Count;
 
 			// For each selection while any are available
-			for (int i = 0; i < n && available > 0; i++)
+			for (var i = 0; i < n && available > 0; i++)
 			{
 				// locals
 				T selected;
@@ -56,7 +56,7 @@ namespace CSRogue.Utilities
 				do
 				{
 					// Get a random selected object
-					int selectedIndex = Rnd.Global.Next(available);
+					var selectedIndex = Rnd.Global.Next(available);
 					selected = list[selectedIndex];
 
 					// Swap it out of the available range

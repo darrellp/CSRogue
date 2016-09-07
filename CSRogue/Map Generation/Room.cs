@@ -230,15 +230,15 @@ namespace CSRogue.Map_Generation
 		internal void CombineWith(Room room)
 		{
 			// Clone into a temporary room
-			Room roomTemp = new Room(Layout, Location, NeighborRooms);
+			var roomTemp = new Room(Layout, Location, NeighborRooms);
 
 			// Get the new and old locations, sizes
-			int newLeft = Math.Min(this.Left(), room.Left());
-			int newRight = Math.Max(this.Right(), room.Right());
-			int newTop = Math.Min(this.Top(), room.Top());
-			int newBottom = Math.Max(this.Bottom(), room.Bottom());
-			int newHeight = newBottom - newTop + 1;
-			int newWidth = newRight - newLeft + 1;
+			var newLeft = Math.Min(this.Left(), room.Left());
+			var newRight = Math.Max(this.Right(), room.Right());
+			var newTop = Math.Min(this.Top(), room.Top());
+			var newBottom = Math.Max(this.Bottom(), room.Bottom());
+			var newHeight = newBottom - newTop + 1;
+			var newWidth = newRight - newLeft + 1;
 
 			// Set our new location
 			_location = new MapCoordinates(newLeft, newTop);
@@ -251,7 +251,7 @@ namespace CSRogue.Map_Generation
 			_layout = new char[newWidth][];
 
 			// For each column
-			for (int iColumn = 0; iColumn < newWidth; iColumn++)
+			for (var iColumn = 0; iColumn < newWidth; iColumn++)
 			{
 				// Allocate the column
 				Layout[iColumn] = new char[newHeight];
@@ -283,9 +283,9 @@ namespace CSRogue.Map_Generation
 			foreach (var exitInfo in room.ExitMap)
 			{
 				// Get the room on the other side
-				MapCoordinates location = exitInfo.Key;
-				IRoom roomExitedTo = exitInfo.Value;
-				int indexToUs = roomExitedTo.At(location) - 'a';
+				var location = exitInfo.Key;
+				var roomExitedTo = exitInfo.Value;
+				var indexToUs = roomExitedTo.At(location) - 'a';
 
 				// and point it back to us
 				roomExitedTo.NeighborRooms[indexToUs] = this;
@@ -304,7 +304,7 @@ namespace CSRogue.Map_Generation
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		internal char AddExit(Room room, MapCoordinates location)
 		{
-			char exitChar = (char) ('a' + NeighborRooms.Count);
+			var exitChar = (char) ('a' + NeighborRooms.Count);
 
 			NeighborRooms.Add(room);
 			this[location] = exitChar;
@@ -316,12 +316,12 @@ namespace CSRogue.Map_Generation
 		#region Display
 		public override string ToString()
 		{
-			StringBuilder sbret = new StringBuilder();
-			for (int iRow = 0; iRow < this.Height(); iRow++)
+			var sbret = new StringBuilder();
+			for (var iRow = 0; iRow < this.Height(); iRow++)
 			{
-				for (int iCol = 0; iCol < this.Width(); iCol++)
+				for (var iCol = 0; iCol < this.Width(); iCol++)
 				{
-					char chNext = Layout[iCol][iRow];
+					var chNext = Layout[iCol][iRow];
 					if (chNext == '\0')
 					{
 						chNext = ' ';

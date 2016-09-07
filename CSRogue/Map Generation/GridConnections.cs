@@ -85,19 +85,19 @@ namespace CSRogue.Map_Generation
 			}
 
 			// Determine if they need to be swapped
-			bool fSwap = fVertical ? coord2.Row < coord1.Row : coord2.Column < coord1.Column;
+			var fSwap = fVertical ? coord2.Row < coord1.Row : coord2.Column < coord1.Column;
 
 			// Do they?
 			if (fSwap)
 			{
 				// Swap them
-				MapCoordinates temp = coord1;
+				var temp = coord1;
 				coord1 = coord2;
 				coord2 = temp;
 			}
 
 			// return true if their differing coordinates differ by one
-			int coordinateDifference = fVertical ? coord2.Row - coord1.Row : coord2.Column - coord1.Column;
+			var coordinateDifference = fVertical ? coord2.Row - coord1.Row : coord2.Column - coord1.Column;
 			return coordinateDifference == 1;
 		}
 
@@ -118,7 +118,7 @@ namespace CSRogue.Map_Generation
 			}
 
 			// Pick a random index for the new connection to be made
-			int connectionIndex = rnd.Next(_freeConnectionCount);
+			var connectionIndex = rnd.Next(_freeConnectionCount);
 
 			foreach (var info in Connections.Where(info => !info.IsConnected && connectionIndex-- == 0))
 			{
@@ -135,17 +135,17 @@ namespace CSRogue.Map_Generation
 		internal void ConnectCells(Rnd rnd)
 		{
 			// locals
-			List<MapCoordinates> unconnectedCellList = new List<MapCoordinates>();
-			bool[,] isConnected = new bool[_mapWidth, _mapHeight];
+			var unconnectedCellList = new List<MapCoordinates>();
+			var isConnected = new bool[_mapWidth, _mapHeight];
 
 			// Initialize to all cleared connections
 			ClearConnections();
 
 			// For each column in grid
-			for (int iColumn = 0; iColumn < _mapWidth; iColumn++)
+			for (var iColumn = 0; iColumn < _mapWidth; iColumn++)
 			{
 				// For each row in grid
-				for (int iRow = 0; iRow < _mapHeight; iRow++)
+				for (var iRow = 0; iRow < _mapHeight; iRow++)
 				{
 					// Mark the grid cell as unconnected
 					unconnectedCellList.Add( new MapCoordinates(iColumn, iRow));
@@ -153,11 +153,11 @@ namespace CSRogue.Map_Generation
 			}
 
 			// Allocate a list of connected cells
-			List<MapCoordinates> connectedCells = new List<MapCoordinates>(unconnectedCellList.Count);
+			var connectedCells = new List<MapCoordinates>(unconnectedCellList.Count);
 
 			// Pick out an intially "connected" cell
-			int cellIndex = rnd.Next(unconnectedCellList.Count);
-			MapCoordinates connectedCell = unconnectedCellList[cellIndex];
+			var cellIndex = rnd.Next(unconnectedCellList.Count);
+			var connectedCell = unconnectedCellList[cellIndex];
 			isConnected[connectedCell.Column, connectedCell.Row] = true;
 
 			// Add it to the connected list
@@ -171,11 +171,11 @@ namespace CSRogue.Map_Generation
 			while (unconnectedCellList.Count != 0)
 			{
 				// Pick a random connected cell
-				int connectedCellIndex = rnd.Next(connectedCells.Count);
+				var connectedCellIndex = rnd.Next(connectedCells.Count);
 				connectedCell = connectedCells[connectedCellIndex];
 
 				// Get the totally unconnected neighbors it's not connected with
-				List<MapCoordinates> unconnectedNeighbors =
+				var unconnectedNeighbors =
 					UnconnectedNeighbors(connectedCell).
 						Where(crd => !isConnected[crd.Column, crd.Row]).ToList();
 
@@ -183,8 +183,8 @@ namespace CSRogue.Map_Generation
 				if (unconnectedNeighbors.Count != 0)
 				{
 					// Pick a random such neighbor
-					int neighborIndex = rnd.Next(unconnectedNeighbors.Count);
-					MapCoordinates neighborLocation = unconnectedNeighbors[neighborIndex];
+					var neighborIndex = rnd.Next(unconnectedNeighbors.Count);
+					var neighborLocation = unconnectedNeighbors[neighborIndex];
 					LastRoomConnected = neighborLocation;
 
 					// Connect it to our already connected cell
@@ -221,13 +221,13 @@ namespace CSRogue.Map_Generation
 		internal bool IsConnected(MapCoordinates coord1, MapCoordinates coord2)
 		{
 			bool fVertical;
-			bool ret = false;
+			var ret = false;
 
 			// Are they valid neighbors?
 			if (CheckCoordinates(ref coord1, ref coord2, out fVertical))
 			{
 				// Choose the correct connection array based on fVertical
-				bool[,] connectArray = fVertical ? _connectsDown : _connectsRight;
+				var connectArray = fVertical ? _connectsDown : _connectsRight;
 
 				// See if they're actually connected
 				ret = connectArray[coord1.Column, coord1.Row];
@@ -279,20 +279,20 @@ namespace CSRogue.Map_Generation
 			get
 			{
 				// For each row
-				for (int iRow = 0; iRow < _mapHeight - 1; iRow++)
+				for (var iRow = 0; iRow < _mapHeight - 1; iRow++)
 				{
 					// For each column
-					for (int iColumn = 0; iColumn < _mapWidth; iColumn++)
+					for (var iColumn = 0; iColumn < _mapWidth; iColumn++)
 					{
 						yield return new ConnectionInfo(this, new MapCoordinates(iColumn, iRow), Dir.Vert, _connectsDown[iColumn, iRow]);
 					}
 				}
 
 				// For each row
-				for (int iRow = 0; iRow < _mapHeight; iRow++)
+				for (var iRow = 0; iRow < _mapHeight; iRow++)
 				{
 					// For each column
-					for (int iColumn = 0; iColumn < _mapWidth - 1; iColumn++)
+					for (var iColumn = 0; iColumn < _mapWidth - 1; iColumn++)
 					{
 						yield return new ConnectionInfo(this, new MapCoordinates(iColumn, iRow), Dir.Horiz, _connectsRight[iColumn, iRow]);
 					}

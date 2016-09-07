@@ -115,9 +115,9 @@ namespace CSRogue.GameControl
 				}
 
 				// Get values from the command
-				MapCoordinates offset = Directions[command.Command];
-				bool run = ((MovementCommand)command).Run;
-				MapCoordinates newLocation = Map.Player.Location + offset;
+				var offset = Directions[command.Command];
+				var run = ((MovementCommand)command).Run;
+				var newLocation = Map.Player.Location + offset;
 				Creature victim;
 
 				// Are we running?
@@ -134,7 +134,7 @@ namespace CSRogue.GameControl
 						return true;
 					}
 
-					List<MapCoordinates> litAtStartOfRun = _game.Map.Fov.CurrentlySeen.ToList();
+					var litAtStartOfRun = _game.Map.Fov.CurrentlySeen.ToList();
 
 					// While we're not blocked ahead
 					while (Map.ValidRunningMove(maybeBlocksUs))
@@ -187,11 +187,11 @@ namespace CSRogue.GameControl
 		public virtual void MakeAttack(Creature attacker, Creature victim)
 		{
 			// Determine damage
-			int damage = victim.IsPlayer ? 0 : victim.HitPoints;
+			var damage = victim.IsPlayer ? 0 : victim.HitPoints;
 
 			// Hit the victim for that damage
 			HitCreatureFor(victim, damage);
-			bool expired = victim.HitPoints == 0;
+			var expired = victim.HitPoints == 0;
 
 			// Did the victim die?
 			if (expired)
@@ -202,7 +202,7 @@ namespace CSRogue.GameControl
 			}
 
 			// Invoke an attack event for this attack
-			AttackEventArgs attackArgs = new AttackEventArgs(attacker, victim, damage, expired, victim.Location);
+			var attackArgs = new AttackEventArgs(attacker, victim, damage, expired, victim.Location);
 			_game.InvokeEvent(EventType.Attack, _game, attackArgs);
 		}
 

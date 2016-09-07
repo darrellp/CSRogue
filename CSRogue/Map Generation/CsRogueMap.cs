@@ -320,16 +320,16 @@ namespace CSRogue.Map_Generation
 		public override string ToString()
 		{
 			// Initialize a stringbuilder
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 
 			// For each row of the map
-			for (int iRow = 0; iRow < Height; iRow++)
+			for (var iRow = 0; iRow < Height; iRow++)
 			{
 				// For each column of the map
-				for (int iColumn = 0; iColumn < Width; iColumn++)
+				for (var iColumn = 0; iColumn < Width; iColumn++)
 				{
 					// Retrieve the data
-					MapLocationData data = _mapLocationData[iColumn][iRow];
+					var data = _mapLocationData[iColumn][iRow];
 
 					// Are there items here?
 					if (data.Items.Count != 0)

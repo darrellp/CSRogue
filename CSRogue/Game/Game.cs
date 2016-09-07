@@ -147,9 +147,9 @@ namespace CSRogue.GameControl
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		private MapCoordinates LocateStairwell()
 		{
-			for (int iRow  = 0; iRow  < Map.Height; iRow ++)
+			for (var iRow  = 0; iRow  < Map.Height; iRow ++)
 			{
-				for (int iColumn = 0; iColumn < Map.Width; iColumn++)
+				for (var iColumn = 0; iColumn < Map.Width; iColumn++)
 				{
 					if (Map[iColumn, iRow].Terrain == TerrainType.StairsUp)
 					{

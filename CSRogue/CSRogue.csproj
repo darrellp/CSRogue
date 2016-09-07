@@ -83,7 +83,6 @@
     <Compile Include="Map Generation\GridExcavator.cs" />
     <Compile Include="Map Generation\CsRogueMap.cs" />
     <Compile Include="Map Generation\MapCoordinates.cs" />
-    <Compile Include="Map Generation\MapGraph.cs" />
     <Compile Include="Map Generation\MapLocationData.cs" />
     <Compile Include="Utilities\GameMapExtensions.cs" />
     <Compile Include="Utilities\MapExtensions.cs" />

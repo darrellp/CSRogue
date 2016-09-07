@@ -30,7 +30,7 @@ namespace RogueSC.Consoles
         {
         
         // Draw the side bar
-        SadConsole.Shapes.Line line = new SadConsole.Shapes.Line
+        var line = new SadConsole.Shapes.Line
             {
                 EndingLocation = new Point(0, height - 1),
                 CellAppearance = {GlyphIndex = 179},
@@ -45,7 +45,7 @@ namespace RogueSC.Consoles
             Print(2, 2, _characterName);
 
             // Create a colored string that looks like 52/500
-            ColoredString healthStatus = _health.ToString().CreateColored(Color.LightGreen, Color.Black, null) +
+            var healthStatus = _health.ToString().CreateColored(Color.LightGreen, Color.Black, null) +
                                                     "/".CreateColored(Color.White, Color.Black, null) +
                                                     _maxHealth.ToString().CreateColored(Color.DarkGreen, Color.Black, null);
 

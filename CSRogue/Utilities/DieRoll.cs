@@ -24,9 +24,9 @@
 
 		internal int Roll()
 		{
-			int sum = 0;
+			var sum = 0;
 
-			for (int iDie = 0; iDie < DieCount; iDie++)
+			for (var iDie = 0; iDie < DieCount; iDie++)
 			{
 				sum += Rnd.Global.Next(1, DieSides + 1);
 			}

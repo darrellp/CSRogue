@@ -132,7 +132,7 @@ namespace RogueSC.Consoles
                     {
                         continue;
                     }
-                    string str = MapTerrainToAppearance[_csRogueMap[iCol, iRow].Terrain];
+                    var str = MapTerrainToAppearance[_csRogueMap[iCol, iRow].Terrain];
                     var obj = _mapData[iCol, iRow] = new MapObject(MapObjectFactory.ObjectNameToAppearance[str]);
                     obj.Appearance.CopyAppearanceTo(this[iCol, iRow]);
                     obj.RemoveCellFromView(this[iCol, iRow]);

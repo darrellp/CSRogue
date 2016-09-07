@@ -109,8 +109,8 @@ namespace CSRogue.Utilities
 			{
 				throw new RogueException("Width isn't wide enough to make span in RandomSpan");
 			}
-			int val1 = _rnd.Next(start, end + 1);
-			int val2 = _rnd.Next(start, end + 1);
+			var val1 = _rnd.Next(start, end + 1);
+			var val2 = _rnd.Next(start, end + 1);
 
 			while (Math.Abs(val1 - val2) < minWidth)
 			{

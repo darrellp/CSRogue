@@ -24,10 +24,10 @@ namespace CSRogue.Utilities
 
         public static IEnumerable<MapCoordinates> Neighbors(this IMap map, int column, int row)
         {
-            int minRowOffset = row == 0 ? 0 : -1;
-            int maxRowOffset = row == map.Height - 1 ? 0 : 1;
-            int minColumnOffset = column == 0 ? 0 : -1;
-            int maxColumnOffset = column == map.Width - 1 ? 0 : 1;
+            var minRowOffset = row == 0 ? 0 : -1;
+            var maxRowOffset = row == map.Height - 1 ? 0 : 1;
+            var minColumnOffset = column == 0 ? 0 : -1;
+            var maxColumnOffset = column == map.Width - 1 ? 0 : 1;
 
             for (var iRowOffset = minRowOffset; iRowOffset <= maxRowOffset; iRowOffset++)
             {
@@ -103,7 +103,7 @@ namespace CSRogue.Utilities
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         public static MapCoordinates RandomFloorLocation(this IMap map, bool restrictToRooms = false)
         {
-            Rnd rnd = Rnd.Global;
+            var rnd = Rnd.Global;
             int row, column;
 
             while (true)

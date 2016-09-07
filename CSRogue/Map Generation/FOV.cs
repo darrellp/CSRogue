@@ -90,7 +90,7 @@ namespace CSRogue.Map_Generation
         public void Compute(MapCoordinates origin, int rangeLimit)
         {
             _currentFOV.Add(new MapCoordinates(origin.Column, origin.Row));
-            for (int octant = 0; octant < 8; octant++)
+            for (var octant = 0; octant < 8; octant++)
             {
                 Compute(octant, origin, rangeLimit, 1, new Slope(1, 1), new Slope(0, 1));
             }
@@ -446,7 +446,7 @@ namespace CSRogue.Map_Generation
             _currentFOV = tmp;
             _currentFOV.Clear();
             _currentFOV.Add(location);
-            for (int octant = 0; octant < 8; octant++)
+            for (var octant = 0; octant < 8; octant++)
             {
                 Compute(octant, location, _lightRadius, 1, new Slope(1, 1), new Slope(0, 1));
             }

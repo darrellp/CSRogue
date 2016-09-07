@@ -9,13 +9,13 @@ namespace CSRogue.Utilities
 		public static T Instance()
 		{
 			// Retrieve our thread ID
-			int tid = Thread.CurrentThread.ManagedThreadId;
+			var tid = Thread.CurrentThread.ManagedThreadId;
 
 			// Does our library contain this ID?
 			if (!PerThreadMapping.ContainsKey(tid))
 			{
 				// Create the singleton
-				T singleton = new T();
+				var singleton = new T();
 
 				lock (PerThreadMapping)
 				{
