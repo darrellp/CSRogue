@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using CSRogue.Items;
 using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
@@ -102,20 +103,21 @@ namespace CSRogue.Utilities
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         public static MapCoordinates RandomFloorLocation(this IMap map, bool restrictToRooms = false)
         {
-            // Locals
             Rnd rnd = Rnd.Global;
             int row, column;
-            MapLocationData data;
 
-            do
+            while (true)
             {
                 // Try a random spot
                 row = rnd.Next(map.Height);
                 column = rnd.Next(map.Width);
-                data = map[column, row];
+
+				// Needs to be walkable and have at least three walkable neighbors
+	            if (map.Walkable(column, row) && map.Neighbors(column, row).Count(map.Walkable) > 2)
+	            {
+		            break;
+	            }
             }
-            // We find one that's on some floor terrain
-            while (data.Terrain != TerrainType.Floor && (!restrictToRooms || !data.Room.IsCorridor));
 
             // Return it
             return new MapCoordinates(column, row);

@@ -146,7 +146,7 @@ namespace CSRogue.Map_Generation
 		///
 		/// <returns>	This object as a GenericRoom. </returns>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal GenericRoom ToGeneric()
+		internal Room ToGeneric()
 		{
 			char[][] layout = new char[Width][];
 			char floorChar = TerrainFactory.TerrainToChar(TerrainType.Floor);
@@ -163,7 +163,7 @@ namespace CSRogue.Map_Generation
 					}
 				}
 			}
-			return new GenericRoom(layout, Location, new List<GenericRoom>());
+			return new Room(layout, Location, new List<Room>());
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////

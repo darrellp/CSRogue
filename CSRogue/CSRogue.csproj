@@ -74,8 +74,7 @@
     <Compile Include="Map Generation\IExcavator.cs" />
     <Compile Include="Map Generation\FileExcavator.cs" />
     <Compile Include="Map Generation\FOV.cs" />
-    <Compile Include="Map Generation\GenericCorridor.cs" />
-    <Compile Include="Map Generation\GenericRoom.cs" />
+    <Compile Include="Map Generation\Room.cs" />
     <Compile Include="Map Generation\GridConnections.cs" />
     <Compile Include="Item Handling\Item.cs" />
     <Compile Include="Item Handling\ItemInfo.cs" />

@@ -52,7 +52,7 @@ namespace CSRogue.Map_Generation
 		private GridConnections _connections;
 		private GridConnections _merges;
 		private Rnd _rnd;
-		readonly Dictionary<RectangularRoom, GenericRoom> _mapRoomToGenericRooms = new Dictionary<RectangularRoom, GenericRoom>();
+		readonly Dictionary<RectangularRoom, Room> _mapRoomToGenericRooms = new Dictionary<RectangularRoom, Room>();
 		#endregion
 
 		#region Constructor
@@ -268,9 +268,9 @@ namespace CSRogue.Map_Generation
 			int overlapRight = Math.Min(topRoomsRight, bottomRoomsRight) - 1;
 
 			// Create our new merged generic room
-			GenericRoom groomTop = _mapRoomToGenericRooms[topRoom];
-			GenericRoom groomBottom = _mapRoomToGenericRooms[bottomRoom];
-			groomTop.CombineWith(groomBottom);
+			Room roomTop = _mapRoomToGenericRooms[topRoom];
+			Room roomBottom = _mapRoomToGenericRooms[bottomRoom];
+			roomTop.CombineWith(roomBottom);
 
 			// For each column in the grid
 			foreach (RectangularRoom[] roomColumn in _rooms)
@@ -282,10 +282,10 @@ namespace CSRogue.Map_Generation
 					RectangularRoom room = roomColumn[iRow];
 
 					// Is it mapped to our defunct bottom room?
-					if (_mapRoomToGenericRooms[room] == groomBottom)
+					if (_mapRoomToGenericRooms[room] == roomBottom)
 					{
 						// Map it to our shiny new top room
-						_mapRoomToGenericRooms[room] = groomTop;
+						_mapRoomToGenericRooms[room] = roomTop;
 					}
 				}
 			}
@@ -301,13 +301,13 @@ namespace CSRogue.Map_Generation
 				// Clear out the two walls of the abutting rooms
 				currentLocation[dirOther] = iCol;
 			    map[currentLocation].Terrain = TerrainType.Floor;
-				groomTop[currentLocation] = floorChar;
+				roomTop[currentLocation] = floorChar;
 				currentLocation[dir] = topRoomsBottom + 1;
                 map[currentLocation].Terrain = TerrainType.Floor;
-				groomTop[currentLocation] = floorChar;
+				roomTop[currentLocation] = floorChar;
 				currentLocation[dir] = topRoomsBottom;
 			}
-			Debug.Assert(groomBottom == groomTop || !_mapRoomToGenericRooms.ContainsValue(groomBottom));
+			Debug.Assert(roomBottom == roomTop || !_mapRoomToGenericRooms.ContainsValue(roomBottom));
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -468,10 +468,10 @@ namespace CSRogue.Map_Generation
 		/// <param name="column">	The perpindicular coordinate. </param>
 		/// <param name="endRow1">	The starting parallel coordinate. </param>
 		/// <param name="endRow2">	The ending parallel coordinate. </param>
-		/// <param name="groom">	The room being prepared for this corridor. </param>
+		/// <param name="room">	The room being prepared for this corridor. </param>
 		/// <param name="dir">		The direction of the corridor. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private static void ExcavateCorridorRun(IMap map, int column, int endRow1, int endRow2, GenericRoom groom, Dir dir)
+		private static void ExcavateCorridorRun(IMap map, int column, int endRow1, int endRow2, Room room, Dir dir)
 		{
 			// We work with small and large coords rather than start and end
 			int startRow = Math.Min(endRow1, endRow2);
@@ -487,7 +487,7 @@ namespace CSRogue.Map_Generation
 				// Place our terrain
 				currentLocation[dir] = iRow;
 			    map[currentLocation].Terrain = TerrainType.Floor;
-				groom[currentLocation] = floorChar;
+				room[currentLocation] = floorChar;
 			}
 		}
 
@@ -509,21 +509,21 @@ namespace CSRogue.Map_Generation
 		/// <param name="startRow">		The start parallel. </param>
 		/// <param name="endRow">		The end parallel. </param>
 		/// <param name="bend">			The bend coordinate. </param>
-		/// <param name="groom">		The room being prepared for this corridor. </param>
+		/// <param name="room">		The room being prepared for this corridor. </param>
 		/// <param name="dir">			The direction the bend is supposed to run. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private static void ExcavateBend(IMap map, int startColumn, int endColumn, int startRow, int endRow, int bend, GenericRoom groom, Dir dir)
+		private static void ExcavateBend(IMap map, int startColumn, int endColumn, int startRow, int endRow, int bend, Room room, Dir dir)
 		{
 			Dir otherDir = MapCoordinates.OtherDirection(dir);
 
 			// Create corridor to the bend
-			ExcavateCorridorRun(map, startColumn, startRow, bend, groom, dir);
+			ExcavateCorridorRun(map, startColumn, startRow, bend, room, dir);
 
 			// Create the cross corridor at the bend
-			ExcavateCorridorRun(map, bend, startColumn, endColumn, groom, otherDir);
+			ExcavateCorridorRun(map, bend, startColumn, endColumn, room, otherDir);
 
 			// Create the corridor from the bend to the destination
-			ExcavateCorridorRun(map, endColumn, bend, endRow, groom, dir);
+			ExcavateCorridorRun(map, endColumn, bend, endRow, room, dir);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -532,17 +532,17 @@ namespace CSRogue.Map_Generation
 		/// <remarks>	Variables named from the perspective of dir being vertical.  Darrellp, 9/18/2011. </remarks>
 		///
 		/// <param name="map">			The map to be excavated. </param>
-		/// <param name="roomTop">		The first room. </param>
-		/// <param name="roomBottom">	The second room. </param>
+		/// <param name="rectRoomTop">		The first room. </param>
+		/// <param name="rectRoomBottom">	The second room. </param>
 		/// <param name="dir">			The direction to excavate in. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private void ExcavateCorridor(IMap map, RectangularRoom roomTop, RectangularRoom roomBottom, Dir dir)
+		private void ExcavateCorridor(IMap map, RectangularRoom rectRoomTop, RectangularRoom rectRoomBottom, Dir dir)
 		{
 			// Locals
 			MapCoordinates bottomEntrance, topEntrance;
 
 			// Get the entrances to each room
-			GetEntrances(roomTop, roomBottom, dir, out topEntrance, out bottomEntrance);
+			GetEntrances(rectRoomTop, rectRoomBottom, dir, out topEntrance, out bottomEntrance);
 
 			// Allocate the generic room
 			int genericWidth = Math.Abs(topEntrance.Column - bottomEntrance.Column) + 1;
@@ -550,18 +550,18 @@ namespace CSRogue.Map_Generation
 			int genericLeft = Math.Min(topEntrance.Column, bottomEntrance.Column);
 			int genericBottom = Math.Min(topEntrance.Row, bottomEntrance.Row);
 			MapCoordinates genericLocation = new MapCoordinates(genericLeft, genericBottom);
-			GenericCorridor corridor = new GenericCorridor(genericWidth, genericHeight, genericLocation);
+			Room corridor = new Room(genericWidth, genericHeight, genericLocation);
 
 			// Excavate a connection between the two rooms
 			CreateBend(map, dir, topEntrance, bottomEntrance, corridor);
 
 			// Put the exits in the appropriate generic rooms
-			GenericRoom groomTop = _mapRoomToGenericRooms[roomTop];
-			GenericRoom groomBottom = _mapRoomToGenericRooms[roomBottom];
-			corridor.AddExit(groomTop, topEntrance);
-			corridor.AddExit(groomBottom, bottomEntrance);
-			groomTop.AddExit(corridor, topEntrance);
-			groomBottom.AddExit(corridor, bottomEntrance);
+			Room roomTop = _mapRoomToGenericRooms[rectRoomTop];
+			Room roomBottom = _mapRoomToGenericRooms[rectRoomBottom];
+			corridor.AddExit(roomTop, topEntrance);
+			corridor.AddExit(roomBottom, bottomEntrance);
+			roomTop.AddExit(corridor, topEntrance);
+			roomBottom.AddExit(corridor, bottomEntrance);
 
 
 			// Should we put a door in the top room?
@@ -588,9 +588,9 @@ namespace CSRogue.Map_Generation
 		/// <param name="dir">				The direction the merge will take place in. </param>
 		/// <param name="topEntrance">		The small coordinate entrance. </param>
 		/// <param name="bottomEntrance">	The large coordinate entrance. </param>
-		/// <param name="groom">			The room being prepared for this corridor. </param>
+		/// <param name="room">			The room being prepared for this corridor. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private void CreateBend(IMap map, Dir dir, MapCoordinates topEntrance, MapCoordinates bottomEntrance, GenericRoom groom)
+		private void CreateBend(IMap map, Dir dir, MapCoordinates topEntrance, MapCoordinates bottomEntrance, Room room)
 		{
 			// locals
 			Dir otherDir = MapCoordinates.OtherDirection(dir);
@@ -603,7 +603,7 @@ namespace CSRogue.Map_Generation
 			int bendRow = _rnd.Next(startRow + 1, endRow);
 
 			// Excavate the bend between the two rooms
-			ExcavateBend(map, startColumn, endColumn, startRow, endRow, bendRow, groom, dir);
+			ExcavateBend(map, startColumn, endColumn, startRow, endRow, bendRow, room, dir);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -794,34 +794,34 @@ namespace CSRogue.Map_Generation
 		private void AssignRoomsToCells(IRoomsMap map)
 		{
 			// For each room
-			foreach (var groom in _mapRoomToGenericRooms.Values)
+			foreach (var room in _mapRoomToGenericRooms.Values)
 			{
 				// Add in adjoining corridors
 				// Corridors were never added to _mapRoomToGenericRooms so we have
 				// to add them here
 
 				// For each adjoining room/corridor
-				foreach (var groomAdjoin in groom.NeighborRooms)
+				foreach (var roomAdjoin in room.NeighborRooms)
 				{
 					// Add the corridor to the map
-					AssignTilesInRoom(map, groomAdjoin);
+					AssignTilesInRoom(map, (Room)roomAdjoin);
 				}
 
 				// Add the room to the map
-				AssignTilesInRoom(map, groom);
+				AssignTilesInRoom(map, room);
 			}
 		}
 
-		private static void AssignTilesInRoom(IRoomsMap map, GenericRoom groom)
+		private static void AssignTilesInRoom(IRoomsMap map, IRoom room)
 		{
 			// Is this room being newly added to the map?
-			if (map.Rooms.Add(groom))
+			if (map.Rooms.Add(room))
 			{
 				// For each tile in the room
-				foreach (var tileLocation in groom.Tiles)
+				foreach (var tileLocation in room.Tiles())
 				{
 					// Assign the room to that tile
-					map[tileLocation].Room = groom;
+					map[tileLocation].Room = room;
 				}
 			}
 		}

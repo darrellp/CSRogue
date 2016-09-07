@@ -10,80 +10,35 @@ namespace CSRogue.Map_Generation
 	/// <summary>	Generic room. </summary>
 	///
 	/// <remarks>	
-	/// This encapsulates all we need to know about a room - namely, it's shape and how to get from
-	/// it to other rooms.  The exits in this structure do not "belong" to this room - i.e., their
-	/// position will correspond to floor in the adjoining room.  Every available floor space in the
-	/// map will belong to one unique room.  The layout is a 2D array of characters (input in the
-	/// constructor as a single string with rows separated by new lines).  Each character should be
-	/// either wall or floor characters (obtained from TerrainFactory.TerrainToChar() ) or a lower
-	/// case letter.  The letters correspond to exits.  Exit 'a' is an exit to the first room
-	/// in the _exits list, exit 'b' is an exit to the second room, etc..  If you've got more than
-	/// 26 exits in a single room, you're out of luck.  Darrellp, 9/27/2011.
-    /// 
-    /// Rooms exist in a larger "map" and Location gives their location on that map.  Thus two types
-    /// of coordinates exist for a room - local cooredinates which index directly into Layout, and
-    /// global or map coordinates which index into the map that the room is embedded in. Darrellp, 8/25/2016
+	/// The main difference . Darrellp, 8/25/2016
 	/// </remarks>
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	public class GenericRoom : IRoom
+	public class Room : IRoom
 	{
+		#region Private properties
 		private char[][] _layout;
 		private MapCoordinates _location;
-		private List<GenericRoom> _exits;
-		private Dictionary<MapCoordinates, GenericRoom> _exitMap;
-
-		#region Private variables
+		private List<Room> _neighborRooms;
+		private Dictionary<MapCoordinates, IRoom> _exitMap;
 		#endregion
 
-		#region Public Properties
-
+		#region IRoom Properties
+		/// <summary>	The layout map. </summary>
 		public char[][] Layout => _layout;
 
+		/// <summary>	The location in the parent map where the upper left corner of this room is located. </summary>
 		public MapCoordinates Location => _location;
 
-		public List<GenericRoom> Exits => _exits;
-
+		/// <summary>	The neighboring rooms. </summary>
+		public List<Room> NeighborRooms => _neighborRooms;
 		#endregion
 
 		#region Properties
-
 		/// <summary>   Matches global coordinates for exits to the rooms they lead to. </summary>
-		public Dictionary<MapCoordinates, GenericRoom> ExitMap => _exitMap;
-
-		/// <summary>   Gives coordinates for all the exits </summary>
-		public IEnumerable<MapCoordinates> ExitCoordinates => ExitMap.Keys;
-
-        /// <summary>   The neighboring rooms. </summary>
-	    public IEnumerable<GenericRoom> NeighborRooms => ExitMap.Values;
-
-        /// <summary>   Returns true if this is a corridor. </summary>
-	    public virtual bool IsCorridor => false;
-
-        /// <summary>   The width of the room's layout. </summary>
-        public int Width => Layout.Length;
-
-        /// <summary>   The height of the room's layout. </summary>
-        public int Height => Layout[0].Length;
-
-        /// <summary>   The left coordinate for the room. </summary>
-        public int Left => Location.Column;
-
-        /// <summary>   The top coordinate for the room. </summary>
-        public int Top => Location.Row;
-
-        /// <summary>   The right coordinate for the room. </summary>
-        public int Right => Left + Width - 1;
-
-        /// <summary>   The bottom coordinate for the room. </summary>
-	    public int Bottom => Top + Height - 1;
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets or sets a tag for the room. </summary>
-        ///
-        /// <remarks> Put anything in it you like </remarks>
-        /// <value> The tag. </value>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-		public object Tag { get; set; }
+		public Dictionary<MapCoordinates, IRoom> ExitMap
+		{
+			get { return _exitMap ?? (_exitMap = this.MapExitsToRooms()); }
+		}
 		#endregion
 
 		#region Constructors
@@ -92,16 +47,15 @@ namespace CSRogue.Map_Generation
 		///
 		/// <remarks>	Darrellp, 9/28/2011. </remarks>
 		///
-		/// <param name="layout">	The layout. </param>
-		/// <param name="location">	The location. </param>
-		/// <param name="exits">	The exits. </param>
+		/// <param name="layout">		The layout. </param>
+		/// <param name="location">		The location. </param>
+		/// <param name="neighbors">	The neighboring rooms. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal void Setup(char[][] layout, MapCoordinates location, List<GenericRoom> exits)
+		internal void Setup(char[][] layout, MapCoordinates location, List<Room> neighbors)
 		{
 			_layout = layout;
-			_exits = exits ?? new List<GenericRoom>();
+			_neighborRooms = neighbors ?? new List<Room>();
 			_location = location;
-			_exitMap = this.MapExitsToRooms();
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -111,11 +65,11 @@ namespace CSRogue.Map_Generation
 		///
 		/// <param name="layout">	The layout. </param>
 		/// <param name="location">	The location. </param>
-		/// <param name="exits">	The exits. </param>
+		/// <param name="neighbors">	The exits. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal GenericRoom(char[][] layout, MapCoordinates location, List<GenericRoom> exits)
+		internal Room(char[][] layout, MapCoordinates location, List<Room> neighbors)
 		{
-			Setup(layout, location, exits);
+			Setup(layout, location, neighbors);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -127,10 +81,10 @@ namespace CSRogue.Map_Generation
 		/// <param name="height">	The height. </param>
 		/// <param name="location">	The location. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal GenericRoom(int width, int height, MapCoordinates location)
+		internal Room(int width, int height, MapCoordinates location)
 		{
-			char[][] layout = new char[width][];
-			for (int iColumn = 0; iColumn < width; iColumn++)
+			var layout = new char[width][];
+			for (var iColumn = 0; iColumn < width; iColumn++)
 			{
 				layout[iColumn] = new char[height];
 			}
@@ -144,53 +98,27 @@ namespace CSRogue.Map_Generation
 		///
 		/// <param name="layout">	The layout. </param>
 		/// <param name="location">	The location. </param>
-		/// <param name="exits">	The exits. </param>
+		/// <param name="neighbors">	The exits. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal GenericRoom(string layout, MapCoordinates location, List<GenericRoom> exits)
+		internal Room(string layout, MapCoordinates location, List<Room> neighbors)
 		{
-			List<string> rows = layout.Split('\n').Select(s => s.TrimEnd('\r')).ToList();
-			char[][] layoutArray = new char[rows[0].Length][];
+			var rows = layout.Split('\n').Select(s => s.TrimEnd('\r')).ToList();
+			var layoutArray = new char[rows[0].Length][];
 
 
-			for (int iColumn = 0; iColumn < layoutArray.Length; iColumn++)
+			for (var iColumn = 0; iColumn < layoutArray.Length; iColumn++)
 			{
 				layoutArray[iColumn] = new char[rows.Count];
-				for (int iRow = 0; iRow < rows.Count; iRow++)
+				for (var iRow = 0; iRow < rows.Count; iRow++)
 				{
 					layoutArray[iColumn][iRow] = rows[iRow][iColumn];
 				}
 			}
-			Setup(layoutArray, location, exits);
-		}
-
-		protected GenericRoom()
-		{
+			Setup(layoutArray, location, neighbors);
 		}
 		#endregion
 
 		#region Queries
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Returns an enumeration of all our tile positions. </summary>
-		///
-		/// <value>	The tile positions. </value>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public IEnumerable<MapCoordinates> Tiles
-		{
-			get
-			{
-				for (var iRow = 0; iRow < Height; iRow++)
-				{
-					for (var iColumn = 0; iColumn < Width; iColumn++)
-					{
-						if (Layout[iColumn][iRow] == '.')
-						{
-							yield return new MapCoordinates(iColumn + Location.Column, iRow + Location.Row);
-						}
-					}
-				}
-			}
-		}
-
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Return true if a location is part of this room's floor. </summary>
 		///
@@ -202,8 +130,8 @@ namespace CSRogue.Map_Generation
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		public bool ContainsPosition(MapCoordinates location)
 		{
-			return location.Column >= Left && location.Column <= Right &&
-			       location.Row >= Top && location.Row <= Bottom &&
+			return location.Column >= this.Left() && location.Column <= this.Right() &&
+			       location.Row >= this.Top() && location.Row <= this.Bottom() &&
 			       this[location] == '.';
 		}
 		#endregion
@@ -235,12 +163,12 @@ namespace CSRogue.Map_Generation
 		{
 			get
 			{
-				MapCoordinates local = location - Location;
+				var local = location - Location;
 				return Layout[local.Column][local.Row];
 			}
 			set
 			{
-				MapCoordinates local = location - Location;
+				var local = location - Location;
 				Layout[local.Column][local.Row] = value;
 			}
 		}
@@ -252,34 +180,34 @@ namespace CSRogue.Map_Generation
 		///
 		/// <remarks>	This only affects the _layout field.  Darrellp, 9/27/2011. </remarks>
 		///
-		/// <param name="groom">		The room to be joined to this one. </param>
+		/// <param name="room">		The room to be joined to this one. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private void TransferTerrain(GenericRoom groom)
+		private void TransferTerrain(Room room)
 		{
 			// Locals
 			int mapColumn;
 			int localColumn;
 
 			// For each original column
-			for (localColumn = 0, mapColumn = groom.Left; localColumn < groom.Width; localColumn++, mapColumn++)
+			for (localColumn = 0, mapColumn = room.Left(); localColumn < room.Width(); localColumn++, mapColumn++)
 			{
 				// More locals
 				int mapRow;
 				int localRow;
 
 				// For each original row
-				for (localRow = 0, mapRow = groom.Top; localRow < groom.Height; localRow++, mapRow++)
+				for (localRow = 0, mapRow = room.Top(); localRow < room.Height(); localRow++, mapRow++)
 				{
 					// Get the terrain for this location
-					char character = groom.Layout[localColumn][localRow];
+					var character = room.Layout[localColumn][localRow];
 
 					// Is this an exit?
 					if (character >= 'a' && character <= 'z')
 					{
 						// Add it to our list of exits
-						int iRoom = (char) (character - 'a');
-						GenericRoom groomExitedTo = groom.Exits[iRoom];
-						character = AddExit(groomExitedTo, new MapCoordinates(mapColumn, mapRow));
+						var iRoom = (char) (character - 'a');
+						var roomExitedTo = room.NeighborRooms[iRoom];
+						character = AddExit(roomExitedTo, new MapCoordinates(mapColumn, mapRow));
 					}
 
 					// Is it non-null?
@@ -297,18 +225,18 @@ namespace CSRogue.Map_Generation
 		///
 		/// <remarks>	Darrellp, 9/27/2011. </remarks>
 		///
-		/// <param name="groom">	The room to be joined to this one. </param>
+		/// <param name="room">	The room to be joined to this one. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal void CombineWith(GenericRoom groom)
+		internal void CombineWith(Room room)
 		{
 			// Clone into a temporary room
-			GenericRoom roomTemp = new GenericRoom(Layout, Location, Exits);
+			Room roomTemp = new Room(Layout, Location, NeighborRooms);
 
 			// Get the new and old locations, sizes
-			int newLeft = Math.Min(Left, groom.Left);
-			int newRight = Math.Max(Right, groom.Right);
-			int newTop = Math.Min(Top, groom.Top);
-			int newBottom = Math.Max(Bottom, groom.Bottom);
+			int newLeft = Math.Min(this.Left(), room.Left());
+			int newRight = Math.Max(this.Right(), room.Right());
+			int newTop = Math.Min(this.Top(), room.Top());
+			int newBottom = Math.Max(this.Bottom(), room.Bottom());
 			int newHeight = newBottom - newTop + 1;
 			int newWidth = newRight - newLeft + 1;
 
@@ -317,7 +245,7 @@ namespace CSRogue.Map_Generation
 
 			// Clear our exits
 			// They'll come back in from the cloned room
-			_exits = new List<GenericRoom>();
+			_neighborRooms = new List<Room>();
 
 			// Allocate a new layout array
 			_layout = new char[newWidth][];
@@ -333,34 +261,34 @@ namespace CSRogue.Map_Generation
 			TransferTerrain(roomTemp);
 
 			// Move the other room's data into ourself
-			TransferTerrain(groom);
+			TransferTerrain(room);
 
-			// Update pointers for any rooms which connected to groom
-			UpdateConnectedRoomsToPointToUs(groom);
+			// Update pointers for any rooms which connected to room
+			UpdateConnectedRoomsToPointToUs(room);
 
 			// Set up our exit map
 			_exitMap = this.MapExitsToRooms();
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Updates the rooms connected to groom to point to us. </summary>
+		/// <summary>	Updates the rooms connected to room to point to us. </summary>
 		///
 		/// <remarks>	Darrellp, 9/28/2011. </remarks>
 		///
-		/// <param name="groom">	The room whose connected rooms are to be joined to this one. </param>
+		/// <param name="room">	The room whose connected rooms are to be joined to this one. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private void UpdateConnectedRoomsToPointToUs(GenericRoom groom)
+		private void UpdateConnectedRoomsToPointToUs(Room room)
 		{
 			// For each exit in the old room
-			foreach (var exitInfo in groom.ExitMap)
+			foreach (var exitInfo in room.ExitMap)
 			{
 				// Get the room on the other side
 				MapCoordinates location = exitInfo.Key;
-				GenericRoom groomExitedTo = exitInfo.Value;
-				int indexToUs = groomExitedTo[location] - 'a';
+				IRoom roomExitedTo = exitInfo.Value;
+				int indexToUs = roomExitedTo.At(location) - 'a';
 
 				// and point it back to us
-				groomExitedTo.Exits[indexToUs] = this;
+				roomExitedTo.NeighborRooms[indexToUs] = this;
 			}
 		}
 
@@ -369,18 +297,18 @@ namespace CSRogue.Map_Generation
 		///
 		/// <remarks>	Darrellp, 9/28/2011. </remarks>
 		///
-		/// <param name="groom">	The room to be joined to this one. </param>
-		/// <param name="location">	The location the exit to groom will be. </param>
+		/// <param name="room">	The room to be joined to this one. </param>
+		/// <param name="location">	The location the exit to room will be. </param>
 		///
 		/// <returns>	The character allocated for the new exit. </returns>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal char AddExit(GenericRoom groom, MapCoordinates location)
+		internal char AddExit(Room room, MapCoordinates location)
 		{
-			char exitChar = (char) ('a' + Exits.Count);
+			char exitChar = (char) ('a' + NeighborRooms.Count);
 
-			Exits.Add(groom);
+			NeighborRooms.Add(room);
 			this[location] = exitChar;
-			ExitMap[location] = groom;
+			ExitMap[location] = room;
 			return exitChar;
 		}
 		#endregion
@@ -389,9 +317,9 @@ namespace CSRogue.Map_Generation
 		public override string ToString()
 		{
 			StringBuilder sbret = new StringBuilder();
-			for (int iRow = 0; iRow < Height; iRow++)
+			for (int iRow = 0; iRow < this.Height(); iRow++)
 			{
-				for (int iCol = 0; iCol < Width; iCol++)
+				for (int iCol = 0; iCol < this.Width(); iCol++)
 				{
 					char chNext = Layout[iCol][iRow];
 					if (chNext == '\0')
@@ -400,7 +328,7 @@ namespace CSRogue.Map_Generation
 					}
 					sbret.Append(chNext);
 				}
-				sbret.Append("\r\n");
+				sbret.Append(Environment.NewLine);
 			}
 
 			return sbret.ToString();

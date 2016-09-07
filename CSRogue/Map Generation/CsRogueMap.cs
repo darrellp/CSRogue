@@ -18,7 +18,7 @@ namespace CSRogue.Map_Generation
 	{
 		#region Private variables
 		private readonly MapLocationData[][] _mapLocationData;
-        private readonly HashSet<GenericRoom> _rooms  = new HashSet<GenericRoom>();
+        private readonly HashSet<IRoom> _rooms  = new HashSet<IRoom>();
         #endregion
 
         #region Properties
@@ -66,7 +66,7 @@ namespace CSRogue.Map_Generation
 	    /// <value> The rooms. </value>
 	    ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	    public ISet<GenericRoom> Rooms => _rooms;
+	    public ISet<IRoom> Rooms => _rooms;
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Gets or sets the fov information for the map. </summary>
@@ -244,13 +244,13 @@ namespace CSRogue.Map_Generation
 		///
 		/// <remarks>	Darrellp, 10/6/2011. </remarks>
 		///
-		/// <param name="groom">	The generic room to be added. </param>
+		/// <param name="room">	The generic room to be added. </param>
 		///
 		/// <returns>	true if the room has already been added, false if it hasn't. </returns>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public bool AddRoom(GenericRoom groom)
+		public bool AddRoom(Room room)
 		{
-			return Rooms.Add(groom);
+			return Rooms.Add(room);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////

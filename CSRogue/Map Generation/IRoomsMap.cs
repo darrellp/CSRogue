@@ -6,6 +6,6 @@ namespace CSRogue.Map_Generation
     public interface IRoomsMap : IMap
     {
         // If your excavator doesn't produce rooms then this can go unimplemented
-        ISet<GenericRoom> Rooms { get; }
+        ISet<IRoom> Rooms { get; }
     }
 }

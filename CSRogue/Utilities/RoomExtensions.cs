@@ -17,6 +17,69 @@ namespace CSRogue.Utilities
 			return room.Layout.Length;
 		}
 
+		/// <summary>   The left coordinate for the room. </summary>
+		public static int Left(this IRoom room)
+		{
+			return room.Location.Column;
+		}
+
+		/// <summary>  The top coordinate for the room. </summary>
+		public static int Top(this IRoom room)
+		{
+			return room.Location.Row;
+		}
+
+		/// <summary>  The right coordinate for the room. </summary>
+		public static int Right(this IRoom room)
+		{
+			return room.Left() + room.Width() - 1;
+		}
+
+		/// <summary>  The bottom coordinate for the room. </summary>
+		public static int Bottom(this IRoom room)
+		{
+			return room.Top() + room.Height() - 1;
+		}
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		/// <summary>	Returns an enumeration of all our tile positions. </summary>
+		///
+		/// <value>	The tile positions. </value>
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		public static IEnumerable<MapCoordinates> Tiles(this IRoom room)
+		{
+			for (var iRow = 0; iRow < room.Height(); iRow++)
+			{
+				for (var iColumn = 0; iColumn < room.Width(); iColumn++)
+				{
+					if (room.Layout[iColumn][iRow] == '.')
+					{
+						yield return new MapCoordinates(iColumn + room.Location.Column, iRow + room.Location.Row);
+					}
+				}
+			}
+		}
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		/// <summary>	Indexer using global (map) row and column arguments. </summary>
+		///
+		/// <value>	The indexed item. </value>
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		public static char At(this IRoom room, int iCol, int iRow)
+		{
+			return room.Layout[iCol - room.Location.Column][iRow - room.Location.Row];
+		}
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		/// <summary>	Indexer using global (map) row and column arguments. </summary>
+		///
+		/// <value>	The indexed item. </value>
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		public static char At(this IRoom room, MapCoordinates crd)
+		{
+			return room.At(crd.Column, crd.Row);
+		}
+
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Map exits (in local coordinates) to the rooms they exit to. </summary>
 		///
@@ -27,9 +90,9 @@ namespace CSRogue.Utilities
 		/// <returns>	A dictionary mapping local coordinates to the corresponding room </returns>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		public static Dictionary<MapCoordinates, GenericRoom> MapExitsToRooms(this IRoom room)
+		public static Dictionary<MapCoordinates, IRoom> MapExitsToRooms(this IRoom room)
 		{
-			var exitMap = new Dictionary<MapCoordinates, GenericRoom>();
+			var exitMap = new Dictionary<MapCoordinates, IRoom>();
 
 			// Clear out any current entries
 			exitMap.Clear();
@@ -50,7 +113,7 @@ namespace CSRogue.Utilities
 						var iRoom = thisCharacter - 'a';
 
 						// and map the location to the room it exits to
-						exitMap[new MapCoordinates(iColumn, iRow) + room.Location] = room.Exits[iRoom];
+						exitMap[new MapCoordinates(iColumn, iRow) + room.Location] = room.NeighborRooms[iRoom];
 					}
 				}
 			}
