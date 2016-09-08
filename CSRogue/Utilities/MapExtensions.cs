@@ -221,10 +221,33 @@ namespace CSRogue.Utilities
             return map.Walkable(location) && !map.IsCreatureAt(location);
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>	Locates the stairwell. </summary>
+        ///
+        /// <remarks>	Darrellp, 10/8/2011. </remarks>
+        ///
+        /// <exception cref="RogueException">	Thrown when no stairwell was found on the map. </exception>
+        ///
+        /// <returns>	Location of the stairwell. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        public static MapCoordinates LocateStairwell(this IMap map)
+        {
+            for (var iRow = 0; iRow < map.Height; iRow++)
+            {
+                for (var iColumn = 0; iColumn < map.Width; iColumn++)
+                {
+                    if (map[iColumn, iRow].Terrain == TerrainType.StairsUp)
+                    {
+                        return new MapCoordinates(iColumn, iRow);
+                    }
+                }
+            }
+            throw new RogueException("Stairwell not found in map");
+        }
 
-		#region Terrain States
-		#region In View
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        #region Terrain States
+        #region In View
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool InView(this IMap map, int x, int y)
 		{
 			return map.Value(TerrainState.InView, x, y);

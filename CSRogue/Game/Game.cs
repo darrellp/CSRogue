@@ -27,7 +27,7 @@ namespace CSRogue.GameControl
 		///
 		/// <value>	The current level. </value>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public Level CurrentLevel { get; private set; }
+		public ILevel CurrentLevel { get; private set; }
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Gets or sets the excavator. </summary>
@@ -132,35 +132,11 @@ namespace CSRogue.GameControl
 		{
 			CurrentLevel = new Level(levelCommand.Level, Map, levelCommand.ItemFactory, levelCommand.Rarity, levelCommand.Excavator);
             Map.Fov = new FOV(Map, levelCommand.FOVRows, levelCommand.Filter);
-			Map.MoveCreatureTo(Map.Player, LocateStairwell(), true);
+			Map.MoveCreatureTo(Map.Player, Map.LocateStairwell(), true);
 			InvokeEvent(EventType.NewLevel, this);
 		}
 
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Locates the stairwell. </summary>
-		///
-		/// <remarks>	Darrellp, 10/8/2011. </remarks>
-		///
-		/// <exception cref="RogueException">	Thrown when no stairwell was found on the map. </exception>
-		///
-		/// <returns>	Location of the stairwell. </returns>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private MapCoordinates LocateStairwell()
-		{
-			for (var iRow  = 0; iRow  < Map.Height; iRow ++)
-			{
-				for (var iColumn = 0; iColumn < Map.Width; iColumn++)
-				{
-					if (Map[iColumn, iRow].Terrain == TerrainType.StairsUp)
-					{
-						return new MapCoordinates(iColumn, iRow);
-					}
-				}
-			}
-			throw new RogueException("Stairwell not found in map");
-		}
-
-		////////////////////////////////////////////////////////////////////////////////////////////////////
+	    ////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Queues up a command to be processed in next processing round. </summary>
 		///
 		/// <remarks>	Darrellp, 10/11/2011. </remarks>
