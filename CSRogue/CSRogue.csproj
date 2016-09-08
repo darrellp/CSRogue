@@ -62,6 +62,7 @@
     <Compile Include="Items\ICreature.cs" />
     <Compile Include="Items\IPlayer.cs" />
     <Compile Include="Map Generation\IGameMap.cs" />
+    <Compile Include="Map Generation\ILevel.cs" />
     <Compile Include="Map Generation\IMap.cs" />
     <Compile Include="Item Handling\CreatureInfo.cs" />
     <Compile Include="EventArgs\CreatureMoveEventArgs.cs" />
@@ -87,6 +88,7 @@
     <Compile Include="Map Generation\MapCoordinates.cs" />
     <Compile Include="Map Generation\MapLocationData.cs" />
     <Compile Include="Utilities\GameMapExtensions.cs" />
+    <Compile Include="Utilities\LevelExtensions.cs" />
     <Compile Include="Utilities\MapExtensions.cs" />
     <Compile Include="Utilities\PerThreadSingleton.cs" />
     <Compile Include="Utilities\Preferences.cs" />

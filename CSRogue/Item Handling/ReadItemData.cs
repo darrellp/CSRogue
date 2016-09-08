@@ -79,7 +79,7 @@ namespace CSRogue.Item_Handling
 			return info;
 		}
 
-		private Func<Level, IItem> GetConstructor(Guid id, string s)
+		private Func<ILevel, IItem> GetConstructor(Guid id, string s)
 		{
 			var type = _typeAssembly.GetType(s);
 			return l =>
