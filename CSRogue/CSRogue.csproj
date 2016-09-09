@@ -90,6 +90,7 @@
     <Compile Include="Utilities\GameMapExtensions.cs" />
     <Compile Include="Utilities\LevelExtensions.cs" />
     <Compile Include="Utilities\MapExtensions.cs" />
+    <Compile Include="Utilities\PerlinNoise.cs" />
     <Compile Include="Utilities\PerThreadSingleton.cs" />
     <Compile Include="Utilities\Preferences.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
