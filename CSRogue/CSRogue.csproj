@@ -54,7 +54,6 @@
     <Compile Include="Game\Commands\IRogueCommand.cs" />
     <Compile Include="Game\Game.cs" />
     <Compile Include="Game\Commands\MovementCommand.cs" />
-    <Compile Include="Game\ICommandDispatcher.cs" />
     <Compile Include="Item Handling\IItem.cs" />
     <Compile Include="Item Handling\IItemFactory.cs" />
     <Compile Include="Item Handling\ItemFactory.cs" />
