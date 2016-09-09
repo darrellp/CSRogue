@@ -17,8 +17,7 @@ namespace CSRogue.GameControl
 	public class Game
 	{
 		#region Private variables
-		readonly CommandDispatcher _commandDispatcher;
-		private readonly CommandQueue _commandQueue;
+	    private readonly CommandQueue _commandQueue;
 		#endregion
 
 		#region Public Variables
@@ -27,7 +26,7 @@ namespace CSRogue.GameControl
 		///
 		/// <value>	The current level. </value>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public ILevel CurrentLevel { get; private set; }
+		public ILevel CurrentLevel { get; internal set; }
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Gets or sets the excavator. </summary>
@@ -112,29 +111,13 @@ namespace CSRogue.GameControl
 		#endregion
 
 		#region Modification
-		public Game(IItemFactory factory, CommandDispatcher commandDispatcher = null)
+		public Game(IItemFactory factory)
 		{
 		    Factory = factory;
-			_commandDispatcher = commandDispatcher ?? new CommandDispatcher(this);
 			_commandQueue = new CommandQueue(this);
 		}
 
 	    public IItemFactory Factory { get; set; }
-
-	    ////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Sets a level. </summary>
-		///
-		/// <remarks>	Should normally be invoked only by a command.  Darrellp, 10/8/2011. </remarks>
-		///
-		/// <param name="levelCommand">	The level command which invoked this. </param>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal void SetLevel(NewLevelCommand levelCommand)
-		{
-			CurrentLevel = new Level(levelCommand.Level, Map, levelCommand.ItemFactory, levelCommand.Rarity, levelCommand.Excavator);
-            Map.Fov = new FOV(Map, levelCommand.FOVRows, levelCommand.Filter);
-			Map.MoveCreatureTo(Map.Player, Map.LocateStairwell(), true);
-			InvokeEvent(EventType.NewLevel, this);
-		}
 
 	    ////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Queues up a command to be processed in next processing round. </summary>
@@ -180,7 +163,7 @@ namespace CSRogue.GameControl
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		internal void Dispatch(IRogueCommand command)
 		{
-			_commandDispatcher.Dispatch(command);
+		    command?.Execute(this);
 		}
 
 		#endregion

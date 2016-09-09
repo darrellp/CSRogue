@@ -68,10 +68,7 @@ namespace RogueTests
 
 		public FOV Test(string mapString, MapCoordinates location, int maxRow, int countSeen)
 		{
-            var reader = new StringReader(mapString);
-			var excavator = new FileExcavator(reader, null);
-			var csRogueMap = new CsRogueMap();
-			excavator.Excavate(csRogueMap);
+			var csRogueMap = new BaseMap(mapString, Initialization.ItemFactory);
 
 			var fov = new FOV(csRogueMap, maxRow);
 			fov.Scan(location);
@@ -93,7 +90,7 @@ namespace RogueTests
 ...............
 ...............
 ...............";
-			Test(mapString, new MapCoordinates(0, 0), 5, 37);
+			Test(mapString, new MapCoordinates(0, 0), 5, 26);
 
 			mapString =
 @"...............
@@ -104,7 +101,7 @@ namespace RogueTests
 ...............
 ...............
 ...............";
-			Test(mapString, new MapCoordinates(0, 0), 4, 23);
+			Test(mapString, new MapCoordinates(0, 0), 4, 14);
 
 			mapString =
 @"...............
@@ -115,14 +112,14 @@ namespace RogueTests
 ...............
 ...............
 ...............";
-			var fov = Test(mapString, new MapCoordinates(0, 0), 4, 26);
+			var fov = Test(mapString, new MapCoordinates(0, 0), 4, 17);
 			fov.Scan(new MapCoordinates(1, 0));
-			Assert.AreEqual(6, fov.NewlySeen.ToList().Count);
+			Assert.AreEqual(5, fov.NewlySeen.ToList().Count);
 			Assert.AreEqual(1, fov.NewlyUnseen.ToList().Count);
-			Test(mapString, new MapCoordinates(14, 7), 4, 26);
-			Test(mapString, new MapCoordinates(0, 7), 4, 26);
-			Test(mapString, new MapCoordinates(14, 0), 4, 26);
-			Test(mapString, new MapCoordinates(7, 3), 4, 49);
+			Test(mapString, new MapCoordinates(14, 7), 4, 17);
+			Test(mapString, new MapCoordinates(0, 7), 4, 17);
+			Test(mapString, new MapCoordinates(14, 0), 4, 17);
+			Test(mapString, new MapCoordinates(7, 3), 4, 48);
 
 			mapString =
 @"...#...........
@@ -133,8 +130,8 @@ namespace RogueTests
 ...............
 ...............
 ...............";
-			Test(mapString, new MapCoordinates(0, 0), 4, 25);
-			Test(mapString, new MapCoordinates(0, 0), 5, 34);
+			Test(mapString, new MapCoordinates(0, 0), 4, 16);
+			Test(mapString, new MapCoordinates(0, 0), 5, 24);
 
 			mapString =
 @"...............

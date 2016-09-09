@@ -28,7 +28,6 @@ namespace CSRogue.GameControl.Commands
 		/// <param name="location">	The location to move the creature to. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		public MoveToCommand(ICreature creature, MapCoordinates location)
-			: base(CommandType.MoveTo)
 		{
 			Creature = creature;
 			Location = location;

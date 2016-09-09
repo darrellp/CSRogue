@@ -1,7 +1,9 @@
-﻿namespace CSRogue.GameControl.Commands
+﻿using CSRogue.Map_Generation;
+
+namespace CSRogue.GameControl.Commands
 {
 	public interface IRogueCommand
 	{
-		CommandType Command { get; }
+	    bool Execute(Game game);
 	}
 }

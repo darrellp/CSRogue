@@ -58,20 +58,13 @@ namespace CSRogue.Map_Generation
 		/// <param name="map">			The map for the level. </param>
 		/// <param name="factory">  	The items in our game. </param>
 		/// <param name="rarity">   	The rarity. </param>
-		/// <param name="excavator">	(Optional) the excavator to create the map. </param>
-		/// <param name="seed">			(Optional) the seed. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		public Level(int depth, IGameMap map, IItemFactory factory, Dictionary<Guid, int> rarity, IExcavator excavator = null, int seed = -1 )
+		public Level(int depth, IGameMap map, IItemFactory factory, Dictionary<Guid, int> rarity)
 		{
 			_factory = factory;
-		    Map = map ?? new CsRogueMap();
+		    Map = map;
             Depth = depth;
-			if (excavator == null)
-			{
-                excavator = new GridExcavator(seed);
-			}
-			excavator.Excavate(Map);
 			this.DistributeItems(rarity);
 		}
         #endregion

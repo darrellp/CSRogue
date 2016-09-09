@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -221,28 +222,85 @@ namespace CSRogue.Utilities
             return map.Walkable(location) && !map.IsCreatureAt(location);
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>	Locates the stairwell. </summary>
-        ///
-        /// <remarks>	Darrellp, 10/8/2011. </remarks>
-        ///
-        /// <exception cref="RogueException">	Thrown when no stairwell was found on the map. </exception>
-        ///
-        /// <returns>	Location of the stairwell. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        public static MapCoordinates LocateStairwell(this IMap map)
+        public static List<MapCoordinates> LocateTerrain(this IMap map, TerrainType type, bool fFirstOnly = false)
+        {
+            var ret = new List<MapCoordinates>();
+            for (var iRow = 0; iRow < map.Height; iRow++)
+            {
+                for (var iColumn = 0; iColumn < map.Width; iColumn++)
+                {
+                    if (map[iColumn, iRow].Terrain == type)
+                    {
+                        ret.Add(new MapCoordinates(iColumn, iRow));
+                        if (fFirstOnly)
+                        {
+                            return ret;
+                        }
+                    }
+                }
+            }
+            return ret;
+        }
+
+        public static List<MapCoordinates> LocateItems(this IMap map, Guid id, bool fFirstOnly = false)
+        {
+            var ret = new List<MapCoordinates>();
+            for (var iRow = 0; iRow < map.Height; iRow++)
+            {
+                for (var iColumn = 0; iColumn < map.Width; iColumn++)
+                {
+                    if (map[iColumn, iRow].Items.FirstOrDefault(i => i.ItemTypeId == id) != null)
+                    {
+                        ret.Add(new MapCoordinates(iColumn, iRow));
+                        if (fFirstOnly)
+                        {
+                            return ret;
+                        }
+                    }
+                }
+            }
+            return ret;
+        }
+
+        public static ICreature LocatePlayer(this IGameMap map)
         {
             for (var iRow = 0; iRow < map.Height; iRow++)
             {
                 for (var iColumn = 0; iColumn < map.Width; iColumn++)
                 {
-                    if (map[iColumn, iRow].Terrain == TerrainType.StairsUp)
+                    var trialPlayer = map[iColumn, iRow].Items.FirstOrDefault(i => map.Game.Factory.InfoFromId[i.ItemTypeId].IsPlayer);
+                    if (trialPlayer != null)
                     {
-                        return new MapCoordinates(iColumn, iRow);
+                        return (ICreature)trialPlayer;
                     }
                 }
             }
-            throw new RogueException("Stairwell not found in map");
+            return null;
+        }
+
+        public static void SetPlayer(this IGameMap map, bool moveToStairwell)
+        {
+            if (map.Player == null)
+            {
+                var player = map.LocatePlayer();
+                if (player != null)
+                {
+                    map.Player = (IPlayer)player;
+                }
+                else
+                {
+                    map.Player = new Player();
+                }
+            }
+            if (moveToStairwell)
+            {
+                var stairwellLoc = map.LocateTerrain(TerrainType.StairsDown, true);
+                if (stairwellLoc.Count > 0)
+                {
+                    map.MoveCreatureTo(map.Player, stairwellLoc[0]);
+                }
+            }
+            
         }
 
         #region Terrain States

@@ -416,7 +416,10 @@ namespace CSRogue.Map_Generation
                 case 6: nx += y; ny += x; break;
                 case 7: nx += x; ny += y; break;
             }
-            _currentFOV.Add(new MapCoordinates(nx, ny));
+            if (_csRogueMap.Contains(nx, ny))
+            {
+                _currentFOV.Add(new MapCoordinates(nx, ny));
+            }
         }
 
         int GetDistanceSq(int x, int y)

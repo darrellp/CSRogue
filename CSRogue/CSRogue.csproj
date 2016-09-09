@@ -47,20 +47,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EventArgs\AttackEventArgs.cs" />
-    <Compile Include="Game\CommandDispatcher.cs" />
     <Compile Include="Game\CommandQueue.cs" />
     <Compile Include="Game\Commands\CommandBase.cs" />
     <Compile Include="Game\Commands\MoveToCommand.cs" />
     <Compile Include="Game\Commands\NewLevelCommand.cs" />
     <Compile Include="Game\Commands\IRogueCommand.cs" />
-    <Compile Include="Game\CommandType.cs" />
     <Compile Include="Game\Game.cs" />
     <Compile Include="Game\Commands\MovementCommand.cs" />
+    <Compile Include="Game\ICommandDispatcher.cs" />
     <Compile Include="Item Handling\IItem.cs" />
     <Compile Include="Item Handling\IItemFactory.cs" />
     <Compile Include="Item Handling\ItemFactory.cs" />
     <Compile Include="Items\ICreature.cs" />
     <Compile Include="Items\IPlayer.cs" />
+    <Compile Include="Map Generation\BaseMap.cs" />
+    <Compile Include="Map Generation\GameMap.cs" />
     <Compile Include="Map Generation\IGameMap.cs" />
     <Compile Include="Map Generation\ILevel.cs" />
     <Compile Include="Map Generation\IMap.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="Map Generation\IRoomsMap.cs" />
     <Compile Include="Map Generation\Level.cs" />
     <Compile Include="Map Generation\NullExcavator.cs" />
+    <Compile Include="Map Generation\RoomMap.cs" />
     <Compile Include="Utilities\BresenhamStepper.cs" />
     <Compile Include="Utilities\DieRoll.cs" />
     <Compile Include="Item Handling\ReadCreatureData.cs" />
@@ -84,7 +86,6 @@
     <Compile Include="Items\Creature.cs" />
     <Compile Include="Items\Player.cs" />
     <Compile Include="Map Generation\GridExcavator.cs" />
-    <Compile Include="Map Generation\CsRogueMap.cs" />
     <Compile Include="Map Generation\MapCoordinates.cs" />
     <Compile Include="Map Generation\MapLocationData.cs" />
     <Compile Include="Utilities\GameMapExtensions.cs" />

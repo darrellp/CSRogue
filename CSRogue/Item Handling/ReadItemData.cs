@@ -136,7 +136,8 @@ namespace CSRogue.Item_Handling
 			(t, s, i) => i.Weight = Double.Parse(s),
 			(t, s, i) => i.Value = Int32.Parse(s),
 			(t, s, i) => i.Description = s,
-			(t, s, i) => i.CreateItem = t.GetConstructor(i.ItemId, s)
+			(t, s, i) => i.CreateItem = t.GetConstructor(i.ItemId, s),
+            (t, s, i) => i.IsPlayer = true,
 		};
 
 		private static readonly List<Action<ReadItemData, string, ItemInfo>> DefaultDispatchTable = new List<Action<ReadItemData, string, ItemInfo>>
@@ -159,8 +160,8 @@ namespace CSRogue.Item_Handling
 			(s, i) => i.Rarity = int.Parse(s),
 			(s, i) => i.Color = (RogueColor)Enum.Parse(typeof(RogueColor), s),
 			(s, i) => i.Speed = int.Parse(s),
-			(s, i) => i.ArmorClass = int.Parse(s)
-		};
+			(s, i) => i.ArmorClass = int.Parse(s),
+        };
 
 		private static readonly List<Action<string, CreatureInfo>> DefaultCreatureDispatchTable = new List<Action<string, CreatureInfo>>
 		{

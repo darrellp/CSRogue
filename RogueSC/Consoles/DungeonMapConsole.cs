@@ -32,7 +32,7 @@ namespace RogueSC.Consoles
 
         #region Private Variables
         /// <summary>   The CSRogue map. </summary>
-        private CsRogueMap _csRogueMap;
+        private BaseMap _map;
 
         /// <summary>   Information describing the map.  Not sure that this isn't
         ///             subsumed by the _map information.  Probably is. </summary>
@@ -115,9 +115,9 @@ namespace RogueSC.Consoles
 
         private void GenerateMap()
         {
-            _csRogueMap = new CsRogueMap(Width, Height);
+            _map = new BaseMap(Width, Height);
             var excavator = new GridExcavator();
-            excavator.Excavate(_csRogueMap);
+            excavator.Excavate(_map);
             // Create the local cache of map data
             // 
             _mapData = new MapObject[Width, Height];
@@ -127,19 +127,19 @@ namespace RogueSC.Consoles
             {
                 for (var iRow = 0; iRow < Height; iRow++)
                 {
-                    var terrain = _csRogueMap[iCol, iRow].Terrain;
+                    var terrain = _map[iCol, iRow].Terrain;
                     if (terrain == TerrainType.OffMap)
                     {
                         continue;
                     }
-                    var str = MapTerrainToAppearance[_csRogueMap[iCol, iRow].Terrain];
+                    var str = MapTerrainToAppearance[_map[iCol, iRow].Terrain];
                     var obj = _mapData[iCol, iRow] = new MapObject(MapObjectFactory.ObjectNameToAppearance[str]);
                     obj.Appearance.CopyAppearanceTo(this[iCol, iRow]);
                     obj.RemoveCellFromView(this[iCol, iRow]);
                 }
             }
 
-            Player.Position = _csRogueMap.RandomFloorLocation().ToPoint();
+            Player.Position = _map.RandomFloorLocation().ToPoint();
 
             // Center the veiw area
             TextSurface.RenderArea = new Rectangle(Player.Position.X - (TextSurface.RenderArea.Width / 2),
@@ -147,7 +147,7 @@ namespace RogueSC.Consoles
                                                     TextSurface.RenderArea.Width, TextSurface.RenderArea.Height);
 
             Player.RenderOffset = Position - TextSurface.RenderArea.Location;
-            _fov = new FOV(_csRogueMap, FovDistance);
+            _fov = new FOV(_map, FovDistance);
             _fov.Scan(Player.Position.ToMapCoordinates());
             foreach (var loc in _fov.CurrentlySeen)
             {
@@ -172,11 +172,10 @@ namespace RogueSC.Consoles
             var newPosition = Player.Position + amount;
 
             // Check to see if the position is within the map
-            if (new Rectangle(0, 0, Width, Height).Contains(newPosition) && _csRogueMap.Walkable(newPosition.X, newPosition.Y))
+            if (new Rectangle(0, 0, Width, Height).Contains(newPosition) && _map.Walkable(newPosition.X, newPosition.Y))
             {
                 // Move the player
                 Player.Position += amount;
-                _csRogueMap.Player.Location = Player.Position.ToMapCoordinates();
 
                 // Scroll the view area to center the player on the screen
                 TextSurface.RenderArea = new Rectangle(Player.Position.X - (TextSurface.RenderArea.Width / 2),

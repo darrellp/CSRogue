@@ -51,6 +51,10 @@ namespace CSRogue.Utilities
 
         public static void DistributeItems(this ILevel level, Dictionary<Guid, int> rarity)
         {
+            if (rarity == null)
+            {
+                return;
+            }
             var itemInfoList = rarity.Keys.Select(guid => level.Factory.InfoFromId[guid]);
             var creatureInfoList = new List<ItemInfo>();
             var inanimateInfoList = new List<ItemInfo>();

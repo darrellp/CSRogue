@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using CSRogue.Item_Handling;
 using CSRogue.Utilities;
 
@@ -19,55 +20,56 @@ namespace CSRogue.Map_Generation
 	{
 		#region Private variables
 		private readonly List<string> _asciiLines = new List<string>();
-	    private readonly IItemFactory _factory;
+	    private IItemFactory _factory;
         private readonly Dictionary<char, Guid> _charToId = new Dictionary<char, Guid>();
 		#endregion
 
 		#region Constructor
-		internal FileExcavator(TextReader reader, IItemFactory factory)
-		{
-			// While there are lines to read
-			while (true)
-			{
-			    var line = reader.ReadLine();
-			    if (line == null)
-			    {
-			        break;
-			    }
-				_asciiLines.Add(line);
-			    _factory = factory;
-			    if (_factory != null)
-			    {
-			        foreach (var itemInfo in factory.InfoFromId)
-			        {
-			            _charToId[itemInfo.Value.Character] = itemInfo.Key;
-			        }
-			    }
-			}
-		} 
-		#endregion
 
-		#region Excavate by reading from a file
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Excavates the rooms for a level based on a text stream. </summary>
-		///
-		/// <remarks>	Darrellp, 9/16/2011. </remarks>
-		///
-		/// <param name="map">		The map to be excavated. </param>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public void Excavate(IMap map)
+	    public FileExcavator(string mapString, IItemFactory factory) : this(new StringReader(mapString), factory){ }
+
+		public FileExcavator(TextReader reader, IItemFactory factory)
 		{
-			// For each line in the file
-			for (var iRow = 0; iRow < _asciiLines.Count && iRow < map.Height; iRow++)
+            var line = reader.ReadLine();
+            while (line != null)
+            {
+                _asciiLines.Add(line);
+                line = reader.ReadLine();
+            }
+            _factory = factory;
+            if (_factory != null)
+            {
+                foreach (var itemInfo in factory.InfoFromId)
+                {
+                    _charToId[itemInfo.Value.Character] = itemInfo.Key;
+                }
+            }
+        }
+        #endregion
+
+        #region Excavate by reading from a file
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>	Excavates the rooms for a level based on a text stream. </summary>
+        ///
+        /// <remarks>	Darrellp, 9/16/2011. </remarks>
+        ///
+        /// <param name="map">		The map to be excavated. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        public void Excavate(IMap map)
+        {
+            map.Width = _asciiLines.Select(l => l.Length).Aggregate((l1, l2) => Math.Max(l1, l2));
+            map.Height = _asciiLines.Count;
+
+            // For each line in the file
+            for (var iRow = 0; iRow < _asciiLines.Count && iRow < map.Height; iRow++)
 			{
 				// Read the line
 				var currentLine = _asciiLines[iRow];
 
 				// Insert the line into the current row
 				InsertRow(map, currentLine, iRow);
-					
 			}
-		}
+        }
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Inserts a single read row into the map. </summary>
@@ -108,6 +110,7 @@ namespace CSRogue.Map_Generation
 				else
 				{
 					map.SetBlocksView(iCol, iRow, false);
+                    map.SetWalkable(iCol, iRow);
 				}
 			}
 		}

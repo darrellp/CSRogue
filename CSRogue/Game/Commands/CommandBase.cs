@@ -2,11 +2,13 @@
 {
 	public class CommandBase : IRogueCommand
 	{
-		public CommandType Command { get; }
+	    public virtual bool Execute(Game game)
+	    {
+	        return false;
+	    }
 
-		public CommandBase(CommandType command)
-		{
-			Command = command;
-		}
+	    public CommandBase()
+	    {
+	    }
 	}
 }
