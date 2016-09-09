@@ -14,6 +14,16 @@ namespace CSRogue.GameControl
 		Attack
 	}
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// <summary>   A game. </summary>
+    ///
+    /// <remarks>   Game is pretty much just a gathering place for all the information about the
+    ///             game as well as a dispatcher for the events which occur during the game.  Tasks
+    ///             can be queued up and then processed in one turn.  This ensures that two conflicting
+    ///             events happen in a definitive order and separates events from each other.
+    ///             Darrell, 9/9/2016. </remarks>
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public class Game
 	{
 		#region Private variables
@@ -108,25 +118,29 @@ namespace CSRogue.GameControl
 					throw new RogueException("Unexpected event invocation");
 			}
 		}
-		#endregion
+        #endregion
 
-		#region Modification
-		public Game(IItemFactory factory)
+        #region Constructor
+        public Game(IItemFactory factory)
 		{
 		    Factory = factory;
 			_commandQueue = new CommandQueue(this);
 		}
+        #endregion
 
+        #region Modification
 	    public IItemFactory Factory { get; set; }
+        #endregion
 
-	    ////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Queues up a command to be processed in next processing round. </summary>
-		///
-		/// <remarks>	Darrellp, 10/11/2011. </remarks>
-		///
-		/// <param name="command">	The command to be enqueued. </param>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public void Enqueue(IRogueCommand command)
+        #region Event Queuing
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>	Queues up a command to be processed in next processing round. </summary>
+        ///
+        /// <remarks>	Darrellp, 10/11/2011. </remarks>
+        ///
+        /// <param name="command">	The command to be enqueued. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        public void Enqueue(IRogueCommand command)
 		{
 			_commandQueue.AddCommand(command);
 		}
@@ -153,19 +167,6 @@ namespace CSRogue.GameControl
 		{
 			_commandQueue.ProcessQueue();
 		}
-
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Dispatches a command. </summary>
-		///
-		/// <remarks>	Relegates this to the command dispatcher.  Darrellp, 10/8/2011. </remarks>
-		///
-		/// <param name="command">	The command to be dispatched. </param>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal void Dispatch(IRogueCommand command)
-		{
-		    command?.Execute(this);
-		}
-
 		#endregion
 	}
 }
