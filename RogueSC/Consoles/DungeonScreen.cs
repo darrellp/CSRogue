@@ -6,9 +6,7 @@ using CSRogue.GameControl.Commands;
 using CSRogue.Items;
 using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
-using CSRogue.Utilities;
 using Microsoft.Xna.Framework;
-using RogueSC.Creatures;
 using RogueSC.Utilities;
 using SadConsole;
 using SadConsole.Consoles;
@@ -41,7 +39,7 @@ namespace RogueSC.Consoles
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly Console messageHeaderConsole;
         private CSRogue.GameControl.Game _game;
-        private static ItemFactory _factory;
+        private static readonly ItemFactory _factory;
         private const int MapWidth = 100;
         private const int MapHeight = 100;
         #endregion
@@ -145,6 +143,7 @@ namespace RogueSC.Consoles
                 {Input.Keys.PageUp, new Point(1, -1) },
                 {Input.Keys.PageDown, new Point(1, 1) },
                 {Input.Keys.Home, new Point(-1, -1) },
+                {(Input.Keys)12, new Point(0, 0) },
             };
 
         public override bool ProcessKeyboard(KeyboardInfo info)
