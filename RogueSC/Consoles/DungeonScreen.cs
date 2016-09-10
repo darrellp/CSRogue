@@ -1,5 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using CSRogue.GameControl.Commands;
+using CSRogue.Items;
+using CSRogue.Item_Handling;
+using CSRogue.Map_Generation;
+using CSRogue.Utilities;
 using Microsoft.Xna.Framework;
+using RogueSC.Creatures;
+using RogueSC.Utilities;
 using SadConsole;
 using SadConsole.Consoles;
 using SadConsole.Input;
@@ -30,9 +39,25 @@ namespace RogueSC.Consoles
         // ReSharper disable once InconsistentNaming
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly Console messageHeaderConsole;
+        private CSRogue.GameControl.Game _game;
+        private static ItemFactory _factory;
+        private const int MapWidth = 100;
+        private const int MapHeight = 100;
         #endregion
 
         #region Constructor
+        static DungeonScreen()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceName = "RogueSC.TextFiles.ItemFactoryData.txt";
+
+            using (var stream = assembly.GetManifestResourceStream(resourceName))
+            {
+                // ReSharper disable once AssignNullToNotNullAttribute
+                var reader = new StreamReader(stream);
+                _factory = new ItemFactory(reader);
+            }
+        }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Default constructor. </summary>
@@ -42,9 +67,17 @@ namespace RogueSC.Consoles
 
         public DungeonScreen()
         {
+            _game = new CSRogue.GameControl.Game(_factory);
+            var player = (IPlayer) _factory.InfoFromId[ItemIDs.HeroId].CreateItem(null);
+            var map = new GameMap(MapWidth, MapHeight, 10, _game, player);
+            var excavator= new GridExcavator();
+            excavator.Excavate(map, player);
+            var levelCmd = new NewLevelCommand(0, map);
+            _game.EnqueueAndProcess(levelCmd);
+
             StatsConsole = new CharacterConsole(24, 17);
             // ReSharper disable once RedundantArgumentDefaultValue
-            DungeonConsole = new DungeonMapConsole(56, 16, 100, 100, Font.FontSizes.One);
+            DungeonConsole = new DungeonMapConsole(56, 16, MapWidth, MapHeight, Font.FontSizes.One);
             MessageConsole = new MessagesConsole(80, 6);
 
             // Setup the message header to be as wide as the screen but only 1 character high

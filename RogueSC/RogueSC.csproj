@@ -86,6 +86,7 @@
     <Content Include="IBM8x16.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="TextFiles\ItemFactoryData.txt" />
     <Content Include="Yayo_c64.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -95,11 +96,15 @@
     <Compile Include="Consoles\DungeonMapConsole.cs" />
     <Compile Include="Consoles\DungeonScreen.cs" />
     <Compile Include="Consoles\MessagesConsole.cs" />
+    <Compile Include="Creatures\Hero.cs" />
+    <Compile Include="Creatures\Rat.cs" />
     <Compile Include="GameWorld.cs" />
+    <Compile Include="Items\Sword.cs" />
     <Compile Include="Map Objects\MapObject.cs" />
     <Compile Include="Map Objects\MapObjectFactory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Utilities\Extensions.cs" />
+    <Compile Include="Utilities\ItemIDs.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
@@ -119,6 +124,7 @@
       <Name>CSRogue</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

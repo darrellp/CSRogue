@@ -5,6 +5,8 @@ using CSRogue.Item_Handling;
 namespace CSRogue.Map_Generation
 {
     // TODO: Is this sufficient or should we allow the user to define their own lit states?
+    // These are the ones we care about.  They are free to define another orthogonal set for their
+    // own use.
    [Flags]
 	public enum TerrainState
 	{

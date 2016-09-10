@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using CSRogue.Items;
 using CSRogue.Utilities;
 
 namespace CSRogue.Map_Generation
@@ -59,10 +60,10 @@ namespace CSRogue.Map_Generation
 		public GridExcavator(
 			int seed = -1,
 			int baseCellWidth = 15,
-			int baseCellHeight = 13,
+			int baseCellHeight = 15,
 			int minRoomWidth = 5,
 			int minRoomHeight = 5,
-			int pctMergeChance = 50,
+			int pctMergeChance = 40,
 			int pctDoorChance = 50)
 		{
 			_baseCellWidth = baseCellWidth;
@@ -76,6 +77,13 @@ namespace CSRogue.Map_Generation
 		#endregion
 
 		#region Main entry point
+
+	    public void Excavate(IGameMap map, IPlayer player)
+	    {
+	        Excavate(map);
+            map.SetPlayer(true, player);
+	    }
+
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Excavate rooms into the map by grid. </summary>
 		///

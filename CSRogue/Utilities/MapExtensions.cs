@@ -278,7 +278,7 @@ namespace CSRogue.Utilities
             return null;
         }
 
-        public static void SetPlayer(this IGameMap map, bool moveToStairwell)
+        public static void SetPlayer(this IGameMap map, bool moveToStairwell = true, IPlayer playerIn = null)
         {
             if (map.Player == null)
             {
@@ -286,6 +286,10 @@ namespace CSRogue.Utilities
                 if (player != null)
                 {
                     map.Player = (IPlayer)player;
+                }
+                else if (playerIn != null)
+                {
+                    map.Player = playerIn;
                 }
                 else
                 {
@@ -298,6 +302,10 @@ namespace CSRogue.Utilities
                 if (stairwellLoc.Count > 0)
                 {
                     map.MoveCreatureTo(map.Player, stairwellLoc[0]);
+                }
+                else
+                {
+                    map.MoveCreatureTo(map.Player, map.RandomFloorLocation());
                 }
             }
             
