@@ -18,9 +18,15 @@ namespace CSRogue.GameControl
     /// <summary>   A game. </summary>
     ///
     /// <remarks>   Game is pretty much just a gathering place for all the information about the
-    ///             game as well as a dispatcher for the events which occur during the game.  Tasks
-    ///             can be queued up and then processed in one turn.  This ensures that two conflicting
+    ///             game as well as a dispatcher for the events which occur during the game.  In
+    ///             particular, the current level, the item factory/information are in here.
+    ///             
+    ///             The Game object also coordinates tasks and their execution.  Tasks can be
+    ///             queued up and then processed in one turn.  This ensures that two conflicting
     ///             events happen in a definitive order and separates events from each other.
+    ///             
+    ///             The events included in CSRogue are not sacrosanct.  Users can make up their own
+    ///             tasks or modify these and have them scheduled along with all the other tasks.
     ///             Darrell, 9/9/2016. </remarks>
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -37,13 +43,6 @@ namespace CSRogue.GameControl
 		/// <value>	The current level. </value>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		public ILevel CurrentLevel { get; internal set; }
-
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Gets or sets the excavator. </summary>
-		///
-		/// <value>	The excavator. </value>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public IExcavator Excavator { get; set; }
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Gets the map. </summary>
