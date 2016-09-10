@@ -15,15 +15,26 @@ namespace CSRogue.Map_Generation
 		Walkable = 0x10
 	}
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// <summary>   A map location data. </summary>
+    ///
+    /// <remarks>   The information stored at each cell of a map.  Ideally I'd love to make this a
+    ///             structure since so many are created but in that case the IMap[x,y] construction 
+    ///             returns a copy of the structure and we can't use it to modify the actual data
+    ///             in the map which is hugely inconvenient.  I'm not sure of a great way to fix this.
+    ///             Darrell, 9/9/2016. </remarks>
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public class MapLocationData
 	{
+        #region Public properties
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Items at this location. </summary>
         ///
         /// <value> The items. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		public List<IItem> Items { get; }
+        public List<IItem> Items { get; }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Gets or sets the type of terrain at this location. </summary>
@@ -48,23 +59,17 @@ namespace CSRogue.Map_Generation
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		public IRoom Room { get; internal set; }
+        #endregion
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   A tag to put whatever you'd like at this location. </summary>
-        ///
-        /// <value> The tag. </value>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public object Tag { get; set; }
-
-		internal MapLocationData()
+        #region Constructor
+        internal MapLocationData()
 		{
 			Items = new List<IItem>();
 			Terrain = TerrainType.OffMap;
 			TerrainState = TerrainState.FogOfWar;
 		}
 
-		internal MapLocationData(TerrainType terrain, List<IItem> items = null)
+        internal MapLocationData(TerrainType terrain, List<IItem> items = null)
 			: this()
 		{
 			if (items != null)
@@ -73,7 +78,9 @@ namespace CSRogue.Map_Generation
 			}
 			Terrain = terrain;
 		}
+        #endregion
 
+        #region Item manipulation
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Adds an item at this location. </summary>
         ///
@@ -82,7 +89,7 @@ namespace CSRogue.Map_Generation
         /// <param name="item"> The item to be added. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		public void AddItem(IItem item)
+        public void AddItem(IItem item)
 		{
 			Items.Add(item);
 		}
@@ -99,5 +106,6 @@ namespace CSRogue.Map_Generation
 		{
 			Items.Remove(item);
 		}
-	}
+        #endregion
+    }
 }
