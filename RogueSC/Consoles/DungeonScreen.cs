@@ -77,7 +77,7 @@ namespace RogueSC.Consoles
 
             StatsConsole = new CharacterConsole(24, 17);
             // ReSharper disable once RedundantArgumentDefaultValue
-            DungeonConsole = new DungeonMapConsole(56, 16, MapWidth, MapHeight, Font.FontSizes.One);
+            DungeonConsole = new DungeonMapConsole(_game, 56, 16);
             MessageConsole = new MessagesConsole(80, 6);
 
             // Setup the message header to be as wide as the screen but only 1 character high

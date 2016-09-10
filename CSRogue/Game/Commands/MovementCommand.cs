@@ -7,41 +7,10 @@ using CSRogue.Utilities;
 
 namespace CSRogue.GameControl.Commands
 {
-    #region enums
-
-    public enum MoveDirection
-    { 
-        MoveLeft,
-        MoveRight,
-        MoveUp,
-        MoveDown,
-        MoveUpperLeft,
-        MoveLowerLeft,
-        MoveUpperRight,
-        MoveLowerRight,
-        StayPut,
-    }
-    #endregion
-
     public class MovementCommand : CommandBase
 	{
         #region Private variables
-        private static readonly Dictionary<MoveDirection, MapCoordinates> Directions =
-            new Dictionary<MoveDirection, MapCoordinates>
-            {
-                {MoveDirection.MoveLeft, new MapCoordinates(-1, 0)},
-                {MoveDirection.MoveRight, new MapCoordinates(1, 0)},
-                {MoveDirection.MoveUp, new MapCoordinates(0, -1)},
-                {MoveDirection.MoveDown, new MapCoordinates(0, 1)},
-                {MoveDirection.MoveUpperLeft, new MapCoordinates(-1, -1)},
-                {MoveDirection.MoveLowerLeft, new MapCoordinates(-1, 1)},
-                {MoveDirection.MoveUpperRight, new MapCoordinates(1, -1)},
-                {MoveDirection.MoveLowerRight, new MapCoordinates(1, 1)},
-                {MoveDirection.StayPut, new MapCoordinates(0, 0)},
-            };
-
         private MapCoordinates _direction;
-        private MoveDirection _moveDirection;
         #endregion
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,18 +36,17 @@ namespace CSRogue.GameControl.Commands
 	    ///  <param name="shouldRun">	true if we should run. </param>
 	    /// <param name="creature">     Creature for this command </param>
 	    ////////////////////////////////////////////////////////////////////////////////////////////////////
-	    public MovementCommand(MoveDirection moveDirection, bool shouldRun = false, ICreature creature = null)
+	    public MovementCommand(MapCoordinates direction, bool shouldRun = false, ICreature creature = null)
 		{
 			Run = shouldRun;
 			Creature = creature;
-	        _moveDirection = moveDirection;
-	        _direction = Directions[_moveDirection];
+	        _direction = direction;
 		}
 
         public override bool Execute(Game game)
         {
             // Is it a stay put command?
-            if (_moveDirection == MoveDirection.StayPut)
+            if (_direction.Column == 0 && _direction.Row == 0)
             {
                 // Let the monsters do their thing and...
                 game.CurrentLevel.InvokeMonsterAI();

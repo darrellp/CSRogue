@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using CSRogue.GameControl.Commands;
 using SadConsole;
 using Microsoft.Xna.Framework;
 using SadConsole.Game;
@@ -8,6 +9,7 @@ using CSRogue.Utilities;
 using RogueSC.Map_Objects;
 using RogueSC.Utilities;
 using Console = SadConsole.Consoles.Console;
+using Game = CSRogue.GameControl.Game;
 
 namespace RogueSC.Consoles
 {
@@ -32,7 +34,10 @@ namespace RogueSC.Consoles
 
         #region Private Variables
         /// <summary>   The CSRogue map. </summary>
-        private BaseMap _map;
+        private IGameMap _map;
+
+        // The engine game
+        private Game _game;
 
         /// <summary>   Information describing the map.  Not sure that this isn't
         ///             subsumed by the _map information.  Probably is. </summary>
@@ -67,9 +72,10 @@ namespace RogueSC.Consoles
         /// <param name="fontSize">     (Optional) size of the font. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public DungeonMapConsole(int viewWidth, int viewHeight, int mapWidth, int mapHeight, Font.FontSizes fontSize = Font.FontSizes.One) 
-            : base(mapWidth, mapHeight)
+        public DungeonMapConsole(Game game, int viewWidth, int viewHeight, Font.FontSizes fontSize = Font.FontSizes.One) 
+            : base(game.Map.Width, game.Map.Height)
         {
+            _game = game;
             var fontMaster = Engine.LoadFont("Cheepicus12.font");
             var font = fontMaster.GetFont(fontSize);
             TextSurface.Font = font;
@@ -115,9 +121,8 @@ namespace RogueSC.Consoles
 
         private void GenerateMap()
         {
-            _map = new BaseMap(Width, Height);
-            var excavator = new GridExcavator();
-            excavator.Excavate(_map);
+            _map = _game.Map;
+
             // Create the local cache of map data
             // 
             _mapData = new MapObject[Width, Height];
@@ -139,7 +144,7 @@ namespace RogueSC.Consoles
                 }
             }
 
-            Player.Position = _map.RandomFloorLocation().ToPoint();
+            Player.Position = _map.Player.Location.ToPoint();
 
             // Center the veiw area
             TextSurface.RenderArea = new Rectangle(Player.Position.X - (TextSurface.RenderArea.Width / 2),
@@ -168,36 +173,30 @@ namespace RogueSC.Consoles
 
         public void MovePlayerBy(Point amount)
         {
-            // Get the position the player will be at
-            var newPosition = Player.Position + amount;
+            // Move the player on the engine map
+            var moveCmd = new MovementCommand(amount.ToMapCoordinates());
+            _game.EnqueueAndProcess(moveCmd);
+            Player.Position = _map.Player.Location.ToPoint();
 
-            // Check to see if the position is within the map
-            if (new Rectangle(0, 0, Width, Height).Contains(newPosition) && _map.Walkable(newPosition.X, newPosition.Y))
+            // Scroll the view area to center the player on the screen
+            TextSurface.RenderArea = new Rectangle(Player.Position.X - (TextSurface.RenderArea.Width / 2),
+                                                    Player.Position.Y - (TextSurface.RenderArea.Height / 2),
+                                                    TextSurface.RenderArea.Width, TextSurface.RenderArea.Height);
+
+            // If he view area moved, we'll keep our entity in sync with it.
+            Player.RenderOffset = Position - TextSurface.RenderArea.Location;
+
+            foreach (var loc in _map.Fov.NewlySeen)
             {
-                // Move the player
-                Player.Position += amount;
-
-                // Scroll the view area to center the player on the screen
-                TextSurface.RenderArea = new Rectangle(Player.Position.X - (TextSurface.RenderArea.Width / 2),
-                                                        Player.Position.Y - (TextSurface.RenderArea.Height / 2),
-                                                        TextSurface.RenderArea.Width, TextSurface.RenderArea.Height);
-
-                // If he view area moved, we'll keep our entity in sync with it.
-                Player.RenderOffset = Position - TextSurface.RenderArea.Location;
-
-                _fov.Scan(Player.Position.ToMapCoordinates());
-                foreach (var loc in _fov.NewlySeen)
-                {
-	                _mapData[loc.Column, loc.Row].RenderToCell(
-		                this[loc.Column, loc.Row],
-		                true);
-                }
-                foreach (var loc in _fov.NewlyUnseen)
-                {
-                    _mapData[loc.Column, loc.Row].RenderToCell(
-                        this[loc.Column, loc.Row],
-                        false);
-                }
+                _mapData[loc.Column, loc.Row].RenderToCell(
+                    this[loc.Column, loc.Row],
+                    true);
+            }
+            foreach (var loc in _map.Fov.NewlyUnseen)
+            {
+                _mapData[loc.Column, loc.Row].RenderToCell(
+                    this[loc.Column, loc.Row],
+                    false);
             }
         }
 
