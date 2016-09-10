@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CSRogue.Utilities
 {
-	static class Selector<T>
+    public static class Selector<T>
 	{
 		private static void Swap(IList<T> list, int i1, int i2)
 		{
@@ -34,7 +34,7 @@ namespace CSRogue.Utilities
 		///
 		/// <returns>	A list of found items. </returns>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal static List<T> SelectFrom(IList<T> list, Func<T, bool> acceptable = null, int n = 1)
+		public static List<T> SelectFrom(IList<T> list, Func<T, bool> acceptable = null, int n = 1)
 		{
 			// Did acceptable criteria default to null?
 			if (acceptable == null)

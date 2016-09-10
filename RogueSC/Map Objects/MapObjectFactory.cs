@@ -14,8 +14,8 @@ namespace RogueSC.Map_Objects
             {"Rat", new CellAppearance(Color.Red, Color.Transparent, 114)},
         };
 
-        private static readonly CellAppearance wallAppearance = new CellAppearance(Color.Gray, Color.Blue, 176);
-        private static readonly CellAppearance floorAppearance = new CellAppearance(Color.Orange, Color.Transparent, 46);
+        private static readonly CellAppearance WallAppearance = new CellAppearance(Color.Gray, Color.Blue, 176);
+        internal static readonly CellAppearance FloorAppearance = new CellAppearance(Color.Orange, Color.Transparent, 46);
 
         /// <summary>   Maps terrain types to appearance for that terrain. </summary>
         /// Note that "Appearance" means a character, a foreground and a background color.  We display hidden and remembered
@@ -25,19 +25,14 @@ namespace RogueSC.Map_Objects
         internal static readonly Dictionary<TerrainType, CellAppearance> MapTerrainToAppearance = new Dictionary
             <TerrainType, CellAppearance>()
         {
-            {TerrainType.Floor, floorAppearance},
-            {TerrainType.Door, floorAppearance},
-            {TerrainType.StairsDown, floorAppearance},
-            {TerrainType.StairsUp, floorAppearance},
-            {TerrainType.Corner, wallAppearance},
-            {TerrainType.HorizontalWall, wallAppearance},
-            {TerrainType.VerticalWall, wallAppearance},
-            {TerrainType.Wall, wallAppearance},
+            {TerrainType.Floor, FloorAppearance},
+            {TerrainType.Door, FloorAppearance},
+            {TerrainType.StairsDown, FloorAppearance},
+            {TerrainType.StairsUp, FloorAppearance},
+            {TerrainType.Corner, WallAppearance},
+            {TerrainType.HorizontalWall, WallAppearance},
+            {TerrainType.VerticalWall, WallAppearance},
+            {TerrainType.Wall, WallAppearance},
         };
-
-        internal static MapObjectAppearance CreateObject(string type)
-        {
-            return new MapObjectAppearance(ObjectNameToAppearance[type]);
-        }
     }
 }

@@ -29,7 +29,6 @@ namespace RogueTests
             game.EnqueueAndProcess(moveCmd);
             Assert.AreEqual(new MapCoordinates(1,1), map.Player.Location);
             Assert.IsNotNull(moveArgs);
-            Assert.IsTrue(moveArgs.IsPlayer);
             Assert.AreEqual(new MapCoordinates(0, 0), moveArgs.PreviousCreatureLocation);
             Assert.AreEqual(new MapCoordinates(1, 1), moveArgs.CreatureDestination);
             Assert.IsFalse(moveArgs.IsBlocked);

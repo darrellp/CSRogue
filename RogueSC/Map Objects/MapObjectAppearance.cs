@@ -4,13 +4,9 @@ using SadConsole.Effects;
 
 namespace RogueSC.Map_Objects
 {
-    internal class MapObjectAppearance
+    internal static class MapObjectAppearance
     {
-        public CellAppearance Appearance { get; set; }
-        public ICellEffect EffectHidden { get; set; }
-        public ICellEffect EffectSeen { get; set; }
-
-        static readonly ICellEffect EffectSeenDefault = new Recolor()
+        static readonly ICellEffect EffectSeen = new Recolor()
         {
             Foreground = Color.LightGray * 0.6f,
             Background = Color.LightGray * 0.2f,
@@ -19,7 +15,7 @@ namespace RogueSC.Map_Objects
             CloneOnApply = false
         };
 
-        static readonly ICellEffect EffectHiddenDefault = new Recolor()
+        static readonly ICellEffect EffectHidden = new Recolor()
         {
             Foreground = Color.Black,
             Background = Color.Black,
@@ -28,18 +24,9 @@ namespace RogueSC.Map_Objects
             CloneOnApply = false
             };
 
-        public MapObjectAppearance(CellAppearance appearance)
+        public static void RenderToCell(CellAppearance appearance, Cell sadConsoleCell, bool isFov)
         {
-            Appearance = appearance;
-            EffectHidden = EffectHiddenDefault;
-            EffectSeen = EffectSeenDefault;
-        }
-
-        public MapObjectAppearance(Color foreground, Color background, int character) : this(new CellAppearance(foreground, background, character)) {}
-
-        public virtual void RenderToCell(Cell sadConsoleCell, bool isFov)
-        {
-            Appearance.CopyAppearanceTo(sadConsoleCell);
+            appearance.CopyAppearanceTo(sadConsoleCell);
 
             // Clear out the old effect if there was one
             if (sadConsoleCell.Effect != null)
@@ -60,7 +47,7 @@ namespace RogueSC.Map_Objects
             }
         }
 
-        public virtual void RemoveCellFromView(Cell sadConsoleCell)
+        public static void RemoveCellFromView(Cell sadConsoleCell)
         {
             // Clear out the old effect if there was one
             if (sadConsoleCell.Effect != null)

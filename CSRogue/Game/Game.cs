@@ -9,6 +9,7 @@ namespace CSRogue.GameControl
 {
 	enum EventType
 	{
+        HeroMove,
 		CreatureMove,
 		NewLevel,
 		Attack
@@ -58,51 +59,59 @@ namespace CSRogue.GameControl
 		public event EventHandler<EventArgs> NewLevelEvent;
 		public void InvokeNewLevelEvent(Object sender, EventArgs e)
 		{
-			var handler = NewLevelEvent;
-		    handler?.Invoke(sender, e);
+            NewLevelEvent?.Invoke(sender, e);
 		}
 
 		/// <summary> Event queue for all listeners interested in hero movement events. </summary>
 		public event EventHandler<CreatureMoveEventArgs> HeroMoveEvent;
 		private void InvokeHeroMoveEvent(Object sender, CreatureMoveEventArgs e)
 		{
-			var handler = HeroMoveEvent;
-		    handler?.Invoke(sender, e);
+            HeroMoveEvent?.Invoke(sender, e);
 		}
 
 		public event EventHandler<AttackEventArgs> AttackEvent;
 		private void InvokeAttackEvent(Object sender, AttackEventArgs e)
 		{
-			var handler = AttackEvent;
-		    handler?.Invoke(sender, e);
+            AttackEvent?.Invoke(sender, e);
 		}
 
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Invoke an event. </summary>
-		///
-		/// <remarks>	
-		/// This is a bit nonstandard, but I want users to be able to deal with only the game object for
-		/// all event handling.  That way they don't have to remember whether to set it on the map or the
-		/// level and don't have to reset it if the map is destroyed for another level, etc., etc..  So
-		/// all the event handling comes through the game object.  That doesn't necessarily mean the
-		/// sender will be the game object.  If it makes more sense for the map to be the sender, then we
-		/// make the map the sender in spite of the fact that the direct invoker is the Game.
-		/// InvokeEvent is the common code that is called by all other parts of the system to invoke one
-		/// of these events.  Darrellp, 10/8/2011. 
-		/// </remarks>
-		///
-		/// <exception cref="RogueException">	Thrown when an event type isn't handled in the switch statement. </exception>
-		///
-		/// <param name="type">		The type of event being invoked. </param>
-		/// <param name="sender">	Source of the event. </param>
-		/// <param name="e">		Event information. </param>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal void InvokeEvent(EventType type, Object sender, EventArgs e = null)
+        /// <summary> Event queue for all listeners interested in hero movement events. </summary>
+        public event EventHandler<CreatureMoveEventArgs> CreatureMoveEvent;
+        private void InvokeCreatureMoveEvent(Object sender, CreatureMoveEventArgs e)
+        {
+            CreatureMoveEvent?.Invoke(sender, e);
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>	Invoke an event. </summary>
+        ///
+        /// <remarks>	
+        /// This is a bit nonstandard, but I want users to be able to deal with only the game object for
+        /// all event handling.  That way they don't have to remember whether to set it on the map or the
+        /// level and don't have to reset it if the map is destroyed for another level, etc., etc..  So
+        /// all the event handling comes through the game object.  That doesn't necessarily mean the
+        /// sender will be the game object.  If it makes more sense for the map to be the sender, then we
+        /// make the map the sender in spite of the fact that the direct invoker is the Game.
+        /// InvokeEvent is the common code that is called by all other parts of the system to invoke one
+        /// of these events.  Darrellp, 10/8/2011. 
+        /// </remarks>
+        ///
+        /// <exception cref="RogueException">	Thrown when an event type isn't handled in the switch statement. </exception>
+        ///
+        /// <param name="type">		The type of event being invoked. </param>
+        /// <param name="sender">	Source of the event. </param>
+        /// <param name="e">		Event information. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        internal void InvokeEvent(EventType type, Object sender, EventArgs e = null)
 		{
 			switch(type)
 			{
-				case EventType.CreatureMove:
-					InvokeHeroMoveEvent(sender, e as CreatureMoveEventArgs);
+                case EventType.HeroMove:
+                    InvokeHeroMoveEvent(sender, e as CreatureMoveEventArgs);
+                    break;
+
+                case EventType.CreatureMove:
+					InvokeCreatureMoveEvent(sender, e as CreatureMoveEventArgs);
 					break;
 
 				case EventType.NewLevel:

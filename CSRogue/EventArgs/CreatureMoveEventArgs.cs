@@ -10,10 +10,10 @@ namespace CSRogue.RogueEventArgs
 		public MapCoordinates PreviousCreatureLocation { get; private set; }
 		public MapCoordinates CreatureDestination { get; private set; }
 		public bool IsFirstTimePlacement { get; private set; }
-		public bool IsPlayer { get; private set; }
 		public bool IsBlocked { get; private set; }
 		public bool IsRunning { get; private set; }
 		public List<MapCoordinates> LitAtStartOfRun { get; private set; }
+        public ICreature Creature { get; private set; }
 
 		public CreatureMoveEventArgs(
 			IGameMap gameMap,
@@ -29,10 +29,10 @@ namespace CSRogue.RogueEventArgs
 			PreviousCreatureLocation = previousCreatureLocation;
 			CreatureDestination = creatureDestination;
 			IsFirstTimePlacement = isFirstTimePlacement;
-			IsPlayer = creature.IsPlayer;
 			IsBlocked = isBlocked;
 			IsRunning = isRunning;
 			LitAtStartOfRun = litAtStartOfRun;
+		    Creature = creature;
 		}
 	}
 }

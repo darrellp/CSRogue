@@ -69,7 +69,8 @@ namespace CSRogue.Utilities
 
             // If we've got a game object
             // Invoke the move event through it
-            map.Game?.InvokeEvent(EventType.CreatureMove, map,
+            map.Game?.InvokeEvent(
+                creature.IsPlayer ? EventType.HeroMove : EventType.CreatureMove, map,
                 new CreatureMoveEventArgs(
                     map,
                     creature,

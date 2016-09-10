@@ -69,6 +69,7 @@ namespace RogueSC.Consoles
         public DungeonScreen()
         {
             _game = new CSRogue.GameControl.Game(_factory);
+            _game.AttackEvent += Game_AttackEvent;
             var player = (IPlayer) _factory.InfoFromId[ItemIDs.HeroId].CreateItem(null);
             var map = new GameMap(MapWidth, MapHeight, 10, _game, player);
             var excavator= new GridExcavator();
@@ -115,6 +116,16 @@ namespace RogueSC.Consoles
             Engine.ActiveConsole = this;
             Engine.Keyboard.RepeatDelay = 0.1f;
             Engine.Keyboard.InitialRepeatDelay = 0.1f;
+        }
+
+        private void Game_AttackEvent(object sender, CSRogue.RogueEventArgs.AttackEventArgs e)
+        {
+            if (e.Victim.IsPlayer || !e.VictimDied)
+            {
+                return;
+            }
+            MessageConsole.PrintMessage($"[c:r f:Red]You killed a mighty [c:r f:Yellow]{_game.Factory.InfoFromId[e.Victim.ItemTypeId].Name}!");
+
         }
         #endregion
 
