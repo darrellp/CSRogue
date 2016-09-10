@@ -103,12 +103,6 @@
     <Compile Include="Utilities\Selector.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Data Files\ItemData.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Data Files\CreatureData.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

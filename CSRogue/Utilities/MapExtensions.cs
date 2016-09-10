@@ -303,10 +303,6 @@ namespace CSRogue.Utilities
                 {
                     map.MoveCreatureTo(map.Player, stairwellLoc[0]);
                 }
-                else
-                {
-                    map.MoveCreatureTo(map.Player, map.RandomFloorLocation());
-                }
             }
             
         }

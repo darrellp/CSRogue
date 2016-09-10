@@ -74,7 +74,7 @@ namespace CSRogue.Items
         #endregion
 
         #region Virtual methods
-        public void InvokeAi()
+        public virtual void InvokeAi()
 	    {
 	    }
         #endregion  

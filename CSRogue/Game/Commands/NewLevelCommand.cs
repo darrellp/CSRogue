@@ -26,10 +26,11 @@ namespace CSRogue.GameControl.Commands
 		{
 		}
 
-        public NewLevelCommand(int depth, IGameMap map)
+        public NewLevelCommand(int depth, IGameMap map, Dictionary<Guid, int> rarity = null )
         {
             Depth = depth;
             Map = map;
+            Rarity = rarity;
         }
 
         public override bool Execute(Game game)

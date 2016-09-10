@@ -77,7 +77,12 @@ namespace CSRogue.Utilities
 
         public static void DistributeItems(this ILevel level, Dictionary<Guid, int> rarity, List<ItemInfo> itemInfoList, bool areCreatures)
         {
-            // Figure out how many monsters on this level
+            if (itemInfoList.Count == 0)
+            {
+                return;
+            }
+
+            // Figure out how many items on this level
             var itemCount = level.ItemCount(areCreatures);
 
             if (level.Factory != null)

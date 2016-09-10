@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using CSRogue.GameControl.Commands;
@@ -72,7 +73,7 @@ namespace RogueSC.Consoles
             var map = new GameMap(MapWidth, MapHeight, 10, _game, player);
             var excavator= new GridExcavator();
             excavator.Excavate(map, player);
-            var levelCmd = new NewLevelCommand(0, map);
+            var levelCmd = new NewLevelCommand(0, map, new Dictionary<Guid, int>() {{ItemIDs.RatId, 1}});
             _game.EnqueueAndProcess(levelCmd);
 
             StatsConsole = new CharacterConsole(24, 17);

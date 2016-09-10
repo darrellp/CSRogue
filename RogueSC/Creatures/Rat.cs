@@ -6,5 +6,10 @@ namespace RogueSC.Creatures
     public class Rat : Creature
     {
         public Rat(Level l) { }
+
+        public override void InvokeAi()
+        {
+            base.InvokeAi();
+        }
     }
 }

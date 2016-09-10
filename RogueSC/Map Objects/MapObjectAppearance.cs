@@ -4,7 +4,7 @@ using SadConsole.Effects;
 
 namespace RogueSC.Map_Objects
 {
-    internal class MapObject
+    internal class MapObjectAppearance
     {
         public CellAppearance Appearance { get; set; }
         public ICellEffect EffectHidden { get; set; }
@@ -28,14 +28,14 @@ namespace RogueSC.Map_Objects
             CloneOnApply = false
             };
 
-        public MapObject(CellAppearance appearance)
+        public MapObjectAppearance(CellAppearance appearance)
         {
             Appearance = appearance;
             EffectHidden = EffectHiddenDefault;
             EffectSeen = EffectSeenDefault;
         }
 
-        public MapObject(Color foreground, Color background, int character) : this(new CellAppearance(foreground, background, character)) {}
+        public MapObjectAppearance(Color foreground, Color background, int character) : this(new CellAppearance(foreground, background, character)) {}
 
         public virtual void RenderToCell(Cell sadConsoleCell, bool isFov)
         {
