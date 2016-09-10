@@ -74,7 +74,11 @@ namespace RogueSC.Consoles
             var map = new GameMap(MapWidth, MapHeight, 10, _game, player);
             var excavator= new GridExcavator();
             excavator.Excavate(map, player);
-            var levelCmd = new NewLevelCommand(0, map, new Dictionary<Guid, int>() {{ItemIDs.RatId, 1}});
+            var levelCmd = new NewLevelCommand(0, map, new Dictionary<Guid, int>()
+            {
+                {ItemIDs.RatId, 1},
+                {ItemIDs.OrcId, 1}
+            });
             _game.EnqueueAndProcess(levelCmd);
 
             StatsConsole = new CharacterConsole(24, 17);

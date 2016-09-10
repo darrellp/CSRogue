@@ -22,6 +22,11 @@ namespace RogueTests
 		public Rat(Level l) { }
 	}
 
+    public class Orc : Creature
+    {
+        public Orc(Level l) { }
+    }
+
 	/// <summary>
 	///This is a test class for ExcavatorTest and is intended
 	///to contain all ExcavatorTest Unit Tests

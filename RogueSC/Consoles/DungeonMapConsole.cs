@@ -6,11 +6,8 @@ using SadConsole.Game;
 using SadConsole.Consoles;
 using CSRogue.Map_Generation;
 using CSRogue.Utilities;
-using RogueSC.Map_Objects;
 using RogueSC.Utilities;
-using static RogueSC.Map_Objects.MapObjectAppearance;
-using static RogueSC.Map_Objects.MapObjectFactory;
-using Console = SadConsole.Consoles.Console;
+using static RogueSC.Map_Objects.SCRender;
 using Game = CSRogue.GameControl.Game;
 
 namespace RogueSC.Consoles
@@ -43,7 +40,6 @@ namespace RogueSC.Consoles
         #endregion
 
         #region Constructor
-
         /// <summary>   Size to multiply by for the different font sizes. </summary>
         private static readonly Dictionary<Font.FontSizes, double> SizeMultipliers = new Dictionary<Font.FontSizes, double>()
         {
@@ -92,7 +88,9 @@ namespace RogueSC.Consoles
 
             GenerateMap();
         }
+        #endregion
 
+        #region Event handlers
         private void _game_AttackEvent(object sender, CSRogue.RogueEventArgs.AttackEventArgs e)
         {
             if (e.Victim.IsPlayer)
@@ -116,7 +114,7 @@ namespace RogueSC.Consoles
             }
             else if (_map.Remembered(loc))
             {
-                RenderToCell(MapObjectFactory.FloorAppearance, this[loc.Column, loc.Row], false);
+                RenderToCell(FloorAppearance, this[loc.Column, loc.Row], false);
             }
             loc = e.CreatureDestination;
             if (_map.InView(loc))

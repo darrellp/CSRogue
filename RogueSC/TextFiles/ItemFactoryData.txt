@@ -10,6 +10,7 @@
 // Descriptions can run over lines.  Any line that starts with a tab is assumed to continue the description from the previous line...
 1BA9B9C4-6133-4CD3-92A6-233F0F26CBC0		r	Rat			.		.		A vile little sewer rat.				RogueSC.Creatures.Rat
 																			These rodents seem to be everywhere!
+BAC45CA4-E0C9-4559-9806-0DF31A3652F6		o	Orc			.		.		Ugly green vermin.						RogueSC.Creatures.Orc
 -----------------------------------------------------------------------------------------------------------------------------------------
 // Creature data is separated by a row which starts with ---
 // 
@@ -18,3 +19,4 @@
 //name  type										HP		Lvl	Rarity	Color	Speed	AC
 player	0D583F58-FA20-4292-A272-37919917644A		2d6		.	.		.		.		8
 rat		1BA9B9C4-6133-4CD3-92A6-233F0F26CBC0		2d6		0	2		Red		.		3
+orc		BAC45CA4-E0C9-4559-9806-0DF31A3652F6		2d6		0	2		Yellow	.		3

@@ -97,11 +97,11 @@
     <Compile Include="Consoles\DungeonScreen.cs" />
     <Compile Include="Consoles\MessagesConsole.cs" />
     <Compile Include="Creatures\Hero.cs" />
+    <Compile Include="Creatures\Orc.cs" />
     <Compile Include="Creatures\Rat.cs" />
     <Compile Include="GameWorld.cs" />
     <Compile Include="Items\Sword.cs" />
-    <Compile Include="Map Objects\MapObjectAppearance.cs" />
-    <Compile Include="Map Objects\MapObjectFactory.cs" />
+    <Compile Include="Map Objects\SCRender.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\ItemIDs.cs" />
