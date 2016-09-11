@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using CSRogue.GameControl;
+using CSRogue.Interfaces;
 using CSRogue.Items;
 using CSRogue.Map_Generation;
 using CSRogue.RogueEventArgs;
@@ -42,7 +43,7 @@ namespace CSRogue.Utilities
 
         public static void MoveCreatureTo(
             this IGameMap map,
-            Creature creature,
+            ICreature creature,
             MapCoordinates newLocation,
             bool firstTimeHeroPlacement = false,
             bool run = false,
@@ -69,7 +70,8 @@ namespace CSRogue.Utilities
 
             // If we've got a game object
             // Invoke the move event through it
-            map.Game?.InvokeEvent(EventType.CreatureMove, map,
+            map.Game?.InvokeEvent(
+                creature.IsPlayer ? EventType.HeroMove : EventType.CreatureMove, map,
                 new CreatureMoveEventArgs(
                     map,
                     creature,
@@ -91,7 +93,7 @@ namespace CSRogue.Utilities
         /// <param name="blockedLocation">	The blocked location. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public static void NotifyOfBlockage(this IGameMap map, Creature creature, MapCoordinates blockedLocation)
+        public static void NotifyOfBlockage(this IGameMap map, IPlayer creature, MapCoordinates blockedLocation)
         {
             map.Game.InvokeEvent(EventType.CreatureMove, map,
                 new CreatureMoveEventArgs(

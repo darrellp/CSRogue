@@ -1,12 +1,11 @@
 ﻿namespace CSRogue.GameControl.Commands
 {
-	public class CommandBase : IRogueCommand
+	public abstract class CommandBase : IRogueCommand
 	{
-		public CommandType Command { get; }
+		public abstract void Execute(Game game);
 
-		public CommandBase(CommandType command)
-		{
-			Command = command;
-		}
+	    public CommandBase()
+	    {
+	    }
 	}
 }

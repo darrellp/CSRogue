@@ -1,13 +1,16 @@
 ﻿using System.Collections.Generic;
+using CSRogue.GameControl.Commands;
+using CSRogue.Interfaces;
+using CSRogue.Map_Generation;
 using SadConsole;
 using Microsoft.Xna.Framework;
 using SadConsole.Game;
 using SadConsole.Consoles;
-using CSRogue.Map_Generation;
 using CSRogue.Utilities;
 using RogueSC.Map_Objects;
 using RogueSC.Utilities;
-using Console = SadConsole.Consoles.Console;
+using static RogueSC.Map_Objects.SCRender;
+using Game = CSRogue.GameControl.Game;
 
 namespace RogueSC.Consoles
 {
@@ -32,18 +35,13 @@ namespace RogueSC.Consoles
 
         #region Private Variables
         /// <summary>   The CSRogue map. </summary>
-        private CsRogueMap _csRogueMap;
+        private IGameMap _map;
 
-        /// <summary>   Information describing the map.  Not sure that this isn't
-        ///             subsumed by the _map information.  Probably is. </summary>
-        MapObject[,] _mapData;
-
-        /// <summary>   The field of view for the map. </summary>
-        private FOV _fov;
+        // The engine game
+        private readonly Game _game;
         #endregion
 
         #region Constructor
-
         /// <summary>   Size to multiply by for the different font sizes. </summary>
         private static readonly Dictionary<Font.FontSizes, double> SizeMultipliers = new Dictionary<Font.FontSizes, double>()
         {
@@ -60,17 +58,21 @@ namespace RogueSC.Consoles
         ///
         /// <remarks>   Darrellp, 8/26/2016. </remarks>
         ///
+        /// <param name="game">         The game. </param>
         /// <param name="viewWidth">    Width of the console. </param>
         /// <param name="viewHeight">   Height of the console. </param>
-        /// <param name="mapWidth">     Width of the underlying map. </param>
-        /// <param name="mapHeight">    Height of the underlying map. </param>
         /// <param name="fontSize">     (Optional) size of the font. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public DungeonMapConsole(int viewWidth, int viewHeight, int mapWidth, int mapHeight, Font.FontSizes fontSize = Font.FontSizes.One) 
-            : base(mapWidth, mapHeight)
+        public DungeonMapConsole(Game game, int viewWidth, int viewHeight, Font.FontSizes fontSize = Font.FontSizes.One) 
+            : base(game.Map.Width, game.Map.Height)
         {
-            var fontMaster = Engine.LoadFont("Cheepicus12.font");
+            _game = game;
+            _game.HeroMoveEvent += _game_HeroMoveEvent;
+            _game.CreatureMoveEvent += _game_CreatureMoveEvent;
+            _game.AttackEvent += _game_AttackEvent;
+
+			var fontMaster = Engine.LoadFont("Cheepicus12.font");
             var font = fontMaster.GetFont(fontSize);
             TextSurface.Font = font;
             var mult = SizeMultipliers[fontSize];
@@ -91,55 +93,68 @@ namespace RogueSC.Consoles
         }
         #endregion
 
-        #region Mapping
-
-        /// <summary>   Maps terrain types to appearance for that terrain. </summary>
-        private static readonly Dictionary<TerrainType, string> MapTerrainToAppearance = new Dictionary
-            <TerrainType, string>()
+        #region Event handlers
+        private void _game_AttackEvent(object sender, CSRogue.RogueEventArgs.AttackEventArgs e)
         {
-            {TerrainType.Floor, "floor"},
-            {TerrainType.Door, "floor"},
-            {TerrainType.StairsDown, "floor"},
-            {TerrainType.StairsUp, "floor"},
-            {TerrainType.Corner, "wall"},
-            {TerrainType.HorizontalWall, "wall"},
-            {TerrainType.VerticalWall, "wall"},
-            {TerrainType.Wall, "wall"},
-        };
+            if (e.Victim.IsPlayer)
+            {
+                return;
+            }
+            var loc = e.Victim.Location;
+            RenderToCell(GetAppearance(loc), this[loc.Column, loc.Row], true);
+        }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Generates a map. </summary>
-        ///
-        /// <remarks>   Darrellp, 8/26/2016. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        private void GenerateMap()
+        private void _game_CreatureMoveEvent(object sender, CSRogue.RogueEventArgs.CreatureMoveEventArgs e)
         {
-            _csRogueMap = new CsRogueMap(Width, Height);
-            var excavator = new GridExcavator();
-            excavator.Excavate(_csRogueMap);
-            // Create the local cache of map data
-            // 
-            _mapData = new MapObject[Width, Height];
+            if (e.IsBlocked || e.IsFirstTimePlacement)
+            {
+                return;
+            }
+            var loc = e.PreviousCreatureLocation;
+            if (_map.InView(loc))
+            {
+                RenderToCell(GetAppearance(loc), this[loc.Column, loc.Row], true);
+            }
+            else if (_map.Remembered(loc))
+            {
+                RenderToCell(FloorAppearance, this[loc.Column, loc.Row], false);
+            }
+            loc = e.CreatureDestination;
+            if (_map.InView(loc))
+            {
+                RenderToCell(GetAppearance(loc), this[loc.Column, loc.Row], true);
+            }
+        }
+		#endregion
+
+		#region Mapping
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		/// <summary>   Generates a map. </summary>
+		///
+		/// <remarks>   Darrellp, 8/26/2016. </remarks>
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		private void GenerateMap()
+        {
+            _map = _game.Map;
 
             // Loop through the map information generated by RogueSharp and create our cached visuals of that data
             for (var iCol = 0; iCol < Width; iCol++)
             {
                 for (var iRow = 0; iRow < Height; iRow++)
                 {
-                    var terrain = _csRogueMap[iCol, iRow].Terrain;
+                    var terrain = _map[iCol, iRow].Terrain;
                     if (terrain == TerrainType.OffMap)
                     {
                         continue;
                     }
-                    string str = MapTerrainToAppearance[_csRogueMap[iCol, iRow].Terrain];
-                    var obj = _mapData[iCol, iRow] = new MapObject(MapObjectFactory.ObjectNameToAppearance[str]);
-                    obj.Appearance.CopyAppearanceTo(this[iCol, iRow]);
-                    obj.RemoveCellFromView(this[iCol, iRow]);
+                    GetAppearance(iCol, iRow).CopyAppearanceTo(this[iCol, iRow]);
+                    RemoveCellFromView(this[iCol, iRow]);
                 }
             }
 
-            Player.Position = _csRogueMap.RandomFloorLocation().ToPoint();
+            Player.Position = _map.Player.Location.ToPoint();
 
             // Center the veiw area
             TextSurface.RenderArea = new Rectangle(Player.Position.X - (TextSurface.RenderArea.Width / 2),
@@ -147,12 +162,32 @@ namespace RogueSC.Consoles
                                                     TextSurface.RenderArea.Width, TextSurface.RenderArea.Height);
 
             Player.RenderOffset = Position - TextSurface.RenderArea.Location;
-            _fov = new FOV(_csRogueMap, FovDistance);
-            _fov.Scan(Player.Position.ToMapCoordinates());
-            foreach (var loc in _fov.CurrentlySeen)
+            foreach (var loc in _map.Fov.CurrentlySeen)
             {
-                _mapData[loc.Column, loc.Row].RenderToCell(this[loc.Column, loc.Row], true);
+                RenderToCell(((SCMapLocationData)_map[loc]).Appearance, this[loc.Column, loc.Row], true);
             }
+        }
+
+        private CellAppearance GetAppearance(MapCoordinates crd)
+        {
+            return GetAppearance(crd.Column, crd.Row);
+        }
+
+	    private CellAppearance GetAppearance(int iCol, int iRow)
+        {
+            CellAppearance appearance;
+            if (_map[iCol, iRow].Items.Count > 0)
+            {
+                var id = _map[iCol, iRow].Items[0].ItemTypeId;
+                appearance = id == ItemIDs.HeroId ?
+					((SCMapLocationData)_map[iCol, iRow]).Appearance :
+                    ObjectNameToAppearance[_game.Factory.InfoFromId[id].Name];
+            }
+            else
+            {
+				appearance = ((SCMapLocationData)_map[iCol, iRow]).Appearance;
+            }
+            return appearance;
         }
         #endregion
 
@@ -168,37 +203,50 @@ namespace RogueSC.Consoles
 
         public void MovePlayerBy(Point amount)
         {
-            // Get the position the player will be at
-            var newPosition = Player.Position + amount;
+            // Move the player on the engine map
+            var moveCmd = new MovePlayerCommand(amount.ToMapCoordinates());
+            _game.EnqueueAndProcess(moveCmd);
+        }
 
-            // Check to see if the position is within the map
-            if (new Rectangle(0, 0, Width, Height).Contains(newPosition) && _csRogueMap.Walkable(newPosition.X, newPosition.Y))
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Event handler called by game for hero move events. </summary>
+        ///
+        /// <remarks>   This is where we react to any player movement and update the screen
+        ///             Darrell, 9/9/2016. </remarks>
+        ///
+        /// <param name="sender">   Source of the event. </param>
+        /// <param name="e">        Creature move event information. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        private void _game_HeroMoveEvent(object sender, CSRogue.RogueEventArgs.CreatureMoveEventArgs e)
+        {
+            if (e.IsBlocked || e.IsFirstTimePlacement)
             {
-                // Move the player
-                Player.Position += amount;
-                _csRogueMap.Player.Location = Player.Position.ToMapCoordinates();
+                return;
+            }
+            Player.Position = e.CreatureDestination.ToPoint();
 
-                // Scroll the view area to center the player on the screen
-                TextSurface.RenderArea = new Rectangle(Player.Position.X - (TextSurface.RenderArea.Width / 2),
-                                                        Player.Position.Y - (TextSurface.RenderArea.Height / 2),
-                                                        TextSurface.RenderArea.Width, TextSurface.RenderArea.Height);
+            // Scroll the view area to center the player on the screen
+            TextSurface.RenderArea = new Rectangle(Player.Position.X - (TextSurface.RenderArea.Width / 2),
+                                                    Player.Position.Y - (TextSurface.RenderArea.Height / 2),
+                                                    TextSurface.RenderArea.Width, TextSurface.RenderArea.Height);
 
-                // If he view area moved, we'll keep our entity in sync with it.
-                Player.RenderOffset = Position - TextSurface.RenderArea.Location;
+            // If he view area moved, we'll keep our entity in sync with it.
+            Player.RenderOffset = Position - TextSurface.RenderArea.Location;
 
-                _fov.Scan(Player.Position.ToMapCoordinates());
-                foreach (var loc in _fov.NewlySeen)
-                {
-	                _mapData[loc.Column, loc.Row].RenderToCell(
-		                this[loc.Column, loc.Row],
-		                true);
-                }
-                foreach (var loc in _fov.NewlyUnseen)
-                {
-                    _mapData[loc.Column, loc.Row].RenderToCell(
-                        this[loc.Column, loc.Row],
-                        false);
-                }
+            foreach (var loc in e.GameMap.Fov.NewlySeen)
+            {
+                RenderToCell(
+					((SCMapLocationData)_map[loc]).Appearance,
+                    this[loc.Column, loc.Row],
+                    true);
+            }
+            foreach (var loc in e.GameMap.Fov.NewlyUnseen)
+            {
+                RenderToCell(
+					((SCMapLocationData)_map[loc]).Appearance,
+                    this[loc.Column, loc.Row],
+                    false);
             }
         }
 

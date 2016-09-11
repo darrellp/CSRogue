@@ -40,11 +40,11 @@ namespace CSRogue.Utilities
 
 		private void DetermineStepDirection(MapCoordinates start, MapCoordinates end)
 		{
-			int spanRow = Math.Abs(start.Row - end.Row);
-			int spanColumn = Math.Abs(start.Column - end.Column);
+			var spanRow = Math.Abs(start.Row - end.Row);
+			var spanColumn = Math.Abs(start.Column - end.Column);
 
 			_dirStep = spanRow > spanColumn ? Dir.Vert : Dir.Horiz;
-			Dir dirOther = MapCoordinates.OtherDirection(_dirStep);
+			var dirOther = MapCoordinates.OtherDirection(_dirStep);
 			_incLong = _incShort = new MapCoordinates();
 			_incLong[_dirStep] = start[_dirStep] < end[_dirStep] ? 1 : -1;
 			_incShort[dirOther] = start[dirOther] < end[dirOther] ? 1 : -1;
@@ -86,10 +86,10 @@ namespace CSRogue.Utilities
 			if (_hasBeginConditions)
 			{
 				// Sign from the start of Bresenham to begin value
-				int signStartToBegin = Math.Sign(_location[_dirBegin] - _beginValue);
+				var signStartToBegin = Math.Sign(_location[_dirBegin] - _beginValue);
 
 				// Sign from the end of Bresenham to the start
-				int signStartToEnd = Math.Sign(_endLocation[_dirBegin] - _location[_dirBegin]);
+				var signStartToEnd = Math.Sign(_endLocation[_dirBegin] - _location[_dirBegin]);
 
 				// Have the starting conditions been met already?
 				if (signStartToBegin == 0)
@@ -110,7 +110,7 @@ namespace CSRogue.Utilities
 		{
 			get
 			{
-				foreach (MapCoordinates location in StepsInternal.Where(location => !_hasBeginConditions || location[_dirBegin] == _beginValue))
+				foreach (var location in StepsInternal.Where(location => !_hasBeginConditions || location[_dirBegin] == _beginValue))
 				{
 					_hasBeginConditions = false;
 					yield return location;

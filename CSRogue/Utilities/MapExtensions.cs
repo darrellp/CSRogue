@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using CSRogue.Interfaces;
 using CSRogue.Items;
 using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
@@ -23,10 +26,10 @@ namespace CSRogue.Utilities
 
         public static IEnumerable<MapCoordinates> Neighbors(this IMap map, int column, int row)
         {
-            int minRowOffset = row == 0 ? 0 : -1;
-            int maxRowOffset = row == map.Height - 1 ? 0 : 1;
-            int minColumnOffset = column == 0 ? 0 : -1;
-            int maxColumnOffset = column == map.Width - 1 ? 0 : 1;
+            var minRowOffset = row == 0 ? 0 : -1;
+            var maxRowOffset = row == map.Height - 1 ? 0 : 1;
+            var minColumnOffset = column == 0 ? 0 : -1;
+            var maxColumnOffset = column == map.Width - 1 ? 0 : 1;
 
             for (var iRowOffset = minRowOffset; iRowOffset <= maxRowOffset; iRowOffset++)
             {
@@ -102,20 +105,21 @@ namespace CSRogue.Utilities
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         public static MapCoordinates RandomFloorLocation(this IMap map, bool restrictToRooms = false)
         {
-            // Locals
-            Rnd rnd = Rnd.Global;
+            var rnd = Rnd.Global;
             int row, column;
-            MapLocationData data;
 
-            do
+            while (true)
             {
                 // Try a random spot
                 row = rnd.Next(map.Height);
                 column = rnd.Next(map.Width);
-                data = map[column, row];
+
+				// Needs to be walkable and have at least three walkable neighbors
+	            if (map.Walkable(column, row) && map.Neighbors(column, row).Count(map.Walkable) > 2)
+	            {
+		            break;
+	            }
             }
-            // We find one that's on some floor terrain
-            while (data.Terrain != TerrainType.Floor && (!restrictToRooms || !data.Room.IsCorridor));
 
             // Return it
             return new MapCoordinates(column, row);
@@ -179,10 +183,10 @@ namespace CSRogue.Utilities
         /// <returns>   The creature at location or null if no creature there. </returns>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public static Creature CreatureAt(this IMap map, MapCoordinates location)
+        public static ICreature CreatureAt(this IMap map, MapCoordinates location)
         {
             // Find a creature, if any, at the destination
-            return map[location].Items.FirstOrDefault(i => (i as Creature) != null) as Creature;
+            return map[location].Items?.FirstOrDefault(i => (i as Creature) != null) as Creature;
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -219,10 +223,94 @@ namespace CSRogue.Utilities
             return map.Walkable(location) && !map.IsCreatureAt(location);
         }
 
+        public static List<MapCoordinates> LocateTerrain(this IMap map, TerrainType type, bool fFirstOnly = false)
+        {
+            var ret = new List<MapCoordinates>();
+            for (var iRow = 0; iRow < map.Height; iRow++)
+            {
+                for (var iColumn = 0; iColumn < map.Width; iColumn++)
+                {
+                    if (map[iColumn, iRow].Terrain == type)
+                    {
+                        ret.Add(new MapCoordinates(iColumn, iRow));
+                        if (fFirstOnly)
+                        {
+                            return ret;
+                        }
+                    }
+                }
+            }
+            return ret;
+        }
 
-		#region Terrain States
-		#region In View
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static List<MapCoordinates> LocateItems(this IMap map, Guid id, bool fFirstOnly = false)
+        {
+            var ret = new List<MapCoordinates>();
+            for (var iRow = 0; iRow < map.Height; iRow++)
+            {
+                for (var iColumn = 0; iColumn < map.Width; iColumn++)
+                {
+                    if (map[iColumn, iRow].Items.FirstOrDefault(i => i.ItemTypeId == id) != null)
+                    {
+                        ret.Add(new MapCoordinates(iColumn, iRow));
+                        if (fFirstOnly)
+                        {
+                            return ret;
+                        }
+                    }
+                }
+            }
+            return ret;
+        }
+
+        public static ICreature LocatePlayer(this IGameMap map)
+        {
+            for (var iRow = 0; iRow < map.Height; iRow++)
+            {
+                for (var iColumn = 0; iColumn < map.Width; iColumn++)
+                {
+                    var trialPlayer = map[iColumn, iRow].Items.FirstOrDefault(i => map.Game.Factory.InfoFromId[i.ItemTypeId].IsPlayer);
+                    if (trialPlayer != null)
+                    {
+                        return (ICreature)trialPlayer;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public static void SetPlayer(this IGameMap map, bool moveToStairwell = true, IPlayer playerIn = null)
+        {
+            if (map.Player == null)
+            {
+                var player = map.LocatePlayer();
+                if (player != null)
+                {
+                    map.Player = (IPlayer)player;
+                }
+                else if (playerIn != null)
+                {
+                    map.Player = playerIn;
+                }
+                else
+                {
+                    map.Player = new Player();
+                }
+            }
+            if (moveToStairwell)
+            {
+                var stairwellLoc = map.LocateTerrain(TerrainType.StairsDown, true);
+                if (stairwellLoc.Count > 0)
+                {
+                    map.MoveCreatureTo(map.Player, stairwellLoc[0]);
+                }
+            }
+            
+        }
+
+        #region Terrain States
+        #region In View
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool InView(this IMap map, int x, int y)
 		{
 			return map.Value(TerrainState.InView, x, y);

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using CSRogue.Interfaces;
 using CSRogue.Item_Handling;
 
 namespace CSRogue.Map_Generation
 {
     // TODO: Is this sufficient or should we allow the user to define their own lit states?
+    // These are the ones we care about.  They are free to define another orthogonal set for their
+    // own use.
    [Flags]
 	public enum TerrainState
 	{
@@ -15,15 +18,26 @@ namespace CSRogue.Map_Generation
 		Walkable = 0x10
 	}
 
-	public class MapLocationData
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// <summary>   A map location data. </summary>
+    ///
+    /// <remarks>   The information stored at each cell of a map.  Ideally I'd love to make this a
+    ///             structure since so many are created but in that case the IMap[x,y] construction 
+    ///             returns a copy of the structure and we can't use it to modify the actual data
+    ///             in the map which is hugely inconvenient.  I'm not sure of a great way to fix this.
+    ///             Darrell, 9/9/2016. </remarks>
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public class MapLocationData : IMapLocationData
 	{
+        #region Public properties
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Items at this location. </summary>
         ///
         /// <value> The items. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		public List<IItem> Items { get; }
+        public List<IItem> Items { get; set; }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Gets or sets the type of terrain at this location. </summary>
@@ -39,7 +53,7 @@ namespace CSRogue.Map_Generation
         /// <value> The lit state. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		public TerrainState TerrainState { get; internal set; }
+		public TerrainState TerrainState { get; set; }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Gets or sets the room this location is located in. </summary>
@@ -47,24 +61,19 @@ namespace CSRogue.Map_Generation
         /// <value> The room. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		public GenericRoom Room { get; internal set; }
+		public IRoom Room { get; set; }
+        #endregion
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   A tag to put whatever you'd like at this location. </summary>
-        ///
-        /// <value> The tag. </value>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        #region Constructor
 
-        public object Tag { get; set; }
-
-		internal MapLocationData()
+	    public MapLocationData()
 		{
 			Items = new List<IItem>();
 			Terrain = TerrainType.OffMap;
 			TerrainState = TerrainState.FogOfWar;
 		}
 
-		internal MapLocationData(TerrainType terrain, List<IItem> items = null)
+        internal MapLocationData(TerrainType terrain, List<IItem> items = null)
 			: this()
 		{
 			if (items != null)
@@ -73,7 +82,9 @@ namespace CSRogue.Map_Generation
 			}
 			Terrain = terrain;
 		}
+        #endregion
 
+        #region Item manipulation
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Adds an item at this location. </summary>
         ///
@@ -82,7 +93,7 @@ namespace CSRogue.Map_Generation
         /// <param name="item"> The item to be added. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		public void AddItem(IItem item)
+        public void AddItem(IItem item)
 		{
 			Items.Add(item);
 		}
@@ -99,5 +110,6 @@ namespace CSRogue.Map_Generation
 		{
 			Items.Remove(item);
 		}
-	}
+        #endregion
+    }
 }

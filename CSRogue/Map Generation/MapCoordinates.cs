@@ -97,8 +97,8 @@ namespace CSRogue.Map_Generation
 
 		public static bool Within(MapCoordinates loc1, MapCoordinates loc2, int radius, int aspectRatioHorizontal, int aspectRatioVertical)
 		{
-			int colDiff = (loc1.Column - loc2.Column) * aspectRatioHorizontal / aspectRatioVertical;
-			int rowDiff = loc1.Row - loc2.Row;
+			var colDiff = (loc1.Column - loc2.Column) * aspectRatioHorizontal / aspectRatioVertical;
+			var rowDiff = loc1.Row - loc2.Row;
 
 			return rowDiff * rowDiff + colDiff * colDiff <= radius * radius;
 		}
@@ -176,8 +176,8 @@ namespace CSRogue.Map_Generation
 
 		internal MapCoordinates NextLarger(Dir dir)
 		{
-			int column = dir == Dir.Horiz ? Column + 1 : Column;
-			int row = dir == Dir.Horiz ? Row : Row + 1;
+			var column = dir == Dir.Horiz ? Column + 1 : Column;
+			var row = dir == Dir.Horiz ? Row : Row + 1;
 			return new MapCoordinates(column, row);
 		}
 
@@ -193,8 +193,8 @@ namespace CSRogue.Map_Generation
 
         internal MapCoordinates NextSmaller(Dir dir)
 		{
-			int column = dir == Dir.Horiz ? Column - 1 : Column;
-			int row = dir == Dir.Horiz ? Row : Row - 1;
+			var column = dir == Dir.Horiz ? Column - 1 : Column;
+			var row = dir == Dir.Horiz ? Row : Row - 1;
 			return new MapCoordinates(column, row);
 		}
 
@@ -233,7 +233,7 @@ namespace CSRogue.Map_Generation
 		internal List<MapCoordinates> Neighbors(int mapWidth, int mapHeight)
 		{
 			// Allocate the list
-			List<MapCoordinates> ret = new List<MapCoordinates>();
+			var ret = new List<MapCoordinates>();
 
 			if (Column > 0)
 			{

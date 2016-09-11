@@ -146,24 +146,24 @@ namespace CSRogue.Map_Generation
 		///
 		/// <returns>	This object as a GenericRoom. </returns>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal GenericRoom ToGeneric()
+		internal Room ToGeneric()
 		{
-			char[][] layout = new char[Width][];
-			char floorChar = TerrainFactory.TerrainToChar(TerrainType.Floor);
+			var layout = new char[Width][];
+			var floorChar = TerrainFactory.TerrainToChar(TerrainType.Floor);
 
-			for (int iColumn = 0; iColumn < Width; iColumn++)
+			for (var iColumn = 0; iColumn < Width; iColumn++)
 			{
 				layout[iColumn] = new char[Height];
-				for (int iRow = 0; iRow < Height; iRow++)
+				for (var iRow = 0; iRow < Height; iRow++)
 				{
-					bool fBorder = iRow == 0 || iRow == Height - 1 || iColumn == 0 || iColumn == Width - 1;
+					var fBorder = iRow == 0 || iRow == Height - 1 || iColumn == 0 || iColumn == Width - 1;
 					if (!fBorder)
 					{
 						layout[iColumn][iRow] = floorChar;
 					}
 				}
 			}
-			return new GenericRoom(layout, Location, new List<GenericRoom>());
+			return new Room(layout, Location, new List<Room>());
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -186,7 +186,7 @@ namespace CSRogue.Map_Generation
 			int column, row;
 
 			// Our values get bumped to avoid corners if need be
-			int cornerBump = fIncludeCorners ? 0 : 1;
+			var cornerBump = fIncludeCorners ? 0 : 1;
 
 			// If we're at the top or bottom
 			if (wall == Wall.Top || wall == Wall.Bottom)
@@ -202,8 +202,8 @@ namespace CSRogue.Map_Generation
 			else
 			{
 				// Pick a random row
-				int top = Top + cornerBump;
-				int bottom = Bottom - cornerBump;
+				var top = Top + cornerBump;
+				var bottom = Bottom - cornerBump;
 				row = rnd.Next(top, bottom + 1);
 
 				// Set column to left or right

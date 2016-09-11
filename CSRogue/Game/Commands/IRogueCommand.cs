@@ -2,6 +2,6 @@
 {
 	public interface IRogueCommand
 	{
-		CommandType Command { get; }
+	    void Execute(Game game);
 	}
 }

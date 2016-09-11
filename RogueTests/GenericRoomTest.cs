@@ -1,6 +1,7 @@
-﻿using CSRogue.Map_Generation;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using CSRogue.Map_Generation;
+using CSRogue.Utilities;
 
 namespace RogueTests
 {
@@ -76,11 +77,11 @@ namespace RogueTests
 @"....
 ....";
 
-			List<GenericRoom> exits = null;
+			List<Room> exits = null;
 			MapCoordinates location = new MapCoordinates();
-			GenericRoom target = new GenericRoom(layout, location, exits);
-			Assert.AreEqual(2, target.Height);
-			Assert.AreEqual(4, target.Width);
+			Room target = new Room(layout, location, exits);
+			Assert.AreEqual(2, target.Height());
+			Assert.AreEqual(4, target.Width());
 		}
 
 		/// <summary>
@@ -93,21 +94,21 @@ namespace RogueTests
 @"........
 ........
         ";
-			GenericRoom roomConnect = new GenericRoom(layoutConnect, new MapCoordinates(10, 7), null);
+			Room roomConnect = new Room(layoutConnect, new MapCoordinates(10, 7), null);
 			string layout1 =
 @"    
 ....
 ....";
-			GenericRoom room1 = new GenericRoom(layout1, new MapCoordinates(10, 9), null);
-			GenericRoom room2 = new GenericRoom(layout1, new MapCoordinates(14, 9), null);
+			Room room1 = new Room(layout1, new MapCoordinates(10, 9), null);
+			Room room2 = new Room(layout1, new MapCoordinates(14, 9), null);
 			roomConnect.AddExit(room1, new MapCoordinates(10, 9));
 			roomConnect.AddExit(room2, new MapCoordinates(14, 9));
 			room1.AddExit(roomConnect, new MapCoordinates(10, 9));
 			room2.AddExit(roomConnect, new MapCoordinates(14, 9));
 			room1.CombineWith(room2);
 			Assert.AreEqual(2, room1.ExitMap.Count);
-			Assert.AreEqual(8, room1.Width);
-			Assert.AreEqual(3, room1.Height);
+			Assert.AreEqual(8, room1.Width());
+			Assert.AreEqual(3, room1.Height());
 			Assert.IsTrue(room1.ExitMap.ContainsKey(new MapCoordinates(10, 9)));
 			Assert.IsTrue(room1.ExitMap.ContainsKey(new MapCoordinates(14, 9)));
 			Assert.AreSame(roomConnect, room1.ExitMap[new MapCoordinates(10, 9)]);
@@ -120,7 +121,7 @@ namespace RogueTests
 		[TestMethod()]
 		public void MarkTerrainTest()
 		{
-			GenericRoom target = new GenericRoom(_layout4X2, new MapCoordinates(10, 10), null);
+			Room target = new Room(_layout4X2, new MapCoordinates(10, 10), null);
 			MapCoordinates mapLocation = new MapCoordinates(10, 10);
 			target[mapLocation] = '#';
 			Assert.AreEqual('#', target[mapLocation]);

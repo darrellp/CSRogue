@@ -69,37 +69,34 @@
       <HintPath>..\packages\MonoGame.Framework.WindowsDX.3.5.1.1679\lib\net40\MonoGame.Framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SadConsole.Core.Windows, Version=4.2.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SadConsole.Core.4.2.1\lib\net45\SadConsole.Core.Windows.dll</HintPath>
+    <Reference Include="SadConsole.Core.Windows, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SadConsole.Core.5.0.0\lib\net45\SadConsole.Core.Windows.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SadConsole.GameHelpers.Windows, Version=3.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SadConsole.GameHelpers.3.2.0\lib\net45\SadConsole.GameHelpers.Windows.dll</HintPath>
+    <Reference Include="SadConsole.GameHelpers.Windows, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SadConsole.GameHelpers.4.0.0\lib\net45\SadConsole.GameHelpers.Windows.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Cheepicus_12x12.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="IBM8x16.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Yayo_c64.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <EmbeddedResource Include="TextFiles\ItemFactoryData.txt" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Consoles\CharacterConsole.cs" />
     <Compile Include="Consoles\DungeonMapConsole.cs" />
     <Compile Include="Consoles\DungeonScreen.cs" />
     <Compile Include="Consoles\MessagesConsole.cs" />
+    <Compile Include="Creatures\Hero.cs" />
+    <Compile Include="Creatures\Orc.cs" />
+    <Compile Include="Creatures\Rat.cs" />
     <Compile Include="GameWorld.cs" />
-    <Compile Include="Map Objects\MapObject.cs" />
-    <Compile Include="Map Objects\MapObjectFactory.cs" />
+    <Compile Include="Items\Sword.cs" />
+    <Compile Include="Map Objects\SCMapLocationData.cs" />
+    <Compile Include="Map Objects\SCRender.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Utilities\Extensions.cs" />
+    <Compile Include="Utilities\ItemIDs.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
@@ -118,6 +115,17 @@
       <Project>{1f0ddf6f-a415-4174-b0bd-a7fe18cfc3ec}</Project>
       <Name>CSRogue</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Cheepicus_12x12.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="IBM8x16.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Yayo_c64.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

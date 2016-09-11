@@ -1,5 +1,5 @@
 ﻿using System;
-using CSRogue.Map_Generation;
+using CSRogue.Interfaces;
 
 namespace CSRogue.Item_Handling
 {
@@ -80,7 +80,7 @@ namespace CSRogue.Item_Handling
 		/// <value>	An action to create the item. </value>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		public Func<Level, IItem> CreateItem { get; set; }
+		public Func<ILevel, IItem> CreateItem { get; set; }
 		#endregion
 
 		#region Static methods to set up info tables

@@ -22,7 +22,7 @@ namespace CSRogue.GameControl
 		{
 			while (_commands.Count != 0)
 			{
-				_game.Dispatch(_commands.Dequeue());
+                _commands.Dequeue()?.Execute(_game);
 			}
 		}
 	}

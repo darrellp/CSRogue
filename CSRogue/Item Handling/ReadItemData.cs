@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using CSRogue.Map_Generation;
+using CSRogue.Interfaces;
 using CSRogue.Utilities;
 
 namespace CSRogue.Item_Handling
@@ -79,7 +79,7 @@ namespace CSRogue.Item_Handling
 			return info;
 		}
 
-		private Func<Level, IItem> GetConstructor(Guid id, string s)
+		private Func<ILevel, IItem> GetConstructor(Guid id, string s)
 		{
 			var type = _typeAssembly.GetType(s);
 			return l =>
@@ -136,7 +136,8 @@ namespace CSRogue.Item_Handling
 			(t, s, i) => i.Weight = Double.Parse(s),
 			(t, s, i) => i.Value = Int32.Parse(s),
 			(t, s, i) => i.Description = s,
-			(t, s, i) => i.CreateItem = t.GetConstructor(i.ItemId, s)
+			(t, s, i) => i.CreateItem = t.GetConstructor(i.ItemId, s),
+            (t, s, i) => i.IsPlayer = true,
 		};
 
 		private static readonly List<Action<ReadItemData, string, ItemInfo>> DefaultDispatchTable = new List<Action<ReadItemData, string, ItemInfo>>
@@ -159,8 +160,8 @@ namespace CSRogue.Item_Handling
 			(s, i) => i.Rarity = int.Parse(s),
 			(s, i) => i.Color = (RogueColor)Enum.Parse(typeof(RogueColor), s),
 			(s, i) => i.Speed = int.Parse(s),
-			(s, i) => i.ArmorClass = int.Parse(s)
-		};
+			(s, i) => i.ArmorClass = int.Parse(s),
+        };
 
 		private static readonly List<Action<string, CreatureInfo>> DefaultCreatureDispatchTable = new List<Action<string, CreatureInfo>>
 		{

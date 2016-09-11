@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CSRogue.Utilities
 {
-	static class Selector<T>
+    public static class Selector<T>
 	{
 		private static void Swap(IList<T> list, int i1, int i2)
 		{
@@ -11,7 +11,7 @@ namespace CSRogue.Utilities
 			{
 				return;
 			}
-			T temp = list[i1];
+			var temp = list[i1];
 			list[i1] = list[i2];
 			list[i2] = temp;
 		}
@@ -34,7 +34,7 @@ namespace CSRogue.Utilities
 		///
 		/// <returns>	A list of found items. </returns>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal static List<T> SelectFrom(IList<T> list, Func<T, bool> acceptable = null, int n = 1)
+		public static List<T> SelectFrom(IList<T> list, Func<T, bool> acceptable = null, int n = 1)
 		{
 			// Did acceptable criteria default to null?
 			if (acceptable == null)
@@ -44,11 +44,11 @@ namespace CSRogue.Utilities
 			}
 
 			// Initialize a list to return
-			List<T> ret = new List<T>();
-			int available = list.Count;
+			var ret = new List<T>();
+			var available = list.Count;
 
 			// For each selection while any are available
-			for (int i = 0; i < n && available > 0; i++)
+			for (var i = 0; i < n && available > 0; i++)
 			{
 				// locals
 				T selected;
@@ -56,7 +56,7 @@ namespace CSRogue.Utilities
 				do
 				{
 					// Get a random selected object
-					int selectedIndex = Rnd.Global.Next(available);
+					var selectedIndex = Rnd.Global.Next(available);
 					selected = list[selectedIndex];
 
 					// Swap it out of the available range

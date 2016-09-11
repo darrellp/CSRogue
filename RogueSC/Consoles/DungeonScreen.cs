@@ -1,5 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using CSRogue.GameControl.Commands;
+using CSRogue.Items;
+using CSRogue.Item_Handling;
+using CSRogue.Map_Generation;
+using CSRogue.RogueEventArgs;
 using Microsoft.Xna.Framework;
+using RogueSC.Map_Objects;
+using RogueSC.Utilities;
 using SadConsole;
 using SadConsole.Consoles;
 using SadConsole.Input;
@@ -30,9 +40,25 @@ namespace RogueSC.Consoles
         // ReSharper disable once InconsistentNaming
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly Console messageHeaderConsole;
+        private readonly CSRogue.GameControl.Game _game;
+        private static readonly ItemFactory Factory;
+        private const int MapWidth = 100;
+        private const int MapHeight = 100;
         #endregion
 
         #region Constructor
+        static DungeonScreen()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceName = "RogueSC.TextFiles.ItemFactoryData.txt";
+
+            using (var stream = assembly.GetManifestResourceStream(resourceName))
+            {
+                // ReSharper disable once AssignNullToNotNullAttribute
+                var reader = new StreamReader(stream);
+                Factory = new ItemFactory(reader);
+            }
+        }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Default constructor. </summary>
@@ -42,9 +68,23 @@ namespace RogueSC.Consoles
 
         public DungeonScreen()
         {
+            _game = new CSRogue.GameControl.Game(Factory);
+			_game.NewLevelEvent += Game_NewLevelEvent;
+			_game.AttackEvent += Game_AttackEvent;
+            var player = (IPlayer) Factory.InfoFromId[ItemIDs.HeroId].CreateItem(null);
+            var map = new GameMap(MapWidth, MapHeight, 10, _game, player, () => new SCMapLocationData());
+            var excavator= new GridExcavator();
+            excavator.Excavate(map, player);
+
+            var levelCmd = new NewLevelCommand(0, map, new Dictionary<Guid, int>()
+            {
+                {ItemIDs.RatId, 1},
+                {ItemIDs.OrcId, 1}
+            });
+            _game.EnqueueAndProcess(levelCmd);
+
             StatsConsole = new CharacterConsole(24, 17);
-            // ReSharper disable once RedundantArgumentDefaultValue
-            DungeonConsole = new DungeonMapConsole(56, 16, 100, 100, Font.FontSizes.One);
+            DungeonConsole = new DungeonMapConsole(_game, 56, 16);
             MessageConsole = new MessagesConsole(80, 6);
 
             // Setup the message header to be as wide as the screen but only 1 character high
@@ -82,35 +122,62 @@ namespace RogueSC.Consoles
             Engine.Keyboard.RepeatDelay = 0.1f;
             Engine.Keyboard.InitialRepeatDelay = 0.1f;
         }
-        #endregion
+		#endregion
 
-        #region Keyboard handling
-        /// <summary>   A dictionary to map the arrow keys to their corresponding movement. </summary>
-        private static readonly Dictionary<Input.Keys, Point> KeysToMovement = new Dictionary<Input.Keys, Point>()
+		#region Event Handlers
+		private void Game_AttackEvent(object sender, AttackEventArgs e)
+		{
+			Action x = () => DungeonConsole.MovePlayerBy(new Point(0, -1));
+
+			if (e.Victim.IsPlayer || !e.VictimDied)
             {
-                {Input.Keys.Up, new Point(0, -1) },
-                {Input.Keys.Down, new Point(0, 1) },
-                {Input.Keys.Left, new Point(-1, 0) },
-                {Input.Keys.Right, new Point(1, 0) },
-                {Input.Keys.End, new Point(-1, 1) },
-                {Input.Keys.PageUp, new Point(1, -1) },
-                {Input.Keys.PageDown, new Point(1, 1) },
-                {Input.Keys.Home, new Point(-1, -1) },
-            };
+                return;
+            }
+            MessageConsole.PrintMessage($"[c:r f:Red]You killed a mighty [c:r f:Yellow]{_game.Factory.InfoFromId[e.Victim.ItemTypeId].Name}!");
 
-        public override bool ProcessKeyboard(KeyboardInfo info)
+        }
+
+		private void Game_NewLevelEvent(object sender, NewLevelEventArgs e)
+		{
+			var map = e.NewLevel.Map;
+			for (var iCol = 0; iCol < map.Width; iCol++)
+			{
+				for (var iRow = 0; iRow < map.Height; iRow++)
+				{
+					var data = (SCMapLocationData)map[iCol, iRow];
+					data.Appearance = SCRender.MapTerrainToAppearance[map[iCol, iRow].Terrain];
+				}
+			}
+		}
+		#endregion
+
+		#region Keyboard handling
+		/// <summary>   A dictionary to map the arrow keys to their corresponding movement. </summary>
+		private static readonly Dictionary<Input.Keys, Action<DungeonScreen>> KeysToAction = new Dictionary<Input.Keys, Action<DungeonScreen>>()
+			{
+				{Input.Keys.Up, (s) => s.DungeonConsole.MovePlayerBy(new Point(0, -1)) },
+				{Input.Keys.Down, (s) => s.DungeonConsole.MovePlayerBy(new Point(0, 1)) },
+				{Input.Keys.Left, (s) => s.DungeonConsole.MovePlayerBy(new Point(-1, 0)) },
+				{Input.Keys.Right, (s) => s.DungeonConsole.MovePlayerBy(new Point(1, 0)) },
+				{Input.Keys.End, (s) => s.DungeonConsole.MovePlayerBy(new Point(-1, 1)) },
+				{Input.Keys.PageUp, (s) => s.DungeonConsole.MovePlayerBy(new Point(1, -1)) },
+				{Input.Keys.PageDown,(s) => s.DungeonConsole.MovePlayerBy(new Point(1, 1)) },
+				{Input.Keys.Home, (s) => s.DungeonConsole.MovePlayerBy(new Point(-1, -1)) },
+				{(Input.Keys)12, (s) => s.DungeonConsole.MovePlayerBy(new Point(0, 0)) },
+			};
+
+		public override bool ProcessKeyboard(KeyboardInfo info)
         {
             if (info.KeysPressed.Count == 0)
             {
                 return false;
             }
 
-            if (KeysToMovement.ContainsKey(info.KeysPressed[0].XnaKey))
-            {
-                DungeonConsole.MovePlayerBy(KeysToMovement[info.KeysPressed[0].XnaKey]);
-            }
-
-            return false;
+			if (KeysToAction.ContainsKey(info.KeysPressed[0].XnaKey))
+			{
+				KeysToAction[info.KeysPressed[0].XnaKey](this);
+			}
+			return false;
         }
         #endregion
     }

@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using CSRogue;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using CSRogue.Interfaces;
 using CSRogue.Map_Generation;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace RogueTests
 {
@@ -66,12 +67,12 @@ namespace RogueTests
 		[TestMethod()]
 		public void MapConstructorTest()
 		{
-			CsRogueMap target = new CsRogueMap();
-			for (int iCol = 0; iCol < target.Width; iCol++)
+			BaseMap target = new BaseMap(100, 150);
+			for (var iCol = 0; iCol < target.Width; iCol++)
 			{
-				for (int iRow = 0; iRow < target.Height; iRow++)
+				for (var iRow = 0; iRow < target.Height; iRow++)
 				{
-					MapLocationData data = target[iCol, iRow];
+					IMapLocationData data = target[iCol, iRow];
 					Assert.AreEqual(0, data.Items.Count);
 					Assert.AreEqual(TerrainType.OffMap, data.Terrain);
 				}

@@ -12,7 +12,6 @@
             DungeonScreen = new Consoles.DungeonScreen();
             SadConsole.Engine.ConsoleRenderStack.Add(DungeonScreen);
             DungeonScreen.MessageConsole.PrintMessage("Welcome to THE GAME...");
-
         }
     }
 }

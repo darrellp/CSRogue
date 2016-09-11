@@ -47,67 +47,69 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EventArgs\AttackEventArgs.cs" />
-    <Compile Include="Game\CommandDispatcher.cs" />
+    <Compile Include="EventArgs\NewLevelEventArgs.cs" />
     <Compile Include="Game\CommandQueue.cs" />
+    <Compile Include="Game\Commands\AttackCommand.cs" />
     <Compile Include="Game\Commands\CommandBase.cs" />
     <Compile Include="Game\Commands\MoveToCommand.cs" />
     <Compile Include="Game\Commands\NewLevelCommand.cs" />
     <Compile Include="Game\Commands\IRogueCommand.cs" />
-    <Compile Include="Game\CommandType.cs" />
     <Compile Include="Game\Game.cs" />
-    <Compile Include="Game\Commands\MovementCommand.cs" />
+    <Compile Include="Game\Commands\MovePlayerCommand.cs" />
+    <Compile Include="Map Generation\BaseMap.cs" />
+    <Compile Include="Map Generation\FileExcavator.cs" />
+    <Compile Include="Map Generation\FOV.cs" />
+    <Compile Include="Map Generation\GameMap.cs" />
+    <Compile Include="Map Generation\GridConnections.cs" />
+    <Compile Include="Map Generation\GridExcavator.cs" />
+    <Compile Include="Map Generation\Level.cs" />
+    <Compile Include="Map Generation\MapCoordinates.cs" />
+    <Compile Include="Map Generation\MapLocationData.cs" />
+    <Compile Include="Map Generation\NullExcavator.cs" />
+    <Compile Include="Map Generation\RectangularRoom.cs" />
+    <Compile Include="Map Generation\Room.cs" />
+    <Compile Include="Map Generation\RoomMap.cs" />
+    <Compile Include="Map Generation\TerrainFactory.cs" />
     <Compile Include="Item Handling\IItem.cs" />
     <Compile Include="Item Handling\IItemFactory.cs" />
     <Compile Include="Item Handling\ItemFactory.cs" />
-    <Compile Include="Map Generation\IGameMap.cs" />
-    <Compile Include="Map Generation\IMap.cs" />
+    <Compile Include="Items\ICreature.cs" />
+    <Compile Include="Items\IPlayer.cs" />
+    <Compile Include="Interfaces\IGameMap.cs" />
+    <Compile Include="Interfaces\ILevel.cs" />
+    <Compile Include="Interfaces\IMap.cs" />
     <Compile Include="Item Handling\CreatureInfo.cs" />
     <Compile Include="EventArgs\CreatureMoveEventArgs.cs" />
-    <Compile Include="Map Generation\IRoom.cs" />
-    <Compile Include="Map Generation\IRoomsMap.cs" />
-    <Compile Include="Map Generation\Level.cs" />
-    <Compile Include="Map Generation\NullExcavator.cs" />
+    <Compile Include="Interfaces\IMapLocationData.cs" />
+    <Compile Include="Interfaces\IRoom.cs" />
+    <Compile Include="Interfaces\IRoomsMap.cs" />
     <Compile Include="Utilities\BresenhamStepper.cs" />
     <Compile Include="Utilities\DieRoll.cs" />
     <Compile Include="Item Handling\ReadCreatureData.cs" />
     <Compile Include="Item Handling\ReadItemData.cs" />
-    <Compile Include="Map Generation\IExcavator.cs" />
-    <Compile Include="Map Generation\FileExcavator.cs" />
-    <Compile Include="Map Generation\FOV.cs" />
-    <Compile Include="Map Generation\GenericCorridor.cs" />
-    <Compile Include="Map Generation\GenericRoom.cs" />
-    <Compile Include="Map Generation\GridConnections.cs" />
+    <Compile Include="Interfaces\IExcavator.cs" />
     <Compile Include="Item Handling\Item.cs" />
     <Compile Include="Item Handling\ItemInfo.cs" />
     <Compile Include="Items\Creature.cs" />
     <Compile Include="Items\Player.cs" />
-    <Compile Include="Map Generation\GridExcavator.cs" />
-    <Compile Include="Map Generation\CsRogueMap.cs" />
-    <Compile Include="Map Generation\MapCoordinates.cs" />
-    <Compile Include="Map Generation\MapGraph.cs" />
-    <Compile Include="Map Generation\MapLocationData.cs" />
     <Compile Include="Utilities\GameMapExtensions.cs" />
+    <Compile Include="Utilities\LevelExtensions.cs" />
     <Compile Include="Utilities\MapExtensions.cs" />
+    <Compile Include="Utilities\MapLocationDataExtensions.cs" />
+    <Compile Include="Utilities\PerlinNoise.cs" />
     <Compile Include="Utilities\PerThreadSingleton.cs" />
     <Compile Include="Utilities\Preferences.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\Random.cs" />
     <Compile Include="Utilities\RogueColor.cs" />
     <Compile Include="Utilities\RogueException.cs" />
-    <Compile Include="Map Generation\RectangularRoom.cs" />
-    <Compile Include="Map Generation\TerrainFactory.cs" />
     <Compile Include="Utilities\RoomExtensions.cs" />
     <Compile Include="Utilities\Selector.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Data Files\ItemData.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Data Files\CreatureData.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

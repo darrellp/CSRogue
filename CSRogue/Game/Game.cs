@@ -1,24 +1,40 @@
 ﻿using System;
 using CSRogue.RogueEventArgs;
 using CSRogue.GameControl.Commands;
+using CSRogue.Interfaces;
 using CSRogue.Item_Handling;
-using CSRogue.Map_Generation;
 using CSRogue.Utilities;
 
 namespace CSRogue.GameControl
 {
 	enum EventType
 	{
+        HeroMove,
 		CreatureMove,
 		NewLevel,
 		Attack
 	}
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// <summary>   A game. </summary>
+    ///
+    /// <remarks>   Game is pretty much just a gathering place for all the information about the
+    ///             game as well as a dispatcher for the events which occur during the game.  In
+    ///             particular, the current level, the item factory/information are in here.
+    ///             
+    ///             The Game object also coordinates tasks and their execution.  Tasks can be
+    ///             queued up and then processed in one turn.  This ensures that two conflicting
+    ///             events happen in a definitive order and separates events from each other.
+    ///             
+    ///             The events included in CSRogue are not sacrosanct.  Users can make up their own
+    ///             tasks or modify these and have them scheduled along with all the other tasks.
+    ///             Darrell, 9/9/2016. </remarks>
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public class Game
 	{
 		#region Private variables
-		readonly CommandDispatcher _commandDispatcher;
-		private readonly CommandQueue _commandQueue;
+	    private readonly CommandQueue _commandQueue;
 		#endregion
 
 		#region Public Variables
@@ -27,14 +43,7 @@ namespace CSRogue.GameControl
 		///
 		/// <value>	The current level. </value>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public Level CurrentLevel { get; private set; }
-
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Gets or sets the excavator. </summary>
-		///
-		/// <value>	The excavator. </value>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public IExcavator Excavator { get; set; }
+		public ILevel CurrentLevel { get; internal set; }
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Gets the map. </summary>
@@ -47,58 +56,66 @@ namespace CSRogue.GameControl
 
 		#region Events
 		/// <summary> Event queue for all listeners interested in new level events. </summary>
-		public event EventHandler<EventArgs> NewLevelEvent;
-		public void InvokeNewLevelEvent(Object sender, EventArgs e)
+		public event EventHandler<NewLevelEventArgs> NewLevelEvent;
+		public void InvokeNewLevelEvent(Object sender, NewLevelEventArgs e)
 		{
-			var handler = NewLevelEvent;
-		    handler?.Invoke(sender, e);
+            NewLevelEvent?.Invoke(sender, e);
 		}
 
 		/// <summary> Event queue for all listeners interested in hero movement events. </summary>
 		public event EventHandler<CreatureMoveEventArgs> HeroMoveEvent;
 		private void InvokeHeroMoveEvent(Object sender, CreatureMoveEventArgs e)
 		{
-			var handler = HeroMoveEvent;
-		    handler?.Invoke(sender, e);
+            HeroMoveEvent?.Invoke(sender, e);
 		}
 
 		public event EventHandler<AttackEventArgs> AttackEvent;
 		private void InvokeAttackEvent(Object sender, AttackEventArgs e)
 		{
-			var handler = AttackEvent;
-		    handler?.Invoke(sender, e);
+            AttackEvent?.Invoke(sender, e);
 		}
 
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Invoke an event. </summary>
-		///
-		/// <remarks>	
-		/// This is a bit nonstandard, but I want users to be able to deal with only the game object for
-		/// all event handling.  That way they don't have to remember whether to set it on the map or the
-		/// level and don't have to reset it if the map is destroyed for another level, etc., etc..  So
-		/// all the event handling comes through the game object.  That doesn't necessarily mean the
-		/// sender will be the game object.  If it makes more sense for the map to be the sender, then we
-		/// make the map the sender in spite of the fact that the direct invoker is the Game.
-		/// InvokeEvent is the common code that is called by all other parts of the system to invoke one
-		/// of these events.  Darrellp, 10/8/2011. 
-		/// </remarks>
-		///
-		/// <exception cref="RogueException">	Thrown when an event type isn't handled in the switch statement. </exception>
-		///
-		/// <param name="type">		The type of event being invoked. </param>
-		/// <param name="sender">	Source of the event. </param>
-		/// <param name="e">		Event information. </param>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal void InvokeEvent(EventType type, Object sender, EventArgs e = null)
+        /// <summary> Event queue for all listeners interested in hero movement events. </summary>
+        public event EventHandler<CreatureMoveEventArgs> CreatureMoveEvent;
+        private void InvokeCreatureMoveEvent(Object sender, CreatureMoveEventArgs e)
+        {
+            CreatureMoveEvent?.Invoke(sender, e);
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>	Invoke an event. </summary>
+        ///
+        /// <remarks>	
+        /// This is a bit nonstandard, but I want users to be able to deal with only the game object for
+        /// all event handling.  That way they don't have to remember whether to set it on the map or the
+        /// level and don't have to reset it if the map is destroyed for another level, etc., etc..  So
+        /// all the event handling comes through the game object.  That doesn't necessarily mean the
+        /// sender will be the game object.  If it makes more sense for the map to be the sender, then we
+        /// make the map the sender in spite of the fact that the direct invoker is the Game.
+        /// InvokeEvent is the common code that is called by all other parts of the system to invoke one
+        /// of these events.  Darrellp, 10/8/2011. 
+        /// </remarks>
+        ///
+        /// <exception cref="RogueException">	Thrown when an event type isn't handled in the switch statement. </exception>
+        ///
+        /// <param name="type">		The type of event being invoked. </param>
+        /// <param name="sender">	Source of the event. </param>
+        /// <param name="e">		Event information. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        internal void InvokeEvent(EventType type, Object sender, EventArgs e = null)
 		{
 			switch(type)
 			{
-				case EventType.CreatureMove:
-					InvokeHeroMoveEvent(sender, e as CreatureMoveEventArgs);
+                case EventType.HeroMove:
+                    InvokeHeroMoveEvent(sender, e as CreatureMoveEventArgs);
+                    break;
+
+                case EventType.CreatureMove:
+					InvokeCreatureMoveEvent(sender, e as CreatureMoveEventArgs);
 					break;
 
 				case EventType.NewLevel:
-					InvokeNewLevelEvent(sender, e);
+					InvokeNewLevelEvent(sender, e as NewLevelEventArgs);
 					break;
 
 				case EventType.Attack:
@@ -109,65 +126,29 @@ namespace CSRogue.GameControl
 					throw new RogueException("Unexpected event invocation");
 			}
 		}
-		#endregion
+        #endregion
 
-		#region Modification
-		public Game(IItemFactory factory, CommandDispatcher commandDispatcher = null)
+        #region Constructor
+        public Game(IItemFactory factory)
 		{
 		    Factory = factory;
-			_commandDispatcher = commandDispatcher ?? new CommandDispatcher(this);
 			_commandQueue = new CommandQueue(this);
 		}
+        #endregion
 
+        #region Modification
 	    public IItemFactory Factory { get; set; }
+        #endregion
 
-	    ////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Sets a level. </summary>
-		///
-		/// <remarks>	Should normally be invoked only by a command.  Darrellp, 10/8/2011. </remarks>
-		///
-		/// <param name="levelCommand">	The level command which invoked this. </param>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal void SetLevel(NewLevelCommand levelCommand)
-		{
-			CurrentLevel = new Level(levelCommand.Level, Map, levelCommand.ItemFactory, levelCommand.Rarity, levelCommand.Excavator);
-            Map.Fov = new FOV(Map, levelCommand.FOVRows, levelCommand.Filter);
-			Map.MoveCreatureTo(Map.Player, LocateStairwell(), true);
-			InvokeEvent(EventType.NewLevel, this);
-		}
-
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Locates the stairwell. </summary>
-		///
-		/// <remarks>	Darrellp, 10/8/2011. </remarks>
-		///
-		/// <exception cref="RogueException">	Thrown when no stairwell was found on the map. </exception>
-		///
-		/// <returns>	Location of the stairwell. </returns>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private MapCoordinates LocateStairwell()
-		{
-			for (int iRow  = 0; iRow  < Map.Height; iRow ++)
-			{
-				for (int iColumn = 0; iColumn < Map.Width; iColumn++)
-				{
-					if (Map[iColumn, iRow].Terrain == TerrainType.StairsUp)
-					{
-						return new MapCoordinates(iColumn, iRow);
-					}
-				}
-			}
-			throw new RogueException("Stairwell not found in map");
-		}
-
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Queues up a command to be processed in next processing round. </summary>
-		///
-		/// <remarks>	Darrellp, 10/11/2011. </remarks>
-		///
-		/// <param name="command">	The command to be enqueued. </param>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public void Enqueue(IRogueCommand command)
+        #region Event Queuing
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>	Queues up a command to be processed in next processing round. </summary>
+        ///
+        /// <remarks>	Darrellp, 10/11/2011. </remarks>
+        ///
+        /// <param name="command">	The command to be enqueued. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        public void Enqueue(IRogueCommand command)
 		{
 			_commandQueue.AddCommand(command);
 		}
@@ -195,18 +176,10 @@ namespace CSRogue.GameControl
 			_commandQueue.ProcessQueue();
 		}
 
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Dispatches a command. </summary>
-		///
-		/// <remarks>	Relegates this to the command dispatcher.  Darrellp, 10/8/2011. </remarks>
-		///
-		/// <param name="command">	The command to be dispatched. </param>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal void Dispatch(IRogueCommand command)
-		{
-			_commandDispatcher.Dispatch(command);
+	    internal void EndTurn()
+	    {
+			CurrentLevel.InvokeMonsterAI();
 		}
-
 		#endregion
 	}
 }

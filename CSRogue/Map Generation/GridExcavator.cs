@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using CSRogue.Interfaces;
+using CSRogue.Items;
 using CSRogue.Utilities;
 
 namespace CSRogue.Map_Generation
@@ -52,17 +54,17 @@ namespace CSRogue.Map_Generation
 		private GridConnections _connections;
 		private GridConnections _merges;
 		private Rnd _rnd;
-		readonly Dictionary<RectangularRoom, GenericRoom> _mapRoomToGenericRooms = new Dictionary<RectangularRoom, GenericRoom>();
+		readonly Dictionary<RectangularRoom, Room> _mapRoomToGenericRooms = new Dictionary<RectangularRoom, Room>();
 		#endregion
 
 		#region Constructor
 		public GridExcavator(
 			int seed = -1,
 			int baseCellWidth = 15,
-			int baseCellHeight = 13,
+			int baseCellHeight = 15,
 			int minRoomWidth = 5,
 			int minRoomHeight = 5,
-			int pctMergeChance = 50,
+			int pctMergeChance = 40,
 			int pctDoorChance = 50)
 		{
 			_baseCellWidth = baseCellWidth;
@@ -76,6 +78,13 @@ namespace CSRogue.Map_Generation
 		#endregion
 
 		#region Main entry point
+
+	    public void Excavate(IGameMap map, IPlayer player)
+	    {
+	        Excavate(map);
+            map.SetPlayer(true, player);
+	    }
+
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Excavate rooms into the map by grid. </summary>
 		///
@@ -153,10 +162,10 @@ namespace CSRogue.Map_Generation
 			foreach (var info in _connections.Connections.Where(ci => ci.IsConnected))
 			{
 				// Get the pertinent information
-				MapCoordinates location1 = info.Location;
-				MapCoordinates location2 = info.Location.NextLarger(info.Dir);
-				RectangularRoom room1 = RoomAt(location1);
-				RectangularRoom room2 = RoomAt(location2);
+				var location1 = info.Location;
+				var location2 = info.Location.NextLarger(info.Dir);
+				var room1 = RoomAt(location1);
+				var room2 = RoomAt(location2);
 
 				// Are the rooms to be merged?
 				if (_merges.IsConnected(location1, location2))
@@ -191,14 +200,14 @@ namespace CSRogue.Map_Generation
 			}
 
 			// Get the appropriate coordinates
-			int topRoomsLeft = topRoom.Location[dirOther];
-			int topRoomsRight = topRoomsLeft + topRoom.Size(dirOther) - 1;
-			int bottomRoomsLeft = bottomRoom.Location[dirOther];
-			int bottomRoomsRight = bottomRoomsLeft + bottomRoom.Size(dirOther) - 1;
+			var topRoomsLeft = topRoom.Location[dirOther];
+			var topRoomsRight = topRoomsLeft + topRoom.Size(dirOther) - 1;
+			var bottomRoomsLeft = bottomRoom.Location[dirOther];
+			var bottomRoomsRight = bottomRoomsLeft + bottomRoom.Size(dirOther) - 1;
 
 			// Get the high and low points of the overlap
-			int overlapLeft = Math.Max(topRoomsLeft, bottomRoomsLeft) + 1;
-			int overlapRight = Math.Min(topRoomsRight, bottomRoomsRight) - 1;
+			var overlapLeft = Math.Max(topRoomsLeft, bottomRoomsLeft) + 1;
+			var overlapRight = Math.Min(topRoomsRight, bottomRoomsRight) - 1;
 
 			// return true if they overlap
 			return overlapLeft < overlapRight;
@@ -220,10 +229,10 @@ namespace CSRogue.Map_Generation
 		private bool CheckMergeForOverlap(RectangularRoom topRoom, RectangularRoom bottomRoom, Dir dirOther)
 		{
 			// Get our neighboring rooms in the dirOther direction
-			RectangularRoom topLeft = RoomAt(topRoom.GridLocation.NextSmaller(dirOther));
-			RectangularRoom topRight = RoomAt(topRoom.GridLocation.NextLarger(dirOther));
-			RectangularRoom bottomLeft = RoomAt(bottomRoom.GridLocation.NextSmaller(dirOther));
-			RectangularRoom bottomRight = RoomAt(bottomRoom.GridLocation.NextLarger(dirOther));
+			var topLeft = RoomAt(topRoom.GridLocation.NextSmaller(dirOther));
+			var topRight = RoomAt(topRoom.GridLocation.NextLarger(dirOther));
+			var bottomLeft = RoomAt(bottomRoom.GridLocation.NextSmaller(dirOther));
+			var bottomRight = RoomAt(bottomRoom.GridLocation.NextLarger(dirOther));
 
 			// Ensure that we overlap with our merge target and not with anything else
 			return CheckOverlap(topRoom, bottomRoom, dirOther) &&
@@ -248,7 +257,7 @@ namespace CSRogue.Map_Generation
 		private void ExcavateMerge(IMap map, RectangularRoom topRoom, RectangularRoom bottomRoom, Dir dir)
 		{
 			// Get the opposite direction
-			Dir dirOther = MapCoordinates.OtherDirection(dir);
+			var dirOther = MapCoordinates.OtherDirection(dir);
 
 			// Are the rooms unmergable?
 			if (!CheckOverlap(topRoom, bottomRoom, dirOther))
@@ -258,56 +267,56 @@ namespace CSRogue.Map_Generation
 			}
 
 			// Get the appropriate coordinates
-			int topRoomsLeft = topRoom.Location[dirOther];
-			int topRoomsRight = topRoomsLeft + topRoom.Size(dirOther) - 1;
-			int bottomRoomsLeft = bottomRoom.Location[dirOther];
-			int bottomRoomsRight = bottomRoomsLeft + bottomRoom.Size(dirOther) - 1;
+			var topRoomsLeft = topRoom.Location[dirOther];
+			var topRoomsRight = topRoomsLeft + topRoom.Size(dirOther) - 1;
+			var bottomRoomsLeft = bottomRoom.Location[dirOther];
+			var bottomRoomsRight = bottomRoomsLeft + bottomRoom.Size(dirOther) - 1;
 
 			// Get the high and low points of the overlap
-			int overlapLeft = Math.Max(topRoomsLeft, bottomRoomsLeft) + 1;
-			int overlapRight = Math.Min(topRoomsRight, bottomRoomsRight) - 1;
+			var overlapLeft = Math.Max(topRoomsLeft, bottomRoomsLeft) + 1;
+			var overlapRight = Math.Min(topRoomsRight, bottomRoomsRight) - 1;
 
 			// Create our new merged generic room
-			GenericRoom groomTop = _mapRoomToGenericRooms[topRoom];
-			GenericRoom groomBottom = _mapRoomToGenericRooms[bottomRoom];
-			groomTop.CombineWith(groomBottom);
+			var roomTop = _mapRoomToGenericRooms[topRoom];
+			var roomBottom = _mapRoomToGenericRooms[bottomRoom];
+			roomTop.CombineWith(roomBottom);
 
 			// For each column in the grid
-			foreach (RectangularRoom[] roomColumn in _rooms)
+			foreach (var roomColumn in _rooms)
 			{
 				// For each row in the grid
-				for (int iRow = 0; iRow < _rooms[0].Length; iRow++)
+				for (var iRow = 0; iRow < _rooms[0].Length; iRow++)
 				{
 					// Get the rect room at that spot
-					RectangularRoom room = roomColumn[iRow];
+					var room = roomColumn[iRow];
 
 					// Is it mapped to our defunct bottom room?
-					if (_mapRoomToGenericRooms[room] == groomBottom)
+					if (_mapRoomToGenericRooms[room] == roomBottom)
 					{
 						// Map it to our shiny new top room
-						_mapRoomToGenericRooms[room] = groomTop;
+						_mapRoomToGenericRooms[room] = roomTop;
 					}
 				}
 			}
 
 			// Get the location we're going to start the clearing at
-			int topRoomsBottom = topRoom.Location[dir] + topRoom.Size(dir) - 1;
-			MapCoordinates currentLocation = MapCoordinates.CreateUndirectional(topRoomsBottom, overlapLeft, dir);
-			char floorChar = TerrainFactory.TerrainToChar(TerrainType.Floor);
+			var topRoomsBottom = topRoom.Location[dir] + topRoom.Size(dir) - 1;
+			var currentLocation = MapCoordinates.CreateUndirectional(topRoomsBottom, overlapLeft, dir);
+			var floorChar = TerrainFactory.TerrainToChar(TerrainType.Floor);
 
 			// For each spot along the overlap
-			for (int iCol = overlapLeft; iCol <= overlapRight; iCol++)
+			for (var iCol = overlapLeft; iCol <= overlapRight; iCol++)
 			{
 				// Clear out the two walls of the abutting rooms
 				currentLocation[dirOther] = iCol;
 			    map[currentLocation].Terrain = TerrainType.Floor;
-				groomTop[currentLocation] = floorChar;
+				roomTop[currentLocation] = floorChar;
 				currentLocation[dir] = topRoomsBottom + 1;
                 map[currentLocation].Terrain = TerrainType.Floor;
-				groomTop[currentLocation] = floorChar;
+				roomTop[currentLocation] = floorChar;
 				currentLocation[dir] = topRoomsBottom;
 			}
-			Debug.Assert(groomBottom == groomTop || !_mapRoomToGenericRooms.ContainsValue(groomBottom));
+			Debug.Assert(roomBottom == roomTop || !_mapRoomToGenericRooms.ContainsValue(roomBottom));
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -321,7 +330,7 @@ namespace CSRogue.Map_Generation
 		private void AddRandomConnections(int connectionCount, GridConnections connections)
 		{
 			// For the number of random connections to be added
-			for (int iConnection = 0; iConnection < connectionCount; iConnection++)
+			for (var iConnection = 0; iConnection < connectionCount; iConnection++)
 			{
 				// Add a random connection...
 				connections.MakeRandomConnection(_rnd);
@@ -347,7 +356,7 @@ namespace CSRogue.Map_Generation
 				if (_rnd.Next(100) < _pctMergeChance)
 				{
 					// Retrieve it's location
-					MapCoordinates gridLocation = connectionInfo.Location;
+					var gridLocation = connectionInfo.Location;
 
 					// and merge the rooms
 					MergeTwoRooms(gridLocation, connectionInfo.Dir);
@@ -366,12 +375,12 @@ namespace CSRogue.Map_Generation
 		private void MergeTwoRooms(MapCoordinates topRoomsGridLocation, Dir dir)
 		{
 			// Get grid coordinates of the other room
-			MapCoordinates bottomRoomsGridLocation = topRoomsGridLocation.NextLarger(dir);
-			Dir otherDir = MapCoordinates.OtherDirection(dir);
+			var bottomRoomsGridLocation = topRoomsGridLocation.NextLarger(dir);
+			var otherDir = MapCoordinates.OtherDirection(dir);
 
 			// Retrieve both rooms
-			RectangularRoom topRoom = RoomAt(topRoomsGridLocation);
-			RectangularRoom bottomRoom = RoomAt(bottomRoomsGridLocation);
+			var topRoom = RoomAt(topRoomsGridLocation);
+			var bottomRoom = RoomAt(bottomRoomsGridLocation);
 
 			// Are the rooms unmergable?
 			if (!CheckMergeForOverlap(topRoom, bottomRoom, otherDir))
@@ -385,32 +394,32 @@ namespace CSRogue.Map_Generation
 			_mapRoomToGenericRooms.Remove(bottomRoom);
 
 			// Get their current coordinates, etc.
-			int topRoomsBottom = topRoom.LargeCoord(dir);
-			int topRoomsTop = topRoom.SmallCoord(dir);
-			int bottomRoomsTop = bottomRoom.SmallCoord(dir);
-			int bottomRoomsHeight = bottomRoom.Size(dir);
-			int topRoomsWidth = topRoom.Size(otherDir);
-			int bottomRoomsWidth = bottomRoom.Size(otherDir);
+			var topRoomsBottom = topRoom.LargeCoord(dir);
+			var topRoomsTop = topRoom.SmallCoord(dir);
+			var bottomRoomsTop = bottomRoom.SmallCoord(dir);
+			var bottomRoomsHeight = bottomRoom.Size(dir);
+			var topRoomsWidth = topRoom.Size(otherDir);
+			var bottomRoomsWidth = bottomRoom.Size(otherDir);
 
 			// Pick a random spot between the rooms to merge them
 			// This will be the new inside coord of the small coordinate room
-			int mergeRow = _rnd.Next(topRoomsBottom, bottomRoomsTop);
+			var mergeRow = _rnd.Next(topRoomsBottom, bottomRoomsTop);
 
 			// Determine all the new coordinates
-			int topRoomsNewHeight = mergeRow - topRoomsTop + 1;
-			int bottomRoomsNewHeight = bottomRoomsTop - mergeRow + bottomRoomsHeight - 1;
-			MapCoordinates bottomRoomsLocation = bottomRoom.Location;
+			var topRoomsNewHeight = mergeRow - topRoomsTop + 1;
+			var bottomRoomsNewHeight = bottomRoomsTop - mergeRow + bottomRoomsHeight - 1;
+			var bottomRoomsLocation = bottomRoom.Location;
 			bottomRoomsLocation[dir] = mergeRow + 1;
 
 			// Create our new expanded rooms
-			RectangularRoom roomTopNew = RectangularRoom.CreateUndirectional(
+			var roomTopNew = RectangularRoom.CreateUndirectional(
 				topRoom.Location,
 				topRoomsNewHeight,
 				topRoomsWidth,
 				topRoomsGridLocation[dir],
 				topRoomsGridLocation[otherDir],
 				dir);
-			RectangularRoom roomBottomNew = RectangularRoom.CreateUndirectional(
+			var roomBottomNew = RectangularRoom.CreateUndirectional(
 				bottomRoomsLocation,
 				bottomRoomsNewHeight,
 				bottomRoomsWidth,
@@ -468,26 +477,26 @@ namespace CSRogue.Map_Generation
 		/// <param name="column">	The perpindicular coordinate. </param>
 		/// <param name="endRow1">	The starting parallel coordinate. </param>
 		/// <param name="endRow2">	The ending parallel coordinate. </param>
-		/// <param name="groom">	The room being prepared for this corridor. </param>
+		/// <param name="room">	The room being prepared for this corridor. </param>
 		/// <param name="dir">		The direction of the corridor. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private static void ExcavateCorridorRun(IMap map, int column, int endRow1, int endRow2, GenericRoom groom, Dir dir)
+		private static void ExcavateCorridorRun(IMap map, int column, int endRow1, int endRow2, Room room, Dir dir)
 		{
 			// We work with small and large coords rather than start and end
-			int startRow = Math.Min(endRow1, endRow2);
-			int endRow = Math.Max(endRow1, endRow2);
-			char floorChar = TerrainFactory.TerrainToChar(TerrainType.Floor);
+			var startRow = Math.Min(endRow1, endRow2);
+			var endRow = Math.Max(endRow1, endRow2);
+			var floorChar = TerrainFactory.TerrainToChar(TerrainType.Floor);
 
 			// Create the starting location
-			MapCoordinates currentLocation = MapCoordinates.CreateUndirectional(startRow, column, dir);
+			var currentLocation = MapCoordinates.CreateUndirectional(startRow, column, dir);
 
 			// For each row in the run
-			for (int iRow = startRow; iRow <= endRow; iRow++)
+			for (var iRow = startRow; iRow <= endRow; iRow++)
 			{
 				// Place our terrain
 				currentLocation[dir] = iRow;
 			    map[currentLocation].Terrain = TerrainType.Floor;
-				groom[currentLocation] = floorChar;
+				room[currentLocation] = floorChar;
 			}
 		}
 
@@ -509,21 +518,21 @@ namespace CSRogue.Map_Generation
 		/// <param name="startRow">		The start parallel. </param>
 		/// <param name="endRow">		The end parallel. </param>
 		/// <param name="bend">			The bend coordinate. </param>
-		/// <param name="groom">		The room being prepared for this corridor. </param>
+		/// <param name="room">		The room being prepared for this corridor. </param>
 		/// <param name="dir">			The direction the bend is supposed to run. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private static void ExcavateBend(IMap map, int startColumn, int endColumn, int startRow, int endRow, int bend, GenericRoom groom, Dir dir)
+		private static void ExcavateBend(IMap map, int startColumn, int endColumn, int startRow, int endRow, int bend, Room room, Dir dir)
 		{
-			Dir otherDir = MapCoordinates.OtherDirection(dir);
+			var otherDir = MapCoordinates.OtherDirection(dir);
 
 			// Create corridor to the bend
-			ExcavateCorridorRun(map, startColumn, startRow, bend, groom, dir);
+			ExcavateCorridorRun(map, startColumn, startRow, bend, room, dir);
 
 			// Create the cross corridor at the bend
-			ExcavateCorridorRun(map, bend, startColumn, endColumn, groom, otherDir);
+			ExcavateCorridorRun(map, bend, startColumn, endColumn, room, otherDir);
 
 			// Create the corridor from the bend to the destination
-			ExcavateCorridorRun(map, endColumn, bend, endRow, groom, dir);
+			ExcavateCorridorRun(map, endColumn, bend, endRow, room, dir);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -532,36 +541,36 @@ namespace CSRogue.Map_Generation
 		/// <remarks>	Variables named from the perspective of dir being vertical.  Darrellp, 9/18/2011. </remarks>
 		///
 		/// <param name="map">			The map to be excavated. </param>
-		/// <param name="roomTop">		The first room. </param>
-		/// <param name="roomBottom">	The second room. </param>
+		/// <param name="rectRoomTop">		The first room. </param>
+		/// <param name="rectRoomBottom">	The second room. </param>
 		/// <param name="dir">			The direction to excavate in. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private void ExcavateCorridor(IMap map, RectangularRoom roomTop, RectangularRoom roomBottom, Dir dir)
+		private void ExcavateCorridor(IMap map, RectangularRoom rectRoomTop, RectangularRoom rectRoomBottom, Dir dir)
 		{
 			// Locals
 			MapCoordinates bottomEntrance, topEntrance;
 
 			// Get the entrances to each room
-			GetEntrances(roomTop, roomBottom, dir, out topEntrance, out bottomEntrance);
+			GetEntrances(rectRoomTop, rectRoomBottom, dir, out topEntrance, out bottomEntrance);
 
 			// Allocate the generic room
-			int genericWidth = Math.Abs(topEntrance.Column - bottomEntrance.Column) + 1;
-			int genericHeight = Math.Abs(topEntrance.Row - bottomEntrance.Row) + 1;
-			int genericLeft = Math.Min(topEntrance.Column, bottomEntrance.Column);
-			int genericBottom = Math.Min(topEntrance.Row, bottomEntrance.Row);
-			MapCoordinates genericLocation = new MapCoordinates(genericLeft, genericBottom);
-			GenericCorridor corridor = new GenericCorridor(genericWidth, genericHeight, genericLocation);
+			var genericWidth = Math.Abs(topEntrance.Column - bottomEntrance.Column) + 1;
+			var genericHeight = Math.Abs(topEntrance.Row - bottomEntrance.Row) + 1;
+			var genericLeft = Math.Min(topEntrance.Column, bottomEntrance.Column);
+			var genericBottom = Math.Min(topEntrance.Row, bottomEntrance.Row);
+			var genericLocation = new MapCoordinates(genericLeft, genericBottom);
+			var corridor = new Room(genericWidth, genericHeight, genericLocation);
 
 			// Excavate a connection between the two rooms
 			CreateBend(map, dir, topEntrance, bottomEntrance, corridor);
 
 			// Put the exits in the appropriate generic rooms
-			GenericRoom groomTop = _mapRoomToGenericRooms[roomTop];
-			GenericRoom groomBottom = _mapRoomToGenericRooms[roomBottom];
-			corridor.AddExit(groomTop, topEntrance);
-			corridor.AddExit(groomBottom, bottomEntrance);
-			groomTop.AddExit(corridor, topEntrance);
-			groomBottom.AddExit(corridor, bottomEntrance);
+			var roomTop = _mapRoomToGenericRooms[rectRoomTop];
+			var roomBottom = _mapRoomToGenericRooms[rectRoomBottom];
+			corridor.AddExit(roomTop, topEntrance);
+			corridor.AddExit(roomBottom, bottomEntrance);
+			roomTop.AddExit(corridor, topEntrance);
+			roomBottom.AddExit(corridor, bottomEntrance);
 
 
 			// Should we put a door in the top room?
@@ -588,22 +597,22 @@ namespace CSRogue.Map_Generation
 		/// <param name="dir">				The direction the merge will take place in. </param>
 		/// <param name="topEntrance">		The small coordinate entrance. </param>
 		/// <param name="bottomEntrance">	The large coordinate entrance. </param>
-		/// <param name="groom">			The room being prepared for this corridor. </param>
+		/// <param name="room">			The room being prepared for this corridor. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private void CreateBend(IMap map, Dir dir, MapCoordinates topEntrance, MapCoordinates bottomEntrance, GenericRoom groom)
+		private void CreateBend(IMap map, Dir dir, MapCoordinates topEntrance, MapCoordinates bottomEntrance, Room room)
 		{
 			// locals
-			Dir otherDir = MapCoordinates.OtherDirection(dir);
-			int startRow = topEntrance[dir];
-			int endRow = bottomEntrance[dir];
-			int startColumn = topEntrance[otherDir];
-			int endColumn = bottomEntrance[otherDir];
+			var otherDir = MapCoordinates.OtherDirection(dir);
+			var startRow = topEntrance[dir];
+			var endRow = bottomEntrance[dir];
+			var startColumn = topEntrance[otherDir];
+			var endColumn = bottomEntrance[otherDir];
 
 			// Determine bend location
-			int bendRow = _rnd.Next(startRow + 1, endRow);
+			var bendRow = _rnd.Next(startRow + 1, endRow);
 
 			// Excavate the bend between the two rooms
-			ExcavateBend(map, startColumn, endColumn, startRow, endRow, bendRow, groom, dir);
+			ExcavateBend(map, startColumn, endColumn, startRow, endRow, bendRow, room, dir);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -625,10 +634,10 @@ namespace CSRogue.Map_Generation
 			out MapCoordinates bottomEntrance)
 		{
 			// Determine room order in the orientation direction
-			RectangularRoom topRoom = room1;
-			RectangularRoom bottomRoom = room2;
-			int iGrid1 = room1.GridCoord(dir);
-			int iGrid2 = room2.GridCoord(dir);
+			var topRoom = room1;
+			var bottomRoom = room2;
+			var iGrid1 = room1.GridCoord(dir);
+			var iGrid2 = room2.GridCoord(dir);
 
 			// Is the coordinate for room 1 less than room 2?
 			if (iGrid1 > iGrid2)
@@ -653,35 +662,35 @@ namespace CSRogue.Map_Generation
 		private void LocateRooms(IMap map)
 		{
 			// Max number of cells we can fit with at least base cell size
-			int gridWidth = map.Width / _baseCellWidth;
-			int gridHeight = map.Height / _baseCellHeight;
+			var gridWidth = map.Width / _baseCellWidth;
+			var gridHeight = map.Height / _baseCellHeight;
 
 			// Size of cells we can manage total
-			int baseRoomWidth = map.Width / gridWidth;
-			int baseRoomHeight = map.Height / gridHeight;
+			var baseRoomWidth = map.Width / gridWidth;
+			var baseRoomHeight = map.Height / gridHeight;
 
 			// Remainders for Bresenham algorithm
-			int widthRemainder = map.Width % baseRoomWidth;
-			int heightRemainder = map.Height % baseRoomHeight;
+			var widthRemainder = map.Width % baseRoomWidth;
+			var heightRemainder = map.Height % baseRoomHeight;
 
 			// Tally for Bresenham
-			int widthTally = gridWidth / 2;
-			int heightTally = gridHeight / 2;
+			var widthTally = gridWidth / 2;
+			var heightTally = gridHeight / 2;
 
 			// First column is on the left
-			int mapColumn = 0;
+			var mapColumn = 0;
 
 			// Array of rooms in the grid
 			_rooms = new RectangularRoom[gridWidth][];
 
 			// For each grid column
-			for (int gridColumn = 0; gridColumn < gridWidth; gridColumn++)
+			for (var gridColumn = 0; gridColumn < gridWidth; gridColumn++)
 			{
 				// Reset the map row to 0
-				int mapRow = 0;
+				var mapRow = 0;
 
 				// Determine the current map column
-				int currentWidth = baseRoomWidth;
+				var currentWidth = baseRoomWidth;
 				widthTally += widthRemainder;
 
 				// Do we need to bump width ala Bresenham?
@@ -696,10 +705,10 @@ namespace CSRogue.Map_Generation
 				_rooms[gridColumn] = new RectangularRoom[gridHeight];
 
 				// For each row of the grid
-				for (int gridRow = 0; gridRow < gridHeight; gridRow++)
+				for (var gridRow = 0; gridRow < gridHeight; gridRow++)
 				{
 					// Determine the current map row
-					int currentHeight = baseRoomHeight;
+					var currentHeight = baseRoomHeight;
 					heightTally += heightRemainder;
 
 					// Do we need to bump height ala Bresenham?
@@ -711,9 +720,9 @@ namespace CSRogue.Map_Generation
 					}
 
 					// Create a room in the grid cell
-					MapCoordinates gridLocation = new MapCoordinates(gridColumn, gridRow);
-					MapCoordinates cellLocation = new MapCoordinates(mapColumn, mapRow);
-					RectangularRoom room = CreateRoomInCell(gridLocation, cellLocation, currentWidth, currentHeight);
+					var gridLocation = new MapCoordinates(gridColumn, gridRow);
+					var cellLocation = new MapCoordinates(mapColumn, mapRow);
+					var room = CreateRoomInCell(gridLocation, cellLocation, currentWidth, currentHeight);
 
 					// Place it in the grid
 					_rooms[gridColumn][gridRow] = room;
@@ -749,10 +758,10 @@ namespace CSRogue.Map_Generation
 
 			// Determine start and end rows
 			_rnd.RandomSpan(cellLocation.Row + 1, cellLocation.Row + cellHeight - 2, _minRoomHeight, out startRow, out endRow);
-			MapCoordinates mapLocation = new MapCoordinates(startColumn, startRow);
+			var mapLocation = new MapCoordinates(startColumn, startRow);
 
 			// Return newly created room
-			RectangularRoom room = new RectangularRoom(mapLocation, gridLocation, endColumn - startColumn + 1, endRow - startRow + 1);
+			var room = new RectangularRoom(mapLocation, gridLocation, endColumn - startColumn + 1, endRow - startRow + 1);
 			_mapRoomToGenericRooms[room] = room.ToGeneric();
 
 			return room;
@@ -774,7 +783,7 @@ namespace CSRogue.Map_Generation
 			CompleteWalls(map);
 
 			// Place room info
-			IRoomsMap roomsMap = map as IRoomsMap;
+			var roomsMap = map as IRoomsMap;
 			if (roomsMap != null)
 			{
 				AssignRoomsToCells(roomsMap);
@@ -794,34 +803,34 @@ namespace CSRogue.Map_Generation
 		private void AssignRoomsToCells(IRoomsMap map)
 		{
 			// For each room
-			foreach (var groom in _mapRoomToGenericRooms.Values)
+			foreach (var room in _mapRoomToGenericRooms.Values)
 			{
 				// Add in adjoining corridors
 				// Corridors were never added to _mapRoomToGenericRooms so we have
 				// to add them here
 
 				// For each adjoining room/corridor
-				foreach (var groomAdjoin in groom.NeighborRooms)
+				foreach (var roomAdjoin in room.NeighborRooms)
 				{
 					// Add the corridor to the map
-					AssignTilesInRoom(map, groomAdjoin);
+					AssignTilesInRoom(map, roomAdjoin);
 				}
 
 				// Add the room to the map
-				AssignTilesInRoom(map, groom);
+				AssignTilesInRoom(map, room);
 			}
 		}
 
-		private static void AssignTilesInRoom(IRoomsMap map, GenericRoom groom)
+		private static void AssignTilesInRoom(IRoomsMap map, IRoom room)
 		{
 			// Is this room being newly added to the map?
-			if (map.Rooms.Add(groom))
+			if (map.Rooms.Add(room))
 			{
 				// For each tile in the room
-				foreach (var tileLocation in groom.Tiles)
+				foreach (var tileLocation in room.Tiles())
 				{
 					// Assign the room to that tile
-					map[tileLocation].Room = groom;
+					map[tileLocation].Room = room;
 				}
 			}
 		}
@@ -875,10 +884,10 @@ namespace CSRogue.Map_Generation
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		private void PlaceStairs(IMap map)
 		{
-			RectangularRoom downRoom = RoomAt(_connections.FirstRoomConnected);
-			RectangularRoom upRoom = RoomAt(_connections.LastRoomConnected);
-			MapCoordinates downLocation = downRoom.PickSpotInRoom(_rnd);
-			MapCoordinates upLocation = upRoom.PickSpotInRoom(_rnd);
+			var downRoom = RoomAt(_connections.FirstRoomConnected);
+			var upRoom = RoomAt(_connections.LastRoomConnected);
+			var downLocation = downRoom.PickSpotInRoom(_rnd);
+			var upLocation = upRoom.PickSpotInRoom(_rnd);
 
 		    map[downLocation].Terrain = TerrainType.StairsDown;
 		    map[upLocation].Terrain = TerrainType.StairsUp;
@@ -897,8 +906,8 @@ namespace CSRogue.Map_Generation
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		private bool WithinGrid(MapCoordinates gridLocation)
 		{
-			int column = gridLocation.Column;
-			int row = gridLocation.Row;
+			var column = gridLocation.Column;
+			var row = gridLocation.Row;
 			return column >= 0 && column < _rooms.Length &&
 			       row >= 0 && row < _rooms[0].Length;
 		}
