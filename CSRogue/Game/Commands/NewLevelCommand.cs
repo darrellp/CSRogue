@@ -35,7 +35,7 @@ namespace CSRogue.GameControl.Commands
             Rarity = rarity;
         }
 
-        public override bool Execute(Game game)
+        public override void Execute(Game game)
 	    {
 			var levelArgs = new NewLevelEventArgs();
 	        var player = game.Map?.Player;
@@ -45,7 +45,6 @@ namespace CSRogue.GameControl.Commands
 			Map.SetPlayer(true, player);
 
             game.InvokeEvent(EventType.NewLevel, game, levelArgs);
-			return false;
 	    }
 	}
 }

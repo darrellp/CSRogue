@@ -183,7 +183,7 @@ namespace CSRogue.Utilities
         /// <returns>   The creature at location or null if no creature there. </returns>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public static Creature CreatureAt(this IMap map, MapCoordinates location)
+        public static ICreature CreatureAt(this IMap map, MapCoordinates location)
         {
             // Find a creature, if any, at the destination
             return map[location].Items?.FirstOrDefault(i => (i as Creature) != null) as Creature;

@@ -204,7 +204,7 @@ namespace RogueSC.Consoles
         public void MovePlayerBy(Point amount)
         {
             // Move the player on the engine map
-            var moveCmd = new MovementCommand(amount.ToMapCoordinates());
+            var moveCmd = new MovePlayerCommand(amount.ToMapCoordinates());
             _game.EnqueueAndProcess(moveCmd);
         }
 

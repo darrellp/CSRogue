@@ -34,15 +34,14 @@ namespace CSRogue.GameControl.Commands
             Location = location;
         }
 
-        public override bool Execute(Game game)
+        public override void Execute(Game game)
         {
             // If there isn't already a creature there
-            if (game.Map.CreatureAt(Location) == null)
+            if (Creature.IsAlive && game.Map.CreatureAt(Location) == null)
             {
                 // Then move the creature there
                 game.CurrentLevel.Map.MoveCreatureTo(Creature, Location);
             }
-            return true;
         }
     }
 }

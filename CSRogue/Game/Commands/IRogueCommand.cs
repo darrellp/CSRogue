@@ -2,6 +2,6 @@
 {
 	public interface IRogueCommand
 	{
-	    bool Execute(Game game);
+	    void Execute(Game game);
 	}
 }

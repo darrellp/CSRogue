@@ -21,7 +21,7 @@ namespace CSRogue.Utilities
         {
             foreach (var creature in level.Creatures)
             {
-                if (!creature.IsPlayer)
+                if (!creature.IsPlayer && creature.IsAlive)
                 {
                     creature.InvokeAi();
                 }
@@ -41,6 +41,7 @@ namespace CSRogue.Utilities
         {
             level.Map.Remove(victim.Location.Column, victim.Location.Row, victim);
             level.Creatures.Remove(victim);
+	        victim.IsAlive = false;
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////

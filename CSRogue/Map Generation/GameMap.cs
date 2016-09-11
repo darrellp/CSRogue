@@ -42,7 +42,7 @@ namespace CSRogue.Map_Generation
         {
             _fov = new FOV(this, fovRadius);
             _game = game;
-            _player = player;
+	        _player = player;
         }
     }
 }

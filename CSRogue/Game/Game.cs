@@ -175,6 +175,11 @@ namespace CSRogue.GameControl
 		{
 			_commandQueue.ProcessQueue();
 		}
+
+	    internal void EndTurn()
+	    {
+			CurrentLevel.InvokeMonsterAI();
+		}
 		#endregion
 	}
 }

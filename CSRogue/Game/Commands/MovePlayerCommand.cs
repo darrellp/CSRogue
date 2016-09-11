@@ -2,12 +2,11 @@
 using System.Linq;
 using CSRogue.Items;
 using CSRogue.Map_Generation;
-using CSRogue.RogueEventArgs;
 using CSRogue.Utilities;
 
 namespace CSRogue.GameControl.Commands
 {
-    public class MovementCommand : CommandBase
+    public class MovePlayerCommand : CommandBase
 	{
         #region Private variables
         private MapCoordinates _direction;
@@ -20,41 +19,31 @@ namespace CSRogue.GameControl.Commands
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         public bool Run { get; }
 
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Gets or sets the creature to be moved. </summary>
-		///
-		/// <value>	The creature. </value>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public ICreature Creature { get; private set; }
+	    ////////////////////////////////////////////////////////////////////////////////////////////////////
+	    /// <summary>	Constructor. </summary>
+	    ///
+	    /// <remarks>	Darrellp, 10/6/2011. </remarks>
+	    ///
+	    /// <param name="direction">	Type of movement. </param>
+	    /// <param name="shouldRun">	(Optional) true if we should run. </param>
+	    ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Constructor. </summary>
-        ///
-        /// <remarks>   Darrellp, 10/6/2011. </remarks>
-        ///
-        /// <param name="direction">    Type of movement. </param>
-        /// <param name="shouldRun">    (Optional) true if we should run. </param>
-        /// <param name="creature">     (Optional) Creature for this command. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	    public MovementCommand(MapCoordinates direction, bool shouldRun = false, ICreature creature = null)
+	    public MovePlayerCommand(MapCoordinates direction, bool shouldRun = false)
 		{
 			Run = shouldRun;
-			Creature = creature;
 	        _direction = direction;
 		}
 
-        public override bool Execute(Game game)
+        public override void Execute(Game game)
         {
             // Is it a stay put command?
             if (_direction.Column == 0 && _direction.Row == 0)
             {
                 // Let the monsters do their thing and...
                 game.CurrentLevel.InvokeMonsterAI();
-                return true;
             }
             var newLocation = game.Map.Player.Location + _direction;
-            Creature victim;
+            ICreature victim;
 
             if (Run)
             {
@@ -66,7 +55,7 @@ namespace CSRogue.GameControl.Commands
                 if (!game.Map.ValidRunningMove(proposedLocation))
                 {
                     // Nothing to do...just return true
-                    return true;
+                    return;
                 }
 
                 var litAtStartOfRun = game.Map.Fov.CurrentlySeen.ToList();
@@ -90,10 +79,11 @@ namespace CSRogue.GameControl.Commands
             else if ((victim = game.Map.CreatureAt(newLocation)) != null)
             {
                 // Attack him
-                MakeAttack(game, game.Map.Player, victim);
+				AttackCommand cmd = new AttackCommand(game.Map.Player, victim);
+				game.Enqueue(cmd);
 
-                // Monsters do their thing
-                game.CurrentLevel.InvokeMonsterAI();
+				// Monsters do their thing
+				game.CurrentLevel.InvokeMonsterAI();
             }
             // Else if this is valid terrain
             else if (game.Map.Walkable(newLocation))
@@ -105,39 +95,15 @@ namespace CSRogue.GameControl.Commands
             {
                 game.Map.NotifyOfBlockage(game.Map.Player, newLocation);
             }
-            return true;
         }
 
         private void MakePlayerMove(Game game, MapCoordinates location, bool run = false, List<MapCoordinates> litAtStartOfRun = null)
         {
             game.Map.MoveCreatureTo(game.Map.Player, location, run: run, litAtStartOfRun: litAtStartOfRun);
-            game.CurrentLevel.InvokeMonsterAI();
-            game.Process();
+	        game.EndTurn();
         }
 
-        public virtual void MakeAttack(Game game, ICreature attacker, ICreature victim)
-        {
-            // Determine damage
-            var damage = victim.IsPlayer ? 0 : victim.HitPoints;
-
-            // Hit the victim for that damage
-            HitCreatureFor(victim, damage);
-            var expired = victim.HitPoints == 0;
-
-            // Did the victim die?
-            if (expired)
-            {
-                // Kill the unfortunate victim
-                // TODO: check to see if the victim is the player in which case, game over!
-                game.CurrentLevel.KillCreature(victim);
-            }
-
-            // Invoke an attack event for this attack
-            var attackArgs = new AttackEventArgs(attacker, victim, damage, expired, victim.Location);
-            game.InvokeEvent(EventType.Attack, game, attackArgs);
-        }
-
-        private static void HitCreatureFor(ICreature victim, int damage)
+        public virtual void HitCreatureFor(ICreature victim, int damage)
         {
             victim.HitPoints -= damage;
         }

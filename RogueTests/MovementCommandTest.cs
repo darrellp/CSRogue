@@ -24,7 +24,7 @@ namespace RogueTests
             var map = new GameMap(10, game, mapString);
             var levelCmd = new NewLevelCommand(0, map);
             game.EnqueueAndProcess(levelCmd);
-            var moveCmd = new MovementCommand(new MapCoordinates(1,1));
+            var moveCmd = new MovePlayerCommand(new MapCoordinates(1,1));
             game.HeroMoveEvent += GameOnHeroMoveEvent;
             game.EnqueueAndProcess(moveCmd);
             Assert.AreEqual(new MapCoordinates(1,1), map.Player.Location);
