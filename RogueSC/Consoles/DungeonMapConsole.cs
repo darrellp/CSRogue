@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using CSRogue.GameControl.Commands;
+using CSRogue.Interfaces;
+using CSRogue.Map_Generation;
 using SadConsole;
 using Microsoft.Xna.Framework;
 using SadConsole.Game;
 using SadConsole.Consoles;
-using CSRogue.Map_Generation;
 using CSRogue.Utilities;
 using RogueSC.Utilities;
 using static RogueSC.Map_Objects.SCRender;

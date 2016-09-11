@@ -1,6 +1,6 @@
-﻿using CSRogue.Map_Generation;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using CSRogue.Map_Generation;
 using CSRogue.Utilities;
 
 namespace RogueTests

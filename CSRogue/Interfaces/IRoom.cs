@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using CSRogue.Map_Generation;
 
-namespace CSRogue.Map_Generation
+namespace CSRogue.Interfaces
 {
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	/// <summary>	Room interface. </summary>

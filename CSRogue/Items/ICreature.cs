@@ -1,5 +1,4 @@
 ﻿using CSRogue.Item_Handling;
-using CSRogue.Map_Generation;
 
 namespace CSRogue.Items
 {

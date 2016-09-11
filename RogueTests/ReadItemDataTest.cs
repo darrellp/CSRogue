@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using CSRogue.Map_Generation;
 using CSRogue.Utilities;
 
 namespace RogueTests

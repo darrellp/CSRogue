@@ -1,4 +1,6 @@
-﻿namespace CSRogue.Map_Generation
+﻿using CSRogue.Map_Generation;
+
+namespace CSRogue.Interfaces
 {
     public interface IMap
     {

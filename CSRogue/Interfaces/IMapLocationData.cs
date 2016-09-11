@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using CSRogue.Item_Handling;
+using CSRogue.Map_Generation;
 
-namespace CSRogue.Map_Generation
+namespace CSRogue.Interfaces
 {
 	public interface IMapLocationData
 	{

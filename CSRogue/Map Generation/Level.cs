@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using CSRogue.Item_Handling;
+using CSRogue.Interfaces;
 using CSRogue.Items;
+using CSRogue.Item_Handling;
 using CSRogue.Utilities;
 
 namespace CSRogue.Map_Generation

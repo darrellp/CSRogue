@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace CSRogue.Map_Generation
+namespace CSRogue.Interfaces
 {
     // An interface to pass to excavators.
     public interface IRoomsMap : IMap

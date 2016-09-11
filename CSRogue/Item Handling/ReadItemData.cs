@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using CSRogue.Map_Generation;
+using CSRogue.Interfaces;
 using CSRogue.Utilities;
 
 namespace CSRogue.Item_Handling

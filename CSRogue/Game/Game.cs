@@ -1,8 +1,8 @@
 ﻿using System;
 using CSRogue.RogueEventArgs;
 using CSRogue.GameControl.Commands;
+using CSRogue.Interfaces;
 using CSRogue.Item_Handling;
-using CSRogue.Map_Generation;
 using CSRogue.Utilities;
 
 namespace CSRogue.GameControl

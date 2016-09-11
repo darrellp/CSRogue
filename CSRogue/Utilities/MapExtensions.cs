@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using CSRogue.Interfaces;
 using CSRogue.Items;
 using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;

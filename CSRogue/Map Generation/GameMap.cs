@@ -1,5 +1,6 @@
 ﻿using System;
 using CSRogue.GameControl;
+using CSRogue.Interfaces;
 using CSRogue.Items;
 using CSRogue.Utilities;
 

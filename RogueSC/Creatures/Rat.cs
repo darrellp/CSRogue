@@ -2,9 +2,9 @@
 using System.Linq;
 using CSRogue.GameControl;
 using CSRogue.Items;
-using CSRogue.Map_Generation;
 using CSRogue.Utilities;
 using CSRogue.GameControl.Commands;
+using CSRogue.Map_Generation;
 
 namespace RogueSC.Creatures
 {

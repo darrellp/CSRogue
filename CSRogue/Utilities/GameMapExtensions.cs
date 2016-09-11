@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using CSRogue.GameControl;
+using CSRogue.Interfaces;
 using CSRogue.Items;
 using CSRogue.Map_Generation;
 using CSRogue.RogueEventArgs;

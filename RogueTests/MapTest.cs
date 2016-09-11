@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using CSRogue;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using CSRogue.Interfaces;
 using CSRogue.Map_Generation;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace RogueTests
 {

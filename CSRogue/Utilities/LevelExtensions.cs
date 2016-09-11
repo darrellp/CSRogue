@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CSRogue.Interfaces;
 using CSRogue.Items;
 using CSRogue.Item_Handling;
-using CSRogue.Map_Generation;
 
 namespace CSRogue.Utilities
 {

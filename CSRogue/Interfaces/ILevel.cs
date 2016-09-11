@@ -2,7 +2,7 @@
 using CSRogue.Items;
 using CSRogue.Item_Handling;
 
-namespace CSRogue.Map_Generation
+namespace CSRogue.Interfaces
 {
     public interface ILevel
     {

@@ -1,10 +1,10 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Text;
-using CSRogue.Map_Generation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using CSRogue.Map_Generation;
 
 namespace RogueTests
 {

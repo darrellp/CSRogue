@@ -1,8 +1,8 @@
 ﻿using System;
 using CSRogue.GameControl;
 using CSRogue.GameControl.Commands;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CSRogue.Map_Generation;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CSRogue.RogueEventArgs;
 
 namespace RogueTests
