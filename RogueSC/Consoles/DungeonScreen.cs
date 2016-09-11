@@ -126,8 +126,10 @@ namespace RogueSC.Consoles
 
 		#region Event Handlers
 		private void Game_AttackEvent(object sender, AttackEventArgs e)
-        {
-            if (e.Victim.IsPlayer || !e.VictimDied)
+		{
+			Action x = () => DungeonConsole.MovePlayerBy(new Point(0, -1));
+
+			if (e.Victim.IsPlayer || !e.VictimDied)
             {
                 return;
             }
@@ -151,32 +153,31 @@ namespace RogueSC.Consoles
 
 		#region Keyboard handling
 		/// <summary>   A dictionary to map the arrow keys to their corresponding movement. </summary>
-		private static readonly Dictionary<Input.Keys, Point> KeysToMovement = new Dictionary<Input.Keys, Point>()
-            {
-                {Input.Keys.Up, new Point(0, -1) },
-                {Input.Keys.Down, new Point(0, 1) },
-                {Input.Keys.Left, new Point(-1, 0) },
-                {Input.Keys.Right, new Point(1, 0) },
-                {Input.Keys.End, new Point(-1, 1) },
-                {Input.Keys.PageUp, new Point(1, -1) },
-                {Input.Keys.PageDown, new Point(1, 1) },
-                {Input.Keys.Home, new Point(-1, -1) },
-                {(Input.Keys)12, new Point(0, 0) },
-            };
+		private static readonly Dictionary<Input.Keys, Action<DungeonScreen>> KeysToAction = new Dictionary<Input.Keys, Action<DungeonScreen>>()
+			{
+				{Input.Keys.Up, (s) => s.DungeonConsole.MovePlayerBy(new Point(0, -1)) },
+				{Input.Keys.Down, (s) => s.DungeonConsole.MovePlayerBy(new Point(0, 1)) },
+				{Input.Keys.Left, (s) => s.DungeonConsole.MovePlayerBy(new Point(-1, 0)) },
+				{Input.Keys.Right, (s) => s.DungeonConsole.MovePlayerBy(new Point(1, 0)) },
+				{Input.Keys.End, (s) => s.DungeonConsole.MovePlayerBy(new Point(-1, 1)) },
+				{Input.Keys.PageUp, (s) => s.DungeonConsole.MovePlayerBy(new Point(1, -1)) },
+				{Input.Keys.PageDown,(s) => s.DungeonConsole.MovePlayerBy(new Point(1, 1)) },
+				{Input.Keys.Home, (s) => s.DungeonConsole.MovePlayerBy(new Point(-1, -1)) },
+				{(Input.Keys)12, (s) => s.DungeonConsole.MovePlayerBy(new Point(0, 0)) },
+			};
 
-	    public override bool ProcessKeyboard(KeyboardInfo info)
+		public override bool ProcessKeyboard(KeyboardInfo info)
         {
             if (info.KeysPressed.Count == 0)
             {
                 return false;
             }
 
-            if (KeysToMovement.ContainsKey(info.KeysPressed[0].XnaKey))
-            {
-                DungeonConsole.MovePlayerBy(KeysToMovement[info.KeysPressed[0].XnaKey]);
-            }
-
-            return false;
+			if (KeysToAction.ContainsKey(info.KeysPressed[0].XnaKey))
+			{
+				KeysToAction[info.KeysPressed[0].XnaKey](this);
+			}
+			return false;
         }
         #endregion
     }
