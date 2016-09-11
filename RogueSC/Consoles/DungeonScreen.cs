@@ -122,7 +122,9 @@ namespace RogueSC.Consoles
             Engine.Keyboard.RepeatDelay = 0.1f;
             Engine.Keyboard.InitialRepeatDelay = 0.1f;
         }
+		#endregion
 
+		#region Event Handlers
 		private void Game_AttackEvent(object sender, AttackEventArgs e)
         {
             if (e.Victim.IsPlayer || !e.VictimDied)
