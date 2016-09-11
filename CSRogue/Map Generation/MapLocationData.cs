@@ -65,7 +65,8 @@ namespace CSRogue.Map_Generation
         #endregion
 
         #region Constructor
-        internal MapLocationData()
+
+	    public MapLocationData()
 		{
 			Items = new List<IItem>();
 			Terrain = TerrainType.OffMap;

@@ -6,7 +6,9 @@ using CSRogue.GameControl.Commands;
 using CSRogue.Items;
 using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
+using CSRogue.RogueEventArgs;
 using Microsoft.Xna.Framework;
+using RogueSC.Map_Objects;
 using RogueSC.Utilities;
 using SadConsole;
 using SadConsole.Consoles;
@@ -38,7 +40,7 @@ namespace RogueSC.Consoles
         // ReSharper disable once InconsistentNaming
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly Console messageHeaderConsole;
-        private CSRogue.GameControl.Game _game;
+        private readonly CSRogue.GameControl.Game _game;
         private static readonly ItemFactory Factory;
         private const int MapWidth = 100;
         private const int MapHeight = 100;
@@ -67,11 +69,13 @@ namespace RogueSC.Consoles
         public DungeonScreen()
         {
             _game = new CSRogue.GameControl.Game(Factory);
-            _game.AttackEvent += Game_AttackEvent;
+			_game.NewLevelEvent += Game_NewLevelEvent;
+			_game.AttackEvent += Game_AttackEvent;
             var player = (IPlayer) Factory.InfoFromId[ItemIDs.HeroId].CreateItem(null);
-            var map = new GameMap(MapWidth, MapHeight, 10, _game, player);
+            var map = new GameMap(MapWidth, MapHeight, 10, _game, player, () => new SCMapLocationData());
             var excavator= new GridExcavator();
             excavator.Excavate(map, player);
+
             var levelCmd = new NewLevelCommand(0, map, new Dictionary<Guid, int>()
             {
                 {ItemIDs.RatId, 1},
@@ -80,7 +84,6 @@ namespace RogueSC.Consoles
             _game.EnqueueAndProcess(levelCmd);
 
             StatsConsole = new CharacterConsole(24, 17);
-            // ReSharper disable once RedundantArgumentDefaultValue
             DungeonConsole = new DungeonMapConsole(_game, 56, 16);
             MessageConsole = new MessagesConsole(80, 6);
 
@@ -120,7 +123,7 @@ namespace RogueSC.Consoles
             Engine.Keyboard.InitialRepeatDelay = 0.1f;
         }
 
-        private void Game_AttackEvent(object sender, CSRogue.RogueEventArgs.AttackEventArgs e)
+		private void Game_AttackEvent(object sender, AttackEventArgs e)
         {
             if (e.Victim.IsPlayer || !e.VictimDied)
             {
@@ -129,11 +132,24 @@ namespace RogueSC.Consoles
             MessageConsole.PrintMessage($"[c:r f:Red]You killed a mighty [c:r f:Yellow]{_game.Factory.InfoFromId[e.Victim.ItemTypeId].Name}!");
 
         }
-        #endregion
 
-        #region Keyboard handling
-        /// <summary>   A dictionary to map the arrow keys to their corresponding movement. </summary>
-        private static readonly Dictionary<Input.Keys, Point> KeysToMovement = new Dictionary<Input.Keys, Point>()
+		private void Game_NewLevelEvent(object sender, NewLevelEventArgs e)
+		{
+			var map = e.NewLevel.Map;
+			for (var iCol = 0; iCol < map.Width; iCol++)
+			{
+				for (var iRow = 0; iRow < map.Height; iRow++)
+				{
+					var data = (SCMapLocationData)map[iCol, iRow];
+					data.Appearance = SCRender.MapTerrainToAppearance[map[iCol, iRow].Terrain];
+				}
+			}
+		}
+		#endregion
+
+		#region Keyboard handling
+		/// <summary>   A dictionary to map the arrow keys to their corresponding movement. </summary>
+		private static readonly Dictionary<Input.Keys, Point> KeysToMovement = new Dictionary<Input.Keys, Point>()
             {
                 {Input.Keys.Up, new Point(0, -1) },
                 {Input.Keys.Down, new Point(0, 1) },
@@ -146,7 +162,7 @@ namespace RogueSC.Consoles
                 {(Input.Keys)12, new Point(0, 0) },
             };
 
-        public override bool ProcessKeyboard(KeyboardInfo info)
+	    public override bool ProcessKeyboard(KeyboardInfo info)
         {
             if (info.KeysPressed.Count == 0)
             {

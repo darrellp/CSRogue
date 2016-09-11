@@ -56,8 +56,8 @@ namespace CSRogue.GameControl
 
 		#region Events
 		/// <summary> Event queue for all listeners interested in new level events. </summary>
-		public event EventHandler<EventArgs> NewLevelEvent;
-		public void InvokeNewLevelEvent(Object sender, EventArgs e)
+		public event EventHandler<NewLevelEventArgs> NewLevelEvent;
+		public void InvokeNewLevelEvent(Object sender, NewLevelEventArgs e)
 		{
             NewLevelEvent?.Invoke(sender, e);
 		}
@@ -115,7 +115,7 @@ namespace CSRogue.GameControl
 					break;
 
 				case EventType.NewLevel:
-					InvokeNewLevelEvent(sender, e);
+					InvokeNewLevelEvent(sender, e as NewLevelEventArgs);
 					break;
 
 				case EventType.Attack:

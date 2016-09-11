@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EventArgs\AttackEventArgs.cs" />
+    <Compile Include="EventArgs\NewLevelEventArgs.cs" />
     <Compile Include="Game\CommandQueue.cs" />
     <Compile Include="Game\Commands\CommandBase.cs" />
     <Compile Include="Game\Commands\MoveToCommand.cs" />

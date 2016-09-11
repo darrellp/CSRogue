@@ -101,6 +101,7 @@
     <Compile Include="Creatures\Rat.cs" />
     <Compile Include="GameWorld.cs" />
     <Compile Include="Items\Sword.cs" />
+    <Compile Include="Map Objects\SCMapLocationData.cs" />
     <Compile Include="Map Objects\SCRender.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Utilities\Extensions.cs" />

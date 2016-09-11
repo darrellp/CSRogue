@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using SadConsole.Game;
 using SadConsole.Consoles;
 using CSRogue.Utilities;
+using RogueSC.Map_Objects;
 using RogueSC.Utilities;
 using static RogueSC.Map_Objects.SCRender;
 using Game = CSRogue.GameControl.Game;
@@ -70,7 +71,8 @@ namespace RogueSC.Consoles
             _game.HeroMoveEvent += _game_HeroMoveEvent;
             _game.CreatureMoveEvent += _game_CreatureMoveEvent;
             _game.AttackEvent += _game_AttackEvent;
-            var fontMaster = Engine.LoadFont("Cheepicus12.font");
+
+			var fontMaster = Engine.LoadFont("Cheepicus12.font");
             var font = fontMaster.GetFont(fontSize);
             TextSurface.Font = font;
             var mult = SizeMultipliers[fontSize];
@@ -123,17 +125,17 @@ namespace RogueSC.Consoles
                 RenderToCell(GetAppearance(loc), this[loc.Column, loc.Row], true);
             }
         }
-        #endregion
+		#endregion
 
-        #region Mapping
+		#region Mapping
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Generates a map. </summary>
-        ///
-        /// <remarks>   Darrellp, 8/26/2016. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		/// <summary>   Generates a map. </summary>
+		///
+		/// <remarks>   Darrellp, 8/26/2016. </remarks>
+		////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        private void GenerateMap()
+		private void GenerateMap()
         {
             _map = _game.Map;
 
@@ -162,7 +164,7 @@ namespace RogueSC.Consoles
             Player.RenderOffset = Position - TextSurface.RenderArea.Location;
             foreach (var loc in _map.Fov.CurrentlySeen)
             {
-                RenderToCell(GetAppearance(loc.Column, loc.Row), this[loc.Column, loc.Row], true);
+                RenderToCell(((SCMapLocationData)_map[loc]).Appearance, this[loc.Column, loc.Row], true);
             }
         }
 
@@ -171,19 +173,19 @@ namespace RogueSC.Consoles
             return GetAppearance(crd.Column, crd.Row);
         }
 
-        private CellAppearance GetAppearance(int iCol, int iRow)
+	    private CellAppearance GetAppearance(int iCol, int iRow)
         {
             CellAppearance appearance;
             if (_map[iCol, iRow].Items.Count > 0)
             {
                 var id = _map[iCol, iRow].Items[0].ItemTypeId;
                 appearance = id == ItemIDs.HeroId ?
-                    MapTerrainToAppearance[_map[iCol, iRow].Terrain] :
+					((SCMapLocationData)_map[iCol, iRow]).Appearance :
                     ObjectNameToAppearance[_game.Factory.InfoFromId[id].Name];
             }
             else
             {
-                appearance = MapTerrainToAppearance[_map[iCol, iRow].Terrain];
+				appearance = ((SCMapLocationData)_map[iCol, iRow]).Appearance;
             }
             return appearance;
         }
@@ -235,14 +237,14 @@ namespace RogueSC.Consoles
             foreach (var loc in e.GameMap.Fov.NewlySeen)
             {
                 RenderToCell(
-                    GetAppearance(loc.Column, loc.Row),
+					((SCMapLocationData)_map[loc]).Appearance,
                     this[loc.Column, loc.Row],
                     true);
             }
             foreach (var loc in e.GameMap.Fov.NewlyUnseen)
             {
                 RenderToCell(
-                    GetAppearance(loc.Column, loc.Row),
+					((SCMapLocationData)_map[loc]).Appearance,
                     this[loc.Column, loc.Row],
                     false);
             }

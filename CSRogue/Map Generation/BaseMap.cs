@@ -10,20 +10,19 @@ namespace CSRogue.Map_Generation
         private IMapLocationData[][] _mapLocationData;
         private int _height;
         private int _width;
-	    private Func<IMapLocationData> _dataCreator;
 
-		public BaseMap(int height, int width, Func<IMapLocationData> dataCreator = null )
+	    public BaseMap(int height, int width, Func<IMapLocationData> dataCreator = null )
         {
-            _height = height;
+			_height = height;
             _width = width;
             _mapLocationData = new IMapLocationData[_width][];
-			_dataCreator = dataCreator ?? (() => new MapLocationData());
+			var ourDataCreator = dataCreator ?? (() => new MapLocationData());
             for (var iCol = 0; iCol < _width; iCol++)
             {
                 _mapLocationData[iCol] = new IMapLocationData[_height];
                 for (var iRow = 0; iRow < _height; iRow++)
                 {
-                    _mapLocationData[iCol][iRow] = _dataCreator();
+                    _mapLocationData[iCol][iRow] = ourDataCreator();
                 }
             }
         }

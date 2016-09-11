@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CSRogue.Interfaces;
 using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
+using CSRogue.RogueEventArgs;
 using CSRogue.Utilities;
 
 namespace CSRogue.GameControl.Commands
@@ -36,10 +37,15 @@ namespace CSRogue.GameControl.Commands
 
         public override bool Execute(Game game)
 	    {
-            game.CurrentLevel = new Level(Depth, Map, game.Factory, Rarity);
-            Map.SetPlayer(true);
-            game.InvokeEvent(EventType.NewLevel, this);
-            return false;
+			var levelArgs = new NewLevelEventArgs();
+	        var player = game.Map?.Player;
+	        levelArgs.PrevLevel = game.CurrentLevel;
+			game.CurrentLevel = new Level(Depth, Map, game.Factory, Rarity);
+	        levelArgs.NewLevel = game.CurrentLevel;
+			Map.SetPlayer(true, player);
+
+            game.InvokeEvent(EventType.NewLevel, game, levelArgs);
+			return false;
 	    }
 	}
 }
