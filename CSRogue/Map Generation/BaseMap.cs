@@ -1,42 +1,46 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using CSRogue.Item_Handling;
 
 namespace CSRogue.Map_Generation
 {
     public class BaseMap : IMap
     {
-        private MapLocationData[][] _mapLocationData;
+        private IMapLocationData[][] _mapLocationData;
         private int _height;
         private int _width;
+	    private Func<IMapLocationData> _dataCreator;
 
-        public BaseMap(int height, int width)
+		public BaseMap(int height, int width, Func<IMapLocationData> dataCreator = null )
         {
             _height = height;
             _width = width;
-            _mapLocationData = new MapLocationData[_width][];
-            for (int iCol = 0; iCol < _width; iCol++)
+            _mapLocationData = new IMapLocationData[_width][];
+			_dataCreator = dataCreator ?? (() => new MapLocationData());
+            for (var iCol = 0; iCol < _width; iCol++)
             {
-                _mapLocationData[iCol] = new MapLocationData[_height];
-                for (int iRow = 0; iRow < _height; iRow++)
+                _mapLocationData[iCol] = new IMapLocationData[_height];
+                for (var iRow = 0; iRow < _height; iRow++)
                 {
-                    _mapLocationData[iCol][iRow] = new MapLocationData();
+                    _mapLocationData[iCol][iRow] = _dataCreator();
                 }
             }
         }
 
-        public BaseMap(string mapString, IItemFactory factory)
-        {
-            var excavator = new FileExcavator(mapString, factory);
+        public BaseMap(string mapString, IItemFactory factory, Func<IMapLocationData> dataCreator = null)
+		{
+            var excavator = new FileExcavator(mapString, factory, dataCreator);
             excavator.Excavate(this);
         }
 
-        MapLocationData IMap.this[int iCol, int iRow]
+        IMapLocationData IMap.this[int iCol, int iRow]
         {
             get { return _mapLocationData[iCol][iRow]; }
             set { _mapLocationData[iCol][iRow] = value; }
         }
 
-        MapLocationData IMap.this[MapCoordinates loc]
+        IMapLocationData IMap.this[MapCoordinates loc]
         {
             get { return _mapLocationData[loc.Column][loc.Row]; }
             set { _mapLocationData[loc.Column][loc.Row] = value; }
@@ -49,7 +53,7 @@ namespace CSRogue.Map_Generation
         ///
         /// <value>	The indexed item collection. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        public MapLocationData this[int iCol, int iRow]
+        public IMapLocationData this[int iCol, int iRow]
         {
             get
             {
@@ -68,7 +72,7 @@ namespace CSRogue.Map_Generation
         ///
         /// <value>	The indexed item collection. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        public MapLocationData this[MapCoordinates location]
+        public IMapLocationData this[MapCoordinates location]
         {
             get
             {
@@ -93,7 +97,7 @@ namespace CSRogue.Map_Generation
                 {
                     if (value > Height)
                     {
-                        MapLocationData[] columnData = new MapLocationData[value];
+                        var columnData = new IMapLocationData[value];
                         _mapLocationData[iCol].CopyTo(columnData, 0);
                         _mapLocationData[iCol] = columnData;
                     }
@@ -115,7 +119,7 @@ namespace CSRogue.Map_Generation
                 {
                     return;
                 }
-                var newData = new MapLocationData[value][];
+                var newData = new IMapLocationData[value][];
                 for (var iCol = 0; iCol < value; iCol++)
                 {
                     if (iCol < Width)
@@ -124,7 +128,7 @@ namespace CSRogue.Map_Generation
                     }
                     else
                     {
-                        newData[iCol] = new MapLocationData[_height];
+                        newData[iCol] = new IMapLocationData[_height];
                     }
                 }
                 _mapLocationData = newData;

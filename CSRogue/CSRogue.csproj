@@ -66,6 +66,7 @@
     <Compile Include="Map Generation\IMap.cs" />
     <Compile Include="Item Handling\CreatureInfo.cs" />
     <Compile Include="EventArgs\CreatureMoveEventArgs.cs" />
+    <Compile Include="Map Generation\IMapLocationData.cs" />
     <Compile Include="Map Generation\IRoom.cs" />
     <Compile Include="Map Generation\IRoomsMap.cs" />
     <Compile Include="Map Generation\Level.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="Utilities\GameMapExtensions.cs" />
     <Compile Include="Utilities\LevelExtensions.cs" />
     <Compile Include="Utilities\MapExtensions.cs" />
+    <Compile Include="Utilities\MapLocationDataExtensions.cs" />
     <Compile Include="Utilities\PerlinNoise.cs" />
     <Compile Include="Utilities\PerThreadSingleton.cs" />
     <Compile Include="Utilities\Preferences.cs" />

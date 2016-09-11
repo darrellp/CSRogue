@@ -27,7 +27,7 @@ namespace CSRogue.Map_Generation
     ///             Darrell, 9/9/2016. </remarks>
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public class MapLocationData
+	public class MapLocationData : IMapLocationData
 	{
         #region Public properties
         ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,7 +36,7 @@ namespace CSRogue.Map_Generation
         /// <value> The items. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public List<IItem> Items { get; }
+        public List<IItem> Items { get; set; }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Gets or sets the type of terrain at this location. </summary>
@@ -52,7 +52,7 @@ namespace CSRogue.Map_Generation
         /// <value> The lit state. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		public TerrainState TerrainState { get; internal set; }
+		public TerrainState TerrainState { get; set; }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Gets or sets the room this location is located in. </summary>
@@ -60,7 +60,7 @@ namespace CSRogue.Map_Generation
         /// <value> The room. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		public IRoom Room { get; internal set; }
+		public IRoom Room { get; set; }
         #endregion
 
         #region Constructor

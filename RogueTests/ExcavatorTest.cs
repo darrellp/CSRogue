@@ -95,7 +95,7 @@ namespace RogueTests
             }
             else
             {
-                Assert.AreEqual(0, baseMap[iCol, iRow].Items.Count);
+                Assert.IsTrue(baseMap[iCol, iRow].Items == null || baseMap[iCol, iRow].Items.Count == 0);
             }
             Assert.AreEqual(terrain, baseMap[iCol, iRow].Terrain);
         }

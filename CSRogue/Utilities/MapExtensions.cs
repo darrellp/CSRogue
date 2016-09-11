@@ -185,7 +185,7 @@ namespace CSRogue.Utilities
         public static Creature CreatureAt(this IMap map, MapCoordinates location)
         {
             // Find a creature, if any, at the destination
-            return map[location].Items.FirstOrDefault(i => (i as Creature) != null) as Creature;
+            return map[location].Items?.FirstOrDefault(i => (i as Creature) != null) as Creature;
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////

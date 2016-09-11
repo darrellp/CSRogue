@@ -2,8 +2,8 @@
 {
     public interface IMap
     {
-        MapLocationData this[int iCol, int iRow] { get; set; }
-        MapLocationData this[MapCoordinates loc] { get; set; }
+        IMapLocationData this[int iCol, int iRow] { get; set; }
+        IMapLocationData this[MapCoordinates loc] { get; set; }
         int Height { get; set; }
         int Width { get; set; }
     }

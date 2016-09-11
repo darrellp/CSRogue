@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace CSRogue.Map_Generation
 {
     public class RoomMap : BaseMap, IRoomsMap
     {
-        public RoomMap(ISet<IRoom> rooms, int height, int width) : base(height, width)
+        public RoomMap(
+			ISet<IRoom> rooms,
+			int height, int width,
+			Func<IMapLocationData> dataCreator = null) : base(height, width, dataCreator)
         {
             Rooms = rooms;
         }

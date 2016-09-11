@@ -22,15 +22,20 @@ namespace CSRogue.Map_Generation
 		private readonly List<string> _asciiLines = new List<string>();
 	    private IItemFactory _factory;
         private readonly Dictionary<char, Guid> _charToId = new Dictionary<char, Guid>();
+		private Func<IMapLocationData> _dataCreator;
 		#endregion
 
 		#region Constructor
 
-	    public FileExcavator(string mapString, IItemFactory factory) : this(new StringReader(mapString), factory){ }
+		public FileExcavator(
+			string mapString, 
+			IItemFactory factory,
+			Func<IMapLocationData> dataCreator = null) : this(new StringReader(mapString), factory, dataCreator){ }
 
-		public FileExcavator(TextReader reader, IItemFactory factory)
+		public FileExcavator(TextReader reader, IItemFactory factory, Func<IMapLocationData> dataCreator = null)
 		{
-            var line = reader.ReadLine();
+			_dataCreator = dataCreator ?? (() => new MapLocationData());
+			var line = reader.ReadLine();
             while (line != null)
             {
                 _asciiLines.Add(line);
@@ -96,7 +101,9 @@ namespace CSRogue.Map_Generation
 					? _factory.InfoFromId[_charToId[currentLine[iCol]]].CreateItem(null) : null;
                 
 				var items = item == null ? null : new List<IItem> { item };
-				var data = new MapLocationData(terrain, items);
+				var data = _dataCreator();
+				data.Terrain = terrain;
+				data.Items = items;
 
 				// and place it in the map
 				map[iCol, iRow] = data;

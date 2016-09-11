@@ -18,7 +18,7 @@ namespace CSRogue.GameControl.Commands
         ///
         /// <value>	true if we should run, false if not. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        public bool Run { get; private set; }
+        public bool Run { get; }
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Gets or sets the creature to be moved. </summary>
@@ -27,15 +27,16 @@ namespace CSRogue.GameControl.Commands
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		public ICreature Creature { get; private set; }
 
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-	    ///  <summary>	Constructor. </summary>
-	    /// 
-	    ///  <remarks>	Darrellp, 10/6/2011. </remarks>
-	    /// 
-	    ///  <param name="commandType">	Type of movement. </param>
-	    ///  <param name="shouldRun">	true if we should run. </param>
-	    /// <param name="creature">     Creature for this command </param>
-	    ////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Constructor. </summary>
+        ///
+        /// <remarks>   Darrellp, 10/6/2011. </remarks>
+        ///
+        /// <param name="direction">    Type of movement. </param>
+        /// <param name="shouldRun">    (Optional) true if we should run. </param>
+        /// <param name="creature">     (Optional) Creature for this command. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	    public MovementCommand(MapCoordinates direction, bool shouldRun = false, ICreature creature = null)
 		{
 			Run = shouldRun;
@@ -58,7 +59,7 @@ namespace CSRogue.GameControl.Commands
             if (Run)
             {
                 // Locals
-                var proposedLocation = game.Map.Player.Location + _direction;
+                var proposedLocation = newLocation;
                 var maybeBlocksUs = proposedLocation + _direction;
 
                 // If we're blocked before we start...

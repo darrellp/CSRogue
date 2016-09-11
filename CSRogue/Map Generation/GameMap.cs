@@ -1,4 +1,5 @@
-﻿using CSRogue.GameControl;
+﻿using System;
+using CSRogue.GameControl;
 using CSRogue.Items;
 using CSRogue.Utilities;
 
@@ -29,14 +30,14 @@ namespace CSRogue.Map_Generation
             set { _player = value; }
         }
 
-        public GameMap(int fovRadius, Game game, string mapString) : base(mapString, game.Factory)
+        public GameMap(int fovRadius, Game game, string mapString, Func<IMapLocationData> dataCreator = null) : base(mapString, game. Factory, dataCreator)
         {
             _fov = new FOV(this, fovRadius);
             _game = game;
             this.SetPlayer(true);
         }
 
-        public GameMap(int height, int width, int fovRadius, Game game, IPlayer player) : base(height, width)
+        public GameMap(int height, int width, int fovRadius, Game game, IPlayer player, Func<IMapLocationData> dataCreator = null) : base(height, width, dataCreator)
         {
             _fov = new FOV(this, fovRadius);
             _game = game;

@@ -39,7 +39,7 @@ namespace RogueSC.Consoles
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly Console messageHeaderConsole;
         private CSRogue.GameControl.Game _game;
-        private static readonly ItemFactory _factory;
+        private static readonly ItemFactory Factory;
         private const int MapWidth = 100;
         private const int MapHeight = 100;
         #endregion
@@ -54,7 +54,7 @@ namespace RogueSC.Consoles
             {
                 // ReSharper disable once AssignNullToNotNullAttribute
                 var reader = new StreamReader(stream);
-                _factory = new ItemFactory(reader);
+                Factory = new ItemFactory(reader);
             }
         }
 
@@ -66,9 +66,9 @@ namespace RogueSC.Consoles
 
         public DungeonScreen()
         {
-            _game = new CSRogue.GameControl.Game(_factory);
+            _game = new CSRogue.GameControl.Game(Factory);
             _game.AttackEvent += Game_AttackEvent;
-            var player = (IPlayer) _factory.InfoFromId[ItemIDs.HeroId].CreateItem(null);
+            var player = (IPlayer) Factory.InfoFromId[ItemIDs.HeroId].CreateItem(null);
             var map = new GameMap(MapWidth, MapHeight, 10, _game, player);
             var excavator= new GridExcavator();
             excavator.Excavate(map, player);
