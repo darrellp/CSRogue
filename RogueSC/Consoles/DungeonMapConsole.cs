@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CSRogue.GameControl.Commands;
 using CSRogue.Map_Generation;
@@ -7,8 +8,10 @@ using Microsoft.Xna.Framework;
 using SadConsole.Game;
 using SadConsole.Consoles;
 using CSRogue.Utilities;
+using RogueSC.Map_Objects;
 using RogueSC.Utilities;
 using static RogueSC.Map_Objects.SCRender;
+using Console = SadConsole.Consoles.Console;
 using Game = CSRogue.GameControl.Game;
 
 namespace RogueSC.Consoles
@@ -161,15 +164,25 @@ namespace RogueSC.Consoles
                                                     TextSurface.RenderArea.Width, TextSurface.RenderArea.Height);
 
             Player.RenderOffset = Position - TextSurface.RenderArea.Location;
-            Refresh();
-        }
+			Refresh();
+		}
 
-	    private void Refresh()
+		private void Refresh()
 	    {
 		    _map.Fov.Scan(_map.Player.Location);
 		    foreach (var loc in _map.Fov.CurrentlySeen)
 		    {
-			    RenderToCell(_map[loc].Appearance, this[loc.Column, loc.Row], true);
+			    var info = _map[loc];
+			    if (info.Items.Count > 0 && info.Items[0].ItemTypeId != ItemIDs.HeroId)
+			    {
+				    var id = info.Items[0].ItemTypeId;
+				    var name = _map.Game.Factory.InfoFromId[id].Name;
+					RenderToCell(SCRender.ObjectNameToAppearance[name], this[loc.Column, loc.Row], true);
+				}
+			    else
+			    {
+				    RenderToCell(_map[loc].Appearance, this[loc.Column, loc.Row], true);
+			    }
 		    }
 		    foreach (var loc in _map.Fov.NewlyUnseen)
 		    {
