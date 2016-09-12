@@ -33,7 +33,12 @@ namespace CSRogue.Map_Generation
             excavator.Excavate(this);
         }
 
-        IMapLocationData IMap.this[int iCol, int iRow]
+		public BaseMap()
+		{
+			throw new NotImplementedException();
+		}
+
+		IMapLocationData IMap.this[int iCol, int iRow]
         {
             get { return _mapLocationData[iCol][iRow]; }
             set { _mapLocationData[iCol][iRow] = value; }

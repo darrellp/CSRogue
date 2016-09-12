@@ -95,6 +95,7 @@
     <Compile Include="Map Objects\SCMapLocationData.cs" />
     <Compile Include="Map Objects\SCRender.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Mapping\SCMap.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\ItemIDs.cs" />
   </ItemGroup>

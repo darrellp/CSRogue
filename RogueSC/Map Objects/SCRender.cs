@@ -31,8 +31,11 @@ namespace RogueSC.Map_Objects
             {"wall", new CellAppearance(Color.Gray, Color.Blue, 176)},
             {"floor", new CellAppearance(Color.Orange, Color.Transparent, 46) },
             {"Rat", new CellAppearance(Color.Red, Color.Transparent, 114) },
-            {"Orc", new CellAppearance(Color.Yellow, Color.Transparent, 111) }
-        };
+            {"Orc", new CellAppearance(Color.Yellow, Color.Transparent, 111) },
+			{"Player", new CellAppearance(Color.Yellow, Color.Transparent, 111) /* really a noop */ },
+			{"openDoor", new CellAppearance(Color.Yellow, Color.Transparent, 176) },
+			{"closedDoor", new CellAppearance(Color.Orange, Color.Transparent, 176) },
+		};
 
         internal static readonly CellAppearance WallAppearance = new CellAppearance(Color.Gray, Color.Blue, 176);
         internal static readonly CellAppearance FloorAppearance = new CellAppearance(Color.Orange, Color.Transparent, 46);

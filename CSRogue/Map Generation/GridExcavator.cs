@@ -857,6 +857,7 @@ namespace CSRogue.Map_Generation
 						terrain != TerrainType.StairsUp)
 					{
 						map.SetWalkable(iColumn, iRow, false);
+						map.SetBlocksView(iColumn, iRow);
 						continue;
 					}
 

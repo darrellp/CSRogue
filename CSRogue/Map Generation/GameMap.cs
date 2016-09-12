@@ -44,5 +44,9 @@ namespace CSRogue.Map_Generation
             _game = game;
 	        _player = player;
         }
+
+	    protected GameMap() : base()
+	    {
+	    }
     }
 }

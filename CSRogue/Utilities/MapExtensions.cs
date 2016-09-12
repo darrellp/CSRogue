@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using CSRogue.Interfaces;
 using CSRogue.Items;
 using CSRogue.Item_Handling;
@@ -308,9 +307,45 @@ namespace CSRogue.Utilities
             
         }
 
-        #region Terrain States
-        #region In View
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	    public static IEnumerable<MapCoordinates> TerrainLocations(this IMap map, HashSet<TerrainType> terrains)
+	    {
+		    if (terrains == null)
+		    {
+			    throw new ArgumentNullException(nameof(terrains));
+		    }
+		    for (var iCol = 0; iCol < map.Width; iCol++)
+		    {
+			    for (var iRow = 0; iRow < map.Height; iRow++)
+			    {
+				    if (terrains.Contains(map[iCol, iRow].Terrain))
+				    {
+					    yield return new MapCoordinates(iCol, iRow);
+				    }
+			    }
+		    }
+	    }
+
+		public static IEnumerable<MapCoordinates> ItemLocations(this IMap map, HashSet<Guid> items)
+		{
+			if (items == null)
+			{
+				throw new ArgumentNullException(nameof(items));
+			}
+			for (var iCol = 0; iCol < map.Width; iCol++)
+			{
+				for (var iRow = 0; iRow < map.Height; iRow++)
+				{
+					if (map[iCol, iRow].Items?.FirstOrDefault(i => items.Contains(i.ItemTypeId)) != null)
+					{
+						yield return new MapCoordinates(iCol, iRow);
+					}
+				}
+			}
+		}
+
+		#region Terrain States
+		#region In View
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool InView(this IMap map, int x, int y)
 		{
 			return map.Value(TerrainState.InView, x, y);

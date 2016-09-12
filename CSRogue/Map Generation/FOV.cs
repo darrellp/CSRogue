@@ -88,16 +88,8 @@ namespace CSRogue.Map_Generation
         //  http://www.adammil.net/blog/v125_roguelike_vision_algorithms.html
         // I modified it SLIGHTLY to work in my context and it dropped in like a charm.  My commenting software puts my name in the
         // comments below but the vast majority of credit goes to Adam Milazzo.
-        public void Compute(MapCoordinates origin, int rangeLimit)
-        {
-            _currentFOV.Add(new MapCoordinates(origin.Column, origin.Row));
-            for (var octant = 0; octant < 8; octant++)
-            {
-                Compute(octant, origin, rangeLimit, 1, new Slope(1, 1), new Slope(0, 1));
-            }
-        }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Represents the slope Y/X as a rational number. </summary>
         ///
         /// <remarks>   Darrell, 8/28/2016. </remarks>
@@ -475,8 +467,7 @@ namespace CSRogue.Map_Generation
 			{
 				return true;
 			}
-			var terrain = _csRogueMap[location].Terrain;
-			return terrain == TerrainType.Wall || terrain == TerrainType.OffMap;
+	        return _csRogueMap.BlocksView(location);
 		} 
         #endregion
 	}

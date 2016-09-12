@@ -71,10 +71,7 @@ namespace RogueSC.Consoles
             _game = new CSRogue.GameControl.Game(Factory);
 			_game.NewLevelEvent += Game_NewLevelEvent;
 			_game.AttackEvent += Game_AttackEvent;
-            var player = (IPlayer) Factory.InfoFromId[ItemIDs.HeroId].CreateItem(null);
-            var map = new GameMap(MapWidth, MapHeight, 10, _game, player, () => new SCMapLocationData());
-            var excavator= new GridExcavator();
-            excavator.Excavate(map, player);
+            var map = new SCMap(MapWidth, MapHeight, 10, _game, Factory);
 
             var levelCmd = new NewLevelCommand(0, map, new Dictionary<Guid, int>()
             {
@@ -134,7 +131,6 @@ namespace RogueSC.Consoles
                 return;
             }
             MessageConsole.PrintMessage($"[c:r f:Red]You killed a mighty [c:r f:Yellow]{_game.Factory.InfoFromId[e.Victim.ItemTypeId].Name}!");
-
         }
 
 		private void Game_NewLevelEvent(object sender, NewLevelEventArgs e)
@@ -164,9 +160,10 @@ namespace RogueSC.Consoles
 				{Input.Keys.PageDown,(s) => s.DungeonConsole.MovePlayerBy(new Point(1, 1)) },
 				{Input.Keys.Home, (s) => s.DungeonConsole.MovePlayerBy(new Point(-1, -1)) },
 				{(Input.Keys)12, (s) => s.DungeonConsole.MovePlayerBy(new Point(0, 0)) },
+				{Input.Keys.O, (s)=> s.DungeonConsole.ToggleDoors() }
 			};
 
-		public override bool ProcessKeyboard(KeyboardInfo info)
+	    public override bool ProcessKeyboard(KeyboardInfo info)
         {
             if (info.KeysPressed.Count == 0)
             {
