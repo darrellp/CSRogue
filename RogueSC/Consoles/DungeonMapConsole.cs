@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using CSRogue.GameControl.Commands;
 using CSRogue.Map_Generation;
@@ -8,9 +9,8 @@ using Microsoft.Xna.Framework;
 using SadConsole.Game;
 using SadConsole.Consoles;
 using CSRogue.Utilities;
-using RogueSC.Map_Objects;
 using RogueSC.Utilities;
-using static RogueSC.Map_Objects.SCRender;
+using static RogueSC.Map_Objects.ScRender;
 using Console = SadConsole.Consoles.Console;
 using Game = CSRogue.GameControl.Game;
 
@@ -165,7 +165,8 @@ namespace RogueSC.Consoles
 
 		private void Refresh()
 	    {
-		    _map.Fov.Scan(_map.Player.Location);
+		    _map.ScanPlayer();
+
 		    foreach (var loc in _map.Fov.CurrentlySeen)
 		    {
 			    var info = _map[loc];
@@ -173,7 +174,7 @@ namespace RogueSC.Consoles
 			    {
 				    var id = info.Items[0].ItemTypeId;
 				    var name = _map.Game.Factory.InfoFromId[id].Name;
-					RenderToCell(SCRender.ObjectNameToAppearance[name], this[loc.Column, loc.Row], true);
+					RenderToCell(ObjectNameToAppearance[name], this[loc.Column, loc.Row], true);
 				}
 			    else
 			    {
@@ -204,6 +205,19 @@ namespace RogueSC.Consoles
 				appearance = _map[iCol, iRow].Appearance;
             }
             return appearance;
+        }
+
+        public void ToggleDoors()
+        {
+            foreach (var doorLoc in _map.Neighbors(_map.Player.Location).Where(l => _map[l].Terrain == TerrainType.Door))
+            {
+                if (_map[doorLoc].Items.Count == 0)
+                {
+                    _map[doorLoc].ToggleDoor();
+                }
+            }
+            MovePlayerBy(new Point(0, 0));
+            Refresh();
         }
         #endregion
 
@@ -279,17 +293,32 @@ namespace RogueSC.Consoles
         }
         #endregion
 
-	    public void ToggleDoors()
-		{ 
-		    foreach (var doorLoc in _map.Neighbors(_map.Player.Location).Where(l => _map[l].Terrain == TerrainType.Door))
-		    {
-			    if (_map[doorLoc].Items.Count == 0)
-			    {
-				    _map[doorLoc].ToggleDoor();
-			    }
-		    }
-			MovePlayerBy(new Point(0, 0));
-			Refresh();
-	    }
+        #region Debugging
+        [Conditional("DEBUG")]
+        internal void CheckFOV()
+        {
+            foreach (var seenLoc in _map.Fov.CurrentlySeen)
+            {
+                // Player is represented with a sprite which isn't represented directly in the
+                // DungeonMapConsole so we skip that.
+                if (seenLoc == _map.Player.Location)
+                {
+                    continue;
+                }
+                var expectedGlyph = MapTerrainToAppearance[_map[seenLoc].Terrain].GlyphIndex;
+
+                if (_map[seenLoc].Items.Count > 0)
+                {
+                    var id = _map[seenLoc].Items[0].ItemTypeId;
+                    expectedGlyph = ObjectNameToAppearance[_game.Factory.InfoFromId[id].Name].GlyphIndex;
+                }
+                var cell = this[seenLoc.Column, seenLoc.Row];
+                if (cell.GlyphIndex != expectedGlyph)
+                {
+                    throw new InvalidOperationException("Mismatch between seen map and CSRogue map");
+                }
+            }
+        }
+        #endregion
     }
 }

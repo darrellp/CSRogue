@@ -26,13 +26,13 @@ namespace RogueSC.Map_Objects
 				{
 					TerrainState &= ~TerrainState.BlocksView;
 					TerrainState |= TerrainState.Walkable;
-					Appearance = SCRender.ObjectNameToAppearance["openDoor"];
+					Appearance = ScRender.ObjectNameToAppearance["openDoor"];
 				}
 				else
 				{
 					TerrainState &= ~TerrainState.Walkable;
 					TerrainState |= TerrainState.BlocksView;
-					Appearance = SCRender.ObjectNameToAppearance["closedDoor"];
+					Appearance = ScRender.ObjectNameToAppearance["closedDoor"];
 				}
 			}
 		}

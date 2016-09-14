@@ -62,12 +62,16 @@ namespace RogueSC.Consoles
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        ///  <summary>   Default constructor. </summary>
-        /// <param name="writer"></param>
-        /// <param name="reader"></param>
+        /// <summary>   Default constructor. </summary>
+        ///
         /// <remarks>   Darrellp, 8/26/2016. </remarks>
+        ///
+        /// <param name="writer">       Recording writer. </param>
+        /// <param name="reader">       Playback reader. </param>
+        /// <param name="fileIndex">    FileIndex for playback or recording. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        public DungeonScreen(StreamWriter writer, StreamReader reader, int fileIndex)
+
+        internal DungeonScreen(StreamWriter writer, StreamReader reader, int fileIndex)
         {
             var seed = -1;
             if (reader != null)
@@ -174,7 +178,7 @@ namespace RogueSC.Consoles
 				for (var iRow = 0; iRow < map.Height; iRow++)
 				{
 					var data = (SCMapLocationData)map[iCol, iRow];
-					data.Appearance = SCRender.MapTerrainToAppearance[map[iCol, iRow].Terrain];
+					data.Appearance = ScRender.MapTerrainToAppearance[map[iCol, iRow].Terrain];
 				}
 			}
 		}
@@ -214,6 +218,7 @@ namespace RogueSC.Consoles
         private void ActOnKey(Input.Keys key)
         {
             KeysToAction[key](this);
+            DungeonConsole.CheckFOV();
         }
         #endregion
     }

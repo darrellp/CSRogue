@@ -28,6 +28,24 @@ namespace CSRogue.Utilities
 		}
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   An IGameMap extension method that scans the fov for the player. </summary>
+        ///
+        /// <remarks>   Just doing a scan with the FOV is not enough.  The FOV intentionally doesn't know
+        ///             how to manipulate the map because sometimes the manipulation is different than others.
+        ///             If we're scanning for a monster we don't change what is lit on the map for instance.
+        ///             In order to modify the map properly we need to call Relight after the scan which is
+        ///             what we do here. Darrell, 9/14/2016. </remarks>
+        ///
+        /// <param name="map">  The map to act on. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        public static void ScanPlayer(this IGameMap map)
+        {
+            map.Fov.Scan(map.Player.Location);
+            map.Relight();
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>	Move creature to a new location. </summary>
         ///
         /// <remarks>	Darrellp, 10/15/2011. </remarks>

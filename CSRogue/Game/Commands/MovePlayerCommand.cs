@@ -39,8 +39,9 @@ namespace CSRogue.GameControl.Commands
             // Is it a stay put command?
             if (_direction.Column == 0 && _direction.Row == 0)
             {
-                // Let the monsters do their thing and...
+                // Let the monsters do their thing and return
                 game.CurrentLevel.InvokeMonsterAI();
+                return;
             }
             var newLocation = game.Map.Player.Location + _direction;
             ICreature victim;

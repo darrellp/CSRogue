@@ -6,8 +6,12 @@ using CSRogue.Map_Generation;
 
 namespace RogueSC.Map_Objects
 {
-    internal static class SCRender
+    internal static class ScRender
     {
+        public const int WallGlyph = 176;
+        public const int FloorGlyph = 46;
+        public const int PlayerGlyph = 111;
+
         static readonly ICellEffect EffectSeen = new Recolor()
         {
             Foreground = Color.LightGray * 0.6f,
@@ -28,13 +32,13 @@ namespace RogueSC.Map_Objects
 
         internal static Dictionary<string, CellAppearance> ObjectNameToAppearance = new Dictionary<string, CellAppearance>()
         {
-            {"wall", new CellAppearance(Color.Gray, Color.Blue, 176)},
-            {"floor", new CellAppearance(Color.Orange, Color.Transparent, 46) },
-            {"Rat", new CellAppearance(Color.Red, Color.Transparent, 114) },
-            {"Orc", new CellAppearance(Color.Yellow, Color.Transparent, 111) },
-			{"Player", new CellAppearance(Color.Yellow, Color.Transparent, 111) /* really a noop */ },
-			{"openDoor", new CellAppearance(Color.Yellow, Color.Transparent, 176) },
-			{"closedDoor", new CellAppearance(Color.Orange, Color.Transparent, 176) },
+            {"wall", new CellAppearance(Color.Gray, Color.Blue, WallGlyph)},
+            {"floor", new CellAppearance(Color.Orange, Color.Transparent, FloorGlyph) },
+            {"Rat", new CellAppearance(Color.Red, Color.Transparent, 'r') },
+            {"Orc", new CellAppearance(Color.Yellow, Color.Transparent, 'o') },
+			{"Player", new CellAppearance(Color.Yellow, Color.Transparent, PlayerGlyph) /* really a noop */ },
+			{"openDoor", new CellAppearance(Color.Yellow, Color.Transparent, WallGlyph) },
+			{"closedDoor", new CellAppearance(Color.Orange, Color.Transparent, WallGlyph) },
 		};
 
         internal static readonly CellAppearance WallAppearance = new CellAppearance(Color.Gray, Color.Blue, 176);
