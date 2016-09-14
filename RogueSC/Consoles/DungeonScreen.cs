@@ -5,6 +5,7 @@ using System.Reflection;
 using CSRogue.GameControl.Commands;
 using CSRogue.Item_Handling;
 using CSRogue.RogueEventArgs;
+using CSRogue.Utilities;
 using Microsoft.Xna.Framework;
 using RogueSC.Map_Objects;
 using RogueSC.Utilities;
@@ -42,6 +43,8 @@ namespace RogueSC.Consoles
         private static readonly ItemFactory Factory;
         private const int MapWidth = 100;
         private const int MapHeight = 100;
+        private readonly StreamReader _reader;
+        private readonly StreamWriter _writer;
         #endregion
 
         #region Constructor
@@ -59,13 +62,28 @@ namespace RogueSC.Consoles
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Default constructor. </summary>
-        ///
+        ///  <summary>   Default constructor. </summary>
+        /// <param name="writer"></param>
+        /// <param name="reader"></param>
         /// <remarks>   Darrellp, 8/26/2016. </remarks>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public DungeonScreen()
+        public DungeonScreen(StreamWriter writer, StreamReader reader, int fileIndex)
         {
+            var seed = -1;
+            if (reader != null)
+            {
+                _reader = reader;
+                // ReSharper disable once AssignNullToNotNullAttribute
+                seed = int.Parse(_reader.ReadLine());
+            }
+            else if (writer != null)
+            {
+                _writer = writer;
+                Random rnd = new Random();
+                seed = rnd.Next();
+                _writer.WriteLine(seed);
+            }
+            Rnd.SetGlobalSeed(seed);
             _game = new CSRogue.GameControl.Game(Factory);
 			_game.NewLevelEvent += Game_NewLevelEvent;
 			_game.AttackEvent += Game_AttackEvent;
@@ -95,7 +113,16 @@ namespace RogueSC.Consoles
             messageHeaderConsole.SetGlyph(56, 0, 193); // This makes the border match the character console's left-edge border
 
             // Print the header text
-            messageHeaderConsole.Print(2, 0, " Messages ");
+            var tag = string.Empty;
+            if (_reader != null)
+            {
+                tag = $" - Reading dbg{fileIndex:0000}.txt";
+            }
+            else if (_writer != null)
+            {
+                tag = $" - Writing dbg{fileIndex:0000}.txt";
+            }
+            messageHeaderConsole.Print(2, 0, " Messages" + tag);
 
             // Move the rest of the consoles into position (DungeonConsole is already in position at 0,0)
             StatsConsole.Position = new Point(56, 0);
@@ -116,6 +143,16 @@ namespace RogueSC.Consoles
             Engine.ActiveConsole = this;
             Engine.Keyboard.RepeatDelay = 0.1f;
             Engine.Keyboard.InitialRepeatDelay = 0.1f;
+
+            if (_reader != null)
+            {
+                while (_reader.Peek() >= 0)
+                {
+                    // ReSharper disable once AssignNullToNotNullAttribute
+                    var inKey = (Input.Keys)Enum.Parse(typeof(Input.Keys), _reader.ReadLine());
+                    ActOnKey(inKey);
+                }
+            }
         }
 		#endregion
 
@@ -168,9 +205,15 @@ namespace RogueSC.Consoles
 
 			if (KeysToAction.ContainsKey(info.KeysPressed[0].XnaKey))
 			{
-				KeysToAction[info.KeysPressed[0].XnaKey](this);
+			    _writer?.WriteLine(info.KeysPressed[0].XnaKey.ToString());
+			    ActOnKey(info.KeysPressed[0].XnaKey);
 			}
 			return false;
+        }
+
+        private void ActOnKey(Input.Keys key)
+        {
+            KeysToAction[key](this);
         }
         #endregion
     }

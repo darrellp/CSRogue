@@ -117,10 +117,6 @@ namespace RogueSC.Consoles
             {
                 RenderToCell(GetAppearance(loc), this[loc.Column, loc.Row], true);
             }
-            //else if (_map.Remembered(loc))
-            //{
-            //    RenderToCell(FloorAppearance, this[loc.Column, loc.Row], false);
-            //}
             loc = e.CreatureDestination;
             if (_map.InView(loc))
             {

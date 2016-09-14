@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using CSRogue.Interfaces;
-using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
 using CSRogue.RogueEventArgs;
 using CSRogue.Utilities;

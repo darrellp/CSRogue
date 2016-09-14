@@ -7,7 +7,7 @@ namespace CSRogue.Utilities
 	///
 	/// <remarks>	Darrellp, 9/16/2011. </remarks>
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	internal class Rnd
+	public class Rnd
 	{
 	    private static Random _global = new Random();
 	    private static bool _validToSetSeed = true;
@@ -36,7 +36,7 @@ namespace CSRogue.Utilities
         ///
         /// <returns>	Random non-negative integer less than exclusiveMax. </returns>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        internal static int GlobalNext(int exclusiveMax)
+        public static int GlobalNext(int exclusiveMax)
         {
             _validToSetSeed = false;
             return Global.Next(exclusiveMax);
@@ -54,7 +54,7 @@ namespace CSRogue.Utilities
         /// Random non-negative integer less than exclusiveMax and greater or equal to inclusiveMin. 
         /// </returns>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        internal static int GlobalNext(int inclusiveMin, int exclusiveMax)
+        public static int GlobalNext(int inclusiveMin, int exclusiveMax)
 		{
 			if (inclusiveMin > exclusiveMax)
 			{
