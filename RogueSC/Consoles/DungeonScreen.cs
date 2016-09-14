@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using CSRogue.GameControl.Commands;
-using CSRogue.Items;
 using CSRogue.Item_Handling;
-using CSRogue.Map_Generation;
 using CSRogue.RogueEventArgs;
 using Microsoft.Xna.Framework;
 using RogueSC.Map_Objects;
@@ -124,8 +122,6 @@ namespace RogueSC.Consoles
 		#region Event Handlers
 		private void Game_AttackEvent(object sender, AttackEventArgs e)
 		{
-			Action x = () => DungeonConsole.MovePlayerBy(new Point(0, -1));
-
 			if (e.Victim.IsPlayer || !e.VictimDied)
             {
                 return;

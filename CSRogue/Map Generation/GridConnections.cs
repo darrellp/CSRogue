@@ -108,7 +108,7 @@ namespace CSRogue.Map_Generation
 		///
 		/// <exception cref="RogueException">	Thrown when there are no remaining connections to be made. </exception>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal void MakeRandomConnection(Rnd rnd)
+		internal void MakeRandomConnection()
 		{
 			// If there are no free connections
 			if (_freeConnectionCount == 0)
@@ -118,7 +118,7 @@ namespace CSRogue.Map_Generation
 			}
 
 			// Pick a random index for the new connection to be made
-			var connectionIndex = rnd.Next(_freeConnectionCount);
+			var connectionIndex = Rnd.GlobalNext(_freeConnectionCount);
 
 			foreach (var info in Connections.Where(info => !info.IsConnected && connectionIndex-- == 0))
 			{
@@ -132,7 +132,7 @@ namespace CSRogue.Map_Generation
 		///
 		/// <remarks>	Darrellp, 9/20/2011. </remarks>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal void ConnectCells(Rnd rnd)
+		internal void ConnectCells()
 		{
 			// locals
 			var unconnectedCellList = new List<MapCoordinates>();
@@ -156,7 +156,7 @@ namespace CSRogue.Map_Generation
 			var connectedCells = new List<MapCoordinates>(unconnectedCellList.Count);
 
 			// Pick out an intially "connected" cell
-			var cellIndex = rnd.Next(unconnectedCellList.Count);
+			var cellIndex = Rnd.GlobalNext(unconnectedCellList.Count);
 			var connectedCell = unconnectedCellList[cellIndex];
 			isConnected[connectedCell.Column, connectedCell.Row] = true;
 
@@ -171,7 +171,7 @@ namespace CSRogue.Map_Generation
 			while (unconnectedCellList.Count != 0)
 			{
 				// Pick a random connected cell
-				var connectedCellIndex = rnd.Next(connectedCells.Count);
+				var connectedCellIndex = Rnd.GlobalNext(connectedCells.Count);
 				connectedCell = connectedCells[connectedCellIndex];
 
 				// Get the totally unconnected neighbors it's not connected with
@@ -183,7 +183,7 @@ namespace CSRogue.Map_Generation
 				if (unconnectedNeighbors.Count != 0)
 				{
 					// Pick a random such neighbor
-					var neighborIndex = rnd.Next(unconnectedNeighbors.Count);
+					var neighborIndex = Rnd.GlobalNext(unconnectedNeighbors.Count);
 					var neighborLocation = unconnectedNeighbors[neighborIndex];
 					LastRoomConnected = neighborLocation;
 

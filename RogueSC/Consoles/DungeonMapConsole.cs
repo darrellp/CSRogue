@@ -117,10 +117,10 @@ namespace RogueSC.Consoles
             {
                 RenderToCell(GetAppearance(loc), this[loc.Column, loc.Row], true);
             }
-            else if (_map.Remembered(loc))
-            {
-                RenderToCell(FloorAppearance, this[loc.Column, loc.Row], false);
-            }
+            //else if (_map.Remembered(loc))
+            //{
+            //    RenderToCell(FloorAppearance, this[loc.Column, loc.Row], false);
+            //}
             loc = e.CreatureDestination;
             if (_map.InView(loc))
             {
@@ -202,7 +202,6 @@ namespace RogueSC.Consoles
             {
                 var id = _map[iCol, iRow].Items[0].ItemTypeId;
 	            appearance = ObjectNameToAppearance[_game.Factory.InfoFromId[id].Name];
-
             }
             else
             {
@@ -293,6 +292,7 @@ namespace RogueSC.Consoles
 				    _map[doorLoc].ToggleDoor();
 			    }
 		    }
+			MovePlayerBy(new Point(0, 0));
 			Refresh();
 	    }
     }

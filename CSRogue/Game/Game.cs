@@ -35,6 +35,7 @@ namespace CSRogue.GameControl
 	{
 		#region Private variables
 	    private readonly CommandQueue _commandQueue;
+        Random _random = new Random();
 		#endregion
 
 		#region Public Variables
@@ -129,10 +130,11 @@ namespace CSRogue.GameControl
         #endregion
 
         #region Constructor
-        public Game(IItemFactory factory)
+        public Game(IItemFactory factory, int seed = -1)
 		{
 		    Factory = factory;
 			_commandQueue = new CommandQueue(this);
+            _random = seed == -1 ? new Random() : new Random(seed);
 		}
         #endregion
 

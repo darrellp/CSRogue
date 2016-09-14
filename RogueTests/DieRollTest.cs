@@ -83,7 +83,7 @@ namespace RogueTests
 		public void RollTest()
 		{
 			DieRoll target = new DieRoll("2d6");
-			Rnd.Global.SetSeed(0);
+			Rnd.SetGlobalSeed(0);
 			for (int i = 0; i < 1000; i++)
 			{
 				int roll = target.Roll();

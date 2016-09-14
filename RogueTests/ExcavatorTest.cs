@@ -4,6 +4,7 @@ using System.IO;
 using CSRogue.Items;
 using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
+using CSRogue.Utilities;
 
 namespace RogueTests
 {
@@ -76,8 +77,9 @@ namespace RogueTests
 		[TestMethod()]
 		public void ExcavateByGridTest()
 		{
+            Rnd.SetGlobalSeed(0);
 			BaseMap map1 = new BaseMap(100, 100);
-			GridExcavator excavator = new GridExcavator(seed : 0);
+			GridExcavator excavator = new GridExcavator();
 			excavator.Excavate(map1);
 			string str1 = map1.ToString();
             BaseMap map2 = new BaseMap(100, 100);

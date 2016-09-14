@@ -49,17 +49,14 @@ namespace CSRogue.Map_Generation
 		private readonly int _minRoomHeight;
 		private readonly int _pctMergeChance;
 		private readonly int _pctDoorChance;
-		private readonly int _seed;
 		private RectangularRoom[][] _rooms;
 		private GridConnections _connections;
 		private GridConnections _merges;
-		private Rnd _rnd;
 		readonly Dictionary<RectangularRoom, Room> _mapRoomToGenericRooms = new Dictionary<RectangularRoom, Room>();
 		#endregion
 
 		#region Constructor
 		public GridExcavator(
-			int seed = -1,
 			int baseCellWidth = 15,
 			int baseCellHeight = 15,
 			int minRoomWidth = 5,
@@ -73,7 +70,6 @@ namespace CSRogue.Map_Generation
 			_minRoomHeight = minRoomHeight;
 			_pctMergeChance = pctMergeChance;
 			_pctDoorChance = pctDoorChance;
-			_seed = seed;
 		} 
 		#endregion
 
@@ -96,9 +92,6 @@ namespace CSRogue.Map_Generation
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		public void Excavate(IMap map)
 		{
-			// Seed the random number generator properly
-			_rnd = new Rnd(_seed);
-
 			// Are we too small to make a map?);
 			if (map.Width < _baseCellWidth || map.Height < _baseCellHeight)
 			{
@@ -143,7 +136,7 @@ namespace CSRogue.Map_Generation
 		private void DetermineRoomConnections()
 		{
 			// Connect all the grid cells
-			_connections.ConnectCells(_rnd);
+			_connections.ConnectCells();
 
 			// Add some random connections
 			AddRandomConnections(Math.Min(_rooms.Length, _rooms[0].Length), _connections);
@@ -333,7 +326,7 @@ namespace CSRogue.Map_Generation
 			for (var iConnection = 0; iConnection < connectionCount; iConnection++)
 			{
 				// Add a random connection...
-				connections.MakeRandomConnection(_rnd);
+				connections.MakeRandomConnection();
 			}
 		} 
 		#endregion
@@ -353,7 +346,7 @@ namespace CSRogue.Map_Generation
 			foreach (var connectionInfo in _connections.Connections.Where(ci => ci.IsConnected))
 			{
 				// Is it a connection that we wish to merge?
-				if (_rnd.Next(100) < _pctMergeChance)
+				if (Rnd.GlobalNext(100) < _pctMergeChance)
 				{
 					// Retrieve it's location
 					var gridLocation = connectionInfo.Location;
@@ -403,7 +396,7 @@ namespace CSRogue.Map_Generation
 
 			// Pick a random spot between the rooms to merge them
 			// This will be the new inside coord of the small coordinate room
-			var mergeRow = _rnd.Next(topRoomsBottom, bottomRoomsTop);
+			var mergeRow = Rnd.GlobalNext(topRoomsBottom, bottomRoomsTop);
 
 			// Determine all the new coordinates
 			var topRoomsNewHeight = mergeRow - topRoomsTop + 1;
@@ -574,14 +567,14 @@ namespace CSRogue.Map_Generation
 
 
 			// Should we put a door in the top room?
-			if (_rnd.Next(100) < _pctDoorChance)
+			if (Rnd.GlobalNext(100) < _pctDoorChance)
 			{
 				// Place the door
 				map[topEntrance].Terrain = TerrainType.Door;
 			}
 
 			// Should we put a door in the bottom room?
-			if (_rnd.Next(100) < _pctDoorChance)
+			if (Rnd.GlobalNext(100) < _pctDoorChance)
 			{
                 // Place the door
                 map[bottomEntrance].Terrain = TerrainType.Door;
@@ -609,7 +602,7 @@ namespace CSRogue.Map_Generation
 			var endColumn = bottomEntrance[otherDir];
 
 			// Determine bend location
-			var bendRow = _rnd.Next(startRow + 1, endRow);
+			var bendRow = Rnd.GlobalNext(startRow + 1, endRow);
 
 			// Excavate the bend between the two rooms
 			ExcavateBend(map, startColumn, endColumn, startRow, endRow, bendRow, room, dir);
@@ -648,8 +641,8 @@ namespace CSRogue.Map_Generation
 			}
 
 			// Determine entrances for each room
-			topEntrance = topRoom.PickSpotOnWall(_rnd, dir == Dir.Vert ? Wall.Bottom : Wall.Right);
-			bottomEntrance = bottomRoom.PickSpotOnWall(_rnd, dir == Dir.Vert ? Wall.Top : Wall.Left);
+			topEntrance = topRoom.PickSpotOnWall(dir == Dir.Vert ? Wall.Bottom : Wall.Right);
+			bottomEntrance = bottomRoom.PickSpotOnWall(dir == Dir.Vert ? Wall.Top : Wall.Left);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -753,11 +746,11 @@ namespace CSRogue.Map_Generation
 			// Locals
 			int startRow, startColumn, endRow, endColumn;
 
-			// Determine start and end columns
-			_rnd.RandomSpan(cellLocation.Column + 1, cellLocation.Column + cellWidth - 2, _minRoomWidth, out startColumn, out endColumn);
+            // Determine start and end columns
+            Rnd.GlobalSpan(cellLocation.Column + 1, cellLocation.Column + cellWidth - 2, _minRoomWidth, out startColumn, out endColumn);
 
-			// Determine start and end rows
-			_rnd.RandomSpan(cellLocation.Row + 1, cellLocation.Row + cellHeight - 2, _minRoomHeight, out startRow, out endRow);
+            // Determine start and end rows
+            Rnd.GlobalSpan(cellLocation.Row + 1, cellLocation.Row + cellHeight - 2, _minRoomHeight, out startRow, out endRow);
 			var mapLocation = new MapCoordinates(startColumn, startRow);
 
 			// Return newly created room
@@ -887,8 +880,8 @@ namespace CSRogue.Map_Generation
 		{
 			var downRoom = RoomAt(_connections.FirstRoomConnected);
 			var upRoom = RoomAt(_connections.LastRoomConnected);
-			var downLocation = downRoom.PickSpotInRoom(_rnd);
-			var upLocation = upRoom.PickSpotInRoom(_rnd);
+			var downLocation = downRoom.PickSpotInRoom();
+			var upLocation = upRoom.PickSpotInRoom();
 
 		    map[downLocation].Terrain = TerrainType.StairsDown;
 		    map[upLocation].Terrain = TerrainType.StairsUp;

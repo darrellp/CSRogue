@@ -180,7 +180,7 @@ namespace CSRogue.Map_Generation
 		///
 		/// <returns>	Coordinates of the spot chosen. </returns>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal MapCoordinates PickSpotOnWall(Rnd rnd, Wall wall, bool fIncludeCorners = false)
+		internal MapCoordinates PickSpotOnWall(Wall wall, bool fIncludeCorners = false)
 		{
 			// Locals
 			int column, row;
@@ -194,7 +194,7 @@ namespace CSRogue.Map_Generation
 				// Pick a random column
 				var left = Left + cornerBump;
 				var right = Right - cornerBump;
-				column = rnd.Next(left, right + 1);
+				column = Rnd.GlobalNext(left, right + 1);
 
 				// Set row to top or bottom
 				row = wall == Wall.Top ? Top : Bottom;
@@ -204,7 +204,7 @@ namespace CSRogue.Map_Generation
 				// Pick a random row
 				var top = Top + cornerBump;
 				var bottom = Bottom - cornerBump;
-				row = rnd.Next(top, bottom + 1);
+				row = Rnd.GlobalNext(top, bottom + 1);
 
 				// Set column to left or right
 				column = wall == Wall.Left ? Left : Right;
@@ -221,11 +221,11 @@ namespace CSRogue.Map_Generation
 		///
 		/// <returns>	Selected spot. </returns>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		internal MapCoordinates PickSpotInRoom(Rnd rnd)
-		{
+		internal MapCoordinates PickSpotInRoom()
+        {
 			return new MapCoordinates(
-				rnd.Next(Left + 1, Right),
-				rnd.Next(Top + 1, Bottom));
+                Rnd.GlobalNext(Left + 1, Right),
+                Rnd.GlobalNext(Top + 1, Bottom));
 		}
 
 		internal int Size(Dir dir)
