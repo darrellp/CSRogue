@@ -217,7 +217,6 @@ namespace RogueSC.Consoles
                 }
             }
             MovePlayerBy(new Point(0, 0));
-            Refresh();
         }
         #endregion
 

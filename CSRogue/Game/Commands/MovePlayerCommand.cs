@@ -37,13 +37,6 @@ namespace CSRogue.GameControl.Commands
 
         public override void Execute(Game game)
         {
-            // Is it a stay put command?
-            if (_direction.Column == 0 && _direction.Row == 0)
-            {
-                // Let the monsters do their thing and return
-                game.CurrentLevel.InvokeMonsterAI();
-                return;
-            }
             var newLocation = game.Map.Player.Location + _direction;
             ICreature victim;
 
@@ -78,7 +71,7 @@ namespace CSRogue.GameControl.Commands
                 MakePlayerMove(game, proposedLocation, run: false, litAtStartOfRun: litAtStartOfRun);
             }
             // Else if some unfortunate is in our way
-            else if ((victim = game.Map.CreatureAt(newLocation)) != null)
+            else if ((victim = game.Map.CreatureAt(newLocation)) != null && !victim.IsPlayer)
             {
                 // Attack him
 				AttackCommand cmd = new AttackCommand(game.Map.Player, victim);
