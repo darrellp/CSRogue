@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using CSRogue.GameControl;
-using CSRogue.Interfaces;
 using CSRogue.Items;
 using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
@@ -11,10 +9,8 @@ using RogueSC.Utilities;
 
 namespace RogueSC
 {
-	class SCMap : GameMap
+    internal class SCMap : GameMap
 	{
-		public SCMap(int fovRadius, Game game, string mapString, Func<IMapLocationData> dataCreator = null){}
-
 		public SCMap(int height, int width, int fovRadius, Game game, IItemFactory factory) :
 			base(
 				height, width,

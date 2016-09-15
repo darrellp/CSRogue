@@ -167,7 +167,7 @@ namespace RogueSC.Consoles
 	    {
 		    _map.ScanPlayer();
 
-		    foreach (var loc in _map.Fov.CurrentlySeen)
+		    foreach (var loc in _map.Fov.CurrentlySeen())
 		    {
 			    var info = _map[loc];
 			    if (info.Items.Count > 0 && info.Items[0].ItemTypeId != ItemIDs.HeroId)
@@ -181,7 +181,7 @@ namespace RogueSC.Consoles
 				    RenderToCell(_map[loc].Appearance, this[loc.Column, loc.Row], true);
 			    }
 		    }
-		    foreach (var loc in _map.Fov.NewlyUnseen)
+		    foreach (var loc in _map.Fov.NewlyUnseen())
 		    {
 				RenderToCell(_map[loc].Appearance, this[loc.Column, loc.Row], false);
 			}
@@ -264,14 +264,14 @@ namespace RogueSC.Consoles
             // If he view area moved, we'll keep our entity in sync with it.
             Player.RenderOffset = Position - TextSurface.RenderArea.Location;
 
-            foreach (var loc in e.GameMap.Fov.NewlySeen)
+            foreach (var loc in e.GameMap.Fov.NewlySeen())
             {
                 RenderToCell(
 					_map[loc].Appearance,
                     this[loc.Column, loc.Row],
                     true);
             }
-            foreach (var loc in e.GameMap.Fov.NewlyUnseen)
+            foreach (var loc in e.GameMap.Fov.NewlyUnseen())
             {
                 RenderToCell(
 					_map[loc].Appearance,
@@ -297,7 +297,7 @@ namespace RogueSC.Consoles
         [Conditional("DEBUG")]
         internal void CheckFOV()
         {
-            foreach (var seenLoc in _map.Fov.CurrentlySeen)
+            foreach (var seenLoc in _map.Fov.CurrentlySeen())
             {
                 // Player is represented with a sprite which isn't represented directly in the
                 // DungeonMapConsole so we skip that.

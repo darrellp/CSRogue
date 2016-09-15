@@ -59,7 +59,7 @@ namespace CSRogue.GameControl.Commands
                     return;
                 }
 
-                var litAtStartOfRun = game.Map.Fov.CurrentlySeen.ToList();
+                var litAtStartOfRun = game.Map.Fov.CurrentlySeen().ToList();
 
                 // While we're not blocked ahead
                 while (game.Map.ValidRunningMove(maybeBlocksUs))

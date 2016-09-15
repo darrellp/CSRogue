@@ -5,7 +5,7 @@ using CSRogue.Utilities;
 
 namespace CSRogue.Map_Generation
 {
-    public class FOV
+    public class Fov : IFov
 	{
         #region Private Variables
 		private HashSet<MapCoordinates> _currentFOV = new HashSet<MapCoordinates>();
@@ -46,10 +46,20 @@ namespace CSRogue.Map_Generation
 			{
 				return _previousFOV.Where(loc => !_currentFOV.Contains(loc));
 			}
-		} 
-		#endregion
+		}
 
-		#region Constructor
+
+        public HashSet<MapCoordinates> OldFov => _previousFOV;
+        public HashSet<MapCoordinates> CurrentFov => _currentFOV;
+        public void SwapHashSets()
+        {
+            var tmp = _previousFOV;
+            _previousFOV = _currentFOV;
+            _currentFOV = tmp;
+        }
+        #endregion
+
+        #region Constructor
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Constructor. </summary>
@@ -64,7 +74,7 @@ namespace CSRogue.Map_Generation
         ///
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		public FOV(IMap csRogueMap, int lightRadius)
+        public Fov(IMap csRogueMap, int lightRadius)
 		{
 			_csRogueMap = csRogueMap;
 			_lightRadius = lightRadius;
@@ -422,12 +432,8 @@ namespace CSRogue.Map_Generation
         ///
         /// <param name="location">	The viewpoint from which visibility is calculated. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        public void Scan(MapCoordinates location)
+        public void SingleScan(MapCoordinates location)
 		{
-            var tmp = _previousFOV;
-            _previousFOV = _currentFOV;
-            _currentFOV = tmp;
-            _currentFOV.Clear();
             _currentFOV.Add(location);
             for (var octant = 0; octant < 8; octant++)
             {

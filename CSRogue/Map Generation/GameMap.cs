@@ -8,11 +8,11 @@ namespace CSRogue.Map_Generation
 {
     public class GameMap : BaseMap, IGameMap
     {
-        private FOV _fov;
+        private IFov _fov;
         private readonly Game _game;
         private IPlayer _player;
 
-        public FOV Fov
+        public IFov Fov
         {
             get { return _fov; }
 
@@ -33,14 +33,14 @@ namespace CSRogue.Map_Generation
 
         public GameMap(int fovRadius, Game game, string mapString, Func<IMapLocationData> dataCreator = null) : base(mapString, game. Factory, dataCreator)
         {
-            _fov = new FOV(this, fovRadius);
+            _fov = new Fov(this, fovRadius);
             _game = game;
             this.SetPlayer(true);
         }
 
         public GameMap(int height, int width, int fovRadius, Game game, IPlayer player, Func<IMapLocationData> dataCreator = null) : base(height, width, dataCreator)
         {
-            _fov = new FOV(this, fovRadius);
+            _fov = new Fov(this, fovRadius);
             _game = game;
 	        _player = player;
         }

@@ -16,12 +16,12 @@ namespace CSRogue.Utilities
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         public static void Relight(this IGameMap map)
         {
-            foreach (var newlyLitLocation in map.Fov.NewlySeen)
+            foreach (var newlyLitLocation in map.Fov.NewlySeen())
             {
                 map.SetInView(newlyLitLocation);
 				map.SetRemembered(newlyLitLocation);
             }
-            foreach (var previouslyLitLocation in map.Fov.NewlyUnseen)
+            foreach (var previouslyLitLocation in map.Fov.NewlyUnseen())
             {
 				map.SetInView(previouslyLitLocation, false);
 			}

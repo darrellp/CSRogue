@@ -4,12 +4,12 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using CSRogue.Interfaces;
 using CSRogue.Map_Generation;
+using CSRogue.Utilities;
 
 namespace RogueTests
 {
-	
-	
 	/// <summary>
 	///This is a test class for FOVTest and is intended
 	///to contain all FOVTest Unit Tests
@@ -66,13 +66,13 @@ namespace RogueTests
 		#endregion
 
 
-		public FOV Test(string mapString, MapCoordinates location, int maxRow, int countSeen)
+		public IFov Test(string mapString, MapCoordinates location, int maxRow, int countSeen)
 		{
 			var csRogueMap = new BaseMap(mapString, Initialization.ItemFactory);
 
-			var fov = new FOV(csRogueMap, maxRow);
+			IFov fov = new Fov(csRogueMap, maxRow);
 			fov.Scan(location);
-			Assert.AreEqual(countSeen, fov.NewlySeen.ToList().Count);
+			Assert.AreEqual(countSeen, fov.NewlySeen().ToList().Count);
 			return fov;
 		}
 
@@ -114,8 +114,8 @@ namespace RogueTests
 ...............";
 			var fov = Test(mapString, new MapCoordinates(0, 0), 4, 17);
 			fov.Scan(new MapCoordinates(1, 0));
-			Assert.AreEqual(5, fov.NewlySeen.ToList().Count);
-			Assert.AreEqual(1, fov.NewlyUnseen.ToList().Count);
+			Assert.AreEqual(5, fov.NewlySeen().ToList().Count);
+			Assert.AreEqual(1, fov.NewlyUnseen().ToList().Count);
 			Test(mapString, new MapCoordinates(14, 7), 4, 17);
 			Test(mapString, new MapCoordinates(0, 7), 4, 17);
 			Test(mapString, new MapCoordinates(14, 0), 4, 17);

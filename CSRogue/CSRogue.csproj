@@ -55,6 +55,7 @@
     <Compile Include="Game\Commands\NewLevelCommand.cs" />
     <Compile Include="Game\Game.cs" />
     <Compile Include="Game\Commands\MovePlayerCommand.cs" />
+    <Compile Include="Interfaces\IFov.cs" />
     <Compile Include="Interfaces\IRogueCommand.cs" />
     <Compile Include="Map Generation\BaseMap.cs" />
     <Compile Include="Map Generation\FileExcavator.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Item Handling\ItemInfo.cs" />
     <Compile Include="Items\Creature.cs" />
     <Compile Include="Items\Player.cs" />
+    <Compile Include="Utilities\FovExtensions.cs" />
     <Compile Include="Utilities\GameMapExtensions.cs" />
     <Compile Include="Utilities\LevelExtensions.cs" />
     <Compile Include="Utilities\MapExtensions.cs" />
