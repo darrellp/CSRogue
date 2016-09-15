@@ -5,9 +5,10 @@ namespace RogueSC.Map_Objects
 {
 	class SCMapLocationData : MapLocationData
 	{
-		private bool _isDoorOpen;
+	    private bool _isDoorOpen;
 		internal CellAppearance Appearance { get; set; }
 
+	    internal bool HasGroundCover { get; set; } = false;
 		internal void ToggleDoor()
 		{
 			IsDoorOpen = !IsDoorOpen;

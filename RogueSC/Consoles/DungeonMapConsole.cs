@@ -105,14 +105,14 @@ namespace RogueSC.Consoles
                 return;
             }
             var loc = e.Victim.Location;
-            RenderToCell(GetAppearance(loc), this[loc.Column, loc.Row], true);
+            RenderToCell(_map.GetAppearance(loc), this[loc.Column, loc.Row], true);
         }
 
         private void ToggleDoorCommand_ToogleDoorEvent(object sender, ToogleDoorEventArgs e)
         {
             if (_map.InView(e.DoorLocation))
             {
-                RenderToCell(GetAppearance(e.DoorLocation), this[e.DoorLocation.Column, e.DoorLocation.Row], true);
+                RenderToCell(_map.GetAppearance(e.DoorLocation), this[e.DoorLocation.Column, e.DoorLocation.Row], true);
             }
         }
 
@@ -125,12 +125,12 @@ namespace RogueSC.Consoles
             var loc = e.PreviousCreatureLocation;
             if (_map.InView(loc))
             {
-                RenderToCell(GetAppearance(loc), this[loc.Column, loc.Row], true);
+                RenderToCell(_map.GetAppearance(loc), this[loc.Column, loc.Row], true);
             }
             loc = e.CreatureDestination;
             if (_map.InView(loc))
             {
-                RenderToCell(GetAppearance(loc), this[loc.Column, loc.Row], true);
+                RenderToCell(_map.GetAppearance(loc), this[loc.Column, loc.Row], true);
             }
         }
         #endregion
@@ -156,7 +156,7 @@ namespace RogueSC.Consoles
                     {
                         continue;
                     }
-                    GetAppearance(iCol, iRow).CopyAppearanceTo(this[iCol, iRow]);
+                    _map.GetAppearance(iCol, iRow).CopyAppearanceTo(this[iCol, iRow]);
                     RemoveCellFromView(this[iCol, iRow]);
                 }
             }
@@ -195,26 +195,6 @@ namespace RogueSC.Consoles
 				RenderToCell(_map[loc].Appearance, this[loc.Column, loc.Row], false);
 			}
 		}
-
-	    private CellAppearance GetAppearance(MapCoordinates crd)
-        {
-            return GetAppearance(crd.Column, crd.Row);
-        }
-
-	    private CellAppearance GetAppearance(int iCol, int iRow)
-        {
-            CellAppearance appearance;
-            if (_map[iCol, iRow].Items.Count > 0)
-            {
-                var id = _map[iCol, iRow].Items[0].ItemTypeId;
-	            appearance = ObjectNameToAppearance[_game.Factory.InfoFromId[id].Name];
-            }
-            else
-            {
-				appearance = _map[iCol, iRow].Appearance;
-            }
-            return appearance;
-        }
 
         public void ToggleDoors()
         {
