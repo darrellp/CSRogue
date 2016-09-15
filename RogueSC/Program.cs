@@ -14,9 +14,11 @@ namespace RogueSC
     [SuppressMessage("ReSharper", "All")]
     class Program
     {
+#pragma warning disable CS0649
         private static StreamWriter _writer;
         private static StreamReader _reader;
         private static int _index;
+#pragma warning restore CS0649
 
         static void Main()
         {

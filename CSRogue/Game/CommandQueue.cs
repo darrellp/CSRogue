@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using CSRogue.GameControl.Commands;
+using CSRogue.Interfaces;
 
 namespace CSRogue.GameControl
 {

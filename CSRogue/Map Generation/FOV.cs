@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using CSRogue.Interfaces;
 using CSRogue.Utilities;
@@ -11,19 +10,11 @@ namespace CSRogue.Map_Generation
         #region Private Variables
 		private HashSet<MapCoordinates> _currentFOV = new HashSet<MapCoordinates>();
 		private HashSet<MapCoordinates> _previousFOV = new HashSet<MapCoordinates>();
-		private MapCoordinates _location;
-		private readonly IMap _csRogueMap;
+        private readonly IMap _csRogueMap;
 		private readonly int _lightRadius;
 		#endregion
 
 		#region Properties
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Gets or sets the filter for where light goes. </summary>
-		///
-		/// <value>	The filter. </value>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public Func<MapCoordinates, MapCoordinates, bool> Filter { get; set; }
-
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Return an enumeration of currently visible tile locations. </summary>
 		///
@@ -59,27 +50,24 @@ namespace CSRogue.Map_Generation
 		#endregion
 
 		#region Constructor
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>	Constructor. </summary>
-		///
-		/// <remarks>	
-		/// The filter function must form a starlike shape around the hero since we mark anything outside
-		/// of it as opaque.  This speeds up performance. Darrellp, 10/2/2011. 
-		/// </remarks>
-		///
-		/// <param name="csRogueMap">		    The map we're viewing. </param>
-		/// <param name="lightRadius">	Distance light can reach. </param>
-		/// <param name="filter">	    Filter function to determine which values are allowed. </param>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		public FOV(IMap csRogueMap, int lightRadius, Func<MapCoordinates, MapCoordinates, bool> filter = null)
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Constructor. </summary>
+        ///
+        /// <remarks>
+        /// The filter function must form a starlike shape around the hero since we mark anything outside
+        /// of it as opaque.  This speeds up performance. Darrellp, 10/2/2011.
+        /// </remarks>
+        ///
+        /// <param name="csRogueMap">   The map we're viewing. </param>
+        /// <param name="lightRadius">  Distance light can reach. </param>
+        ///
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		public FOV(IMap csRogueMap, int lightRadius)
 		{
 			_csRogueMap = csRogueMap;
 			_lightRadius = lightRadius;
-			if (filter == null)
-			{
-				filter = (locHero, locTile) => true;
-			}
-			Filter = filter;
 		}
         #endregion
 
@@ -436,7 +424,6 @@ namespace CSRogue.Map_Generation
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         public void Scan(MapCoordinates location)
 		{
-            _location = location;
             var tmp = _previousFOV;
             _previousFOV = _currentFOV;
             _currentFOV = tmp;
@@ -448,22 +435,24 @@ namespace CSRogue.Map_Generation
             }
         }
 
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-        ///  <summary>	
-        ///  Query if the map is clear to view at a particular location. It may not be because it's
-        ///  outside the boundaries of the map or outside the filter function or off the map.  The out
-        ///  parameter blocked will be true when it's actually blocked rather than opaque for one of these
-        ///  other reasons. 
-        ///  </summary>
-        /// 
-        ///  <remarks>	Darrellp, 10/2/2011. </remarks>
-        /// <param name="location">	The viewpoint from which visibility is calculated. </param>
-        /// 
-        ///  <returns>	true if opaque at, false if not. </returns>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Query if the map is clear to view at a particular location. </summary>
+        ///
+        /// <remarks>
+        /// The map may not be visible for other reasons than a physical block.  It may not be because
+        /// it's outside the boundaries of the map or off the map.  The out parameter blocked will be
+        /// true when it's actually blocked rather than opaque for one of these other reasons. Darrellp,
+        /// 10/2/2011.
+        /// </remarks>
+        ///
+        /// <param name="location"> The viewpoint from which visibility is calculated. </param>
+        ///
+        /// <returns>   true if opaque, false if not. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+
         private bool IsOpaqueAt(MapCoordinates location)
 		{
-			if (!Filter(_location, location) || !_csRogueMap.Contains(location))
+			if (!_csRogueMap.Contains(location))
 			{
 				return true;
 			}

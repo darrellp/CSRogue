@@ -1,4 +1,6 @@
-﻿namespace CSRogue.GameControl.Commands
+﻿using CSRogue.GameControl;
+
+namespace CSRogue.Interfaces
 {
 	public interface IRogueCommand
 	{

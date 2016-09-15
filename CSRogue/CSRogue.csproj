@@ -53,9 +53,9 @@
     <Compile Include="Game\Commands\CommandBase.cs" />
     <Compile Include="Game\Commands\MoveToCommand.cs" />
     <Compile Include="Game\Commands\NewLevelCommand.cs" />
-    <Compile Include="Game\Commands\IRogueCommand.cs" />
     <Compile Include="Game\Game.cs" />
     <Compile Include="Game\Commands\MovePlayerCommand.cs" />
+    <Compile Include="Interfaces\IRogueCommand.cs" />
     <Compile Include="Map Generation\BaseMap.cs" />
     <Compile Include="Map Generation\FileExcavator.cs" />
     <Compile Include="Map Generation\FOV.cs" />
