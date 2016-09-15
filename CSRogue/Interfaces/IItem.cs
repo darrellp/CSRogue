@@ -1,7 +1,7 @@
 ﻿using System;
 using CSRogue.Map_Generation;
 
-namespace CSRogue.Item_Handling
+namespace CSRogue.Interfaces
 {
     public interface IItem
     {

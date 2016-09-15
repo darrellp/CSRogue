@@ -1,4 +1,5 @@
-﻿using CSRogue.Items;
+﻿using CSRogue.Interfaces;
+using CSRogue.Items;
 using CSRogue.Map_Generation;
 
 namespace CSRogue.RogueEventArgs

@@ -55,7 +55,11 @@
     <Compile Include="Game\Commands\NewLevelCommand.cs" />
     <Compile Include="Game\Game.cs" />
     <Compile Include="Game\Commands\MovePlayerCommand.cs" />
+    <Compile Include="Interfaces\ICreature.cs" />
     <Compile Include="Interfaces\IFov.cs" />
+    <Compile Include="Interfaces\IItem.cs" />
+    <Compile Include="Interfaces\IItemFactory.cs" />
+    <Compile Include="Interfaces\IPlayer.cs" />
     <Compile Include="Interfaces\IRogueCommand.cs" />
     <Compile Include="Map Generation\BaseMap.cs" />
     <Compile Include="Map Generation\FileExcavator.cs" />
@@ -71,11 +75,7 @@
     <Compile Include="Map Generation\Room.cs" />
     <Compile Include="Map Generation\RoomMap.cs" />
     <Compile Include="Map Generation\TerrainFactory.cs" />
-    <Compile Include="Item Handling\IItem.cs" />
-    <Compile Include="Item Handling\IItemFactory.cs" />
     <Compile Include="Item Handling\ItemFactory.cs" />
-    <Compile Include="Items\ICreature.cs" />
-    <Compile Include="Items\IPlayer.cs" />
     <Compile Include="Interfaces\IGameMap.cs" />
     <Compile Include="Interfaces\ILevel.cs" />
     <Compile Include="Interfaces\IMap.cs" />

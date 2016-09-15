@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using CSRogue.Item_Handling;
 
-namespace CSRogue.Item_Handling
+namespace CSRogue.Interfaces
 {
     public interface IItemFactory
     {

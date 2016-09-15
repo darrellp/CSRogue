@@ -1,6 +1,4 @@
-﻿using CSRogue.Item_Handling;
-
-namespace CSRogue.Items
+﻿namespace CSRogue.Interfaces
 {
 	public interface ICreature : IItem
 	{

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using CSRogue.Interfaces;
 
 namespace CSRogue.Item_Handling
 {
