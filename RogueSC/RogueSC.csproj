@@ -83,6 +83,8 @@
     <EmbeddedResource Include="TextFiles\ItemFactoryData.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\ToggleDoorCommand.cs" />
+    <Compile Include="Commands\ToggleDoorEventArgs.cs" />
     <Compile Include="Consoles\CharacterConsole.cs" />
     <Compile Include="Consoles\DungeonMapConsole.cs" />
     <Compile Include="Consoles\DungeonScreen.cs" />

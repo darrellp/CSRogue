@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using SadConsole.Game;
 using SadConsole.Consoles;
 using CSRogue.Utilities;
+using RogueSC.Commands;
 using RogueSC.Utilities;
 using static RogueSC.Map_Objects.ScRender;
 using Console = SadConsole.Consoles.Console;
@@ -73,6 +74,7 @@ namespace RogueSC.Consoles
             _game.HeroMoveEvent += _game_HeroMoveEvent;
             _game.CreatureMoveEvent += _game_CreatureMoveEvent;
             _game.AttackEvent += _game_AttackEvent;
+            ToggleDoorCommand.ToogleDoorEvent += ToggleDoorCommand_ToogleDoorEvent;
 
 			var fontMaster = Engine.LoadFont("Cheepicus12.font");
             var font = fontMaster.GetFont(fontSize);
@@ -106,6 +108,14 @@ namespace RogueSC.Consoles
             RenderToCell(GetAppearance(loc), this[loc.Column, loc.Row], true);
         }
 
+        private void ToggleDoorCommand_ToogleDoorEvent(object sender, ToogleDoorEventArgs e)
+        {
+            if (_map.InView(e.DoorLocation))
+            {
+                RenderToCell(GetAppearance(e.DoorLocation), this[e.DoorLocation.Column, e.DoorLocation.Row], true);
+            }
+        }
+
         private void _game_CreatureMoveEvent(object sender, CSRogue.RogueEventArgs.CreatureMoveEventArgs e)
         {
             if (e.IsBlocked || e.IsFirstTimePlacement)
@@ -123,17 +133,16 @@ namespace RogueSC.Consoles
                 RenderToCell(GetAppearance(loc), this[loc.Column, loc.Row], true);
             }
         }
-		#endregion
+        #endregion
 
-		#region Mapping
+        #region Mapping
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Generates a map. </summary>
+        ///
+        /// <remarks>   Darrellp, 8/26/2016. </remarks>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		/// <summary>   Generates a map. </summary>
-		///
-		/// <remarks>   Darrellp, 8/26/2016. </remarks>
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-
-		private void GenerateMap()
+        private void GenerateMap()
         {
             _map = (SCMap)_game.Map;
 
@@ -213,7 +222,8 @@ namespace RogueSC.Consoles
             {
                 if (_map[doorLoc].Items.Count == 0)
                 {
-                    _map[doorLoc].ToggleDoor();
+                    var cmd = new ToggleDoorCommand(_map.Player, doorLoc);
+                    _game.Enqueue(cmd);
                 }
             }
             MovePlayerBy(new Point(0, 0));
