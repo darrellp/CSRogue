@@ -183,12 +183,12 @@ namespace RogueSC.Consoles
 
 		private void Game_NewLevelEvent(object sender, NewLevelEventArgs e)
 		{
-			var map = e.NewLevel.Map;
+			var map = (SCMap)e.NewLevel.Map;
 			for (var iCol = 0; iCol < map.Width; iCol++)
 			{
 				for (var iRow = 0; iRow < map.Height; iRow++)
 				{
-					var data = (SCMapLocationData)map[iCol, iRow];
+					var data = map[iCol, iRow];
 					data.Appearance = ScRender.MapTerrainToAppearance[map[iCol, iRow].Terrain];
 				}
 			}

@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using CSRogue.GameControl;
 using CSRogue.Interfaces;
-using CSRogue.Items;
-using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
 using CSRogue.Utilities;
 using RogueSC.Map_Objects;
 using RogueSC.Utilities;
+using SadConsole;
+using static RogueSC.Map_Objects.ScRender;
 
 namespace RogueSC
 {
@@ -45,5 +45,26 @@ namespace RogueSC
 		/// <value>	The indexed item collection. </value>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		public new SCMapLocationData this[MapCoordinates loc] => (SCMapLocationData)base[loc];
-	}
+
+        internal CellAppearance GetAppearance(MapCoordinates crd)
+        {
+            return GetAppearance(crd.Column, crd.Row);
+        }
+
+        internal CellAppearance GetAppearance(int iCol, int iRow)
+        {
+            CellAppearance appearance;
+
+            if (this[iCol, iRow].Items.Count > 0)
+            {
+                var id = this[iCol, iRow].Items[0].ItemTypeId;
+                appearance = ObjectNameToAppearance[Game.Factory.InfoFromId[id].Name];
+            }
+            else
+            {
+                appearance = this[iCol, iRow].Appearance;
+            }
+            return appearance;
+        }
+    }
 }
