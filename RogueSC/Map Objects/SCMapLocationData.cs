@@ -23,19 +23,34 @@ namespace RogueSC.Map_Objects
 			set
 			{
 				_isDoorOpen = value;
-				if (_isDoorOpen)
-				{
-					TerrainState &= ~TerrainState.BlocksView;
-					TerrainState |= TerrainState.Walkable;
-					Appearance = ScRender.ObjectNameToAppearance["openDoor"];
-				}
-				else
-				{
-					TerrainState &= ~TerrainState.Walkable;
-					TerrainState |= TerrainState.BlocksView;
-					Appearance = ScRender.ObjectNameToAppearance["closedDoor"];
-				}
+			    CheckVisibility();
+			    CheckWalkability();
+                Appearance = ScRender.ObjectNameToAppearance[_isDoorOpen ? "openDoor" : "closedDoor"];
 			}
 		}
-	}
+
+	    private void CheckWalkability()
+	    {
+	        if (Terrain == TerrainType.Door && _isDoorOpen)
+	        {
+                TerrainState |= TerrainState.Walkable;
+            }
+	        else
+	        {
+                TerrainState &= ~TerrainState.Walkable;
+            }
+        }
+
+	    private void CheckVisibility()
+	    {
+            if (Terrain == TerrainType.Door && _isDoorOpen)
+            {
+                TerrainState &= ~TerrainState.BlocksView;
+            }
+            else
+            {
+                TerrainState |= TerrainState.BlocksView;
+            }
+        }
+    }
 }
