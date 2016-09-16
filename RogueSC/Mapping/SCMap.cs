@@ -10,7 +10,7 @@ using static RogueSC.Map_Objects.ScRender;
 
 namespace RogueSC
 {
-    internal class SCMap : GameMap
+    internal class SCMap : GameMap, IRoomsMap
 	{
 		public SCMap(int height, int width, int fovRadius, Game game, IItemFactory factory) :
 			base(
@@ -66,5 +66,8 @@ namespace RogueSC
             }
             return appearance;
         }
-    }
+
+        private readonly HashSet<IRoom> _rooms = new HashSet<IRoom>();
+        public ISet<IRoom> Rooms => _rooms;
+	}
 }
