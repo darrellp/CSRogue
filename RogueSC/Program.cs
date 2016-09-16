@@ -6,6 +6,7 @@ using SadConsole;
 using System.IO;
 // ReSharper disable once RedundantUsingDirective
 using System.Linq;
+using RogueSC.Consoles;
 
 namespace RogueSC
 {
@@ -58,7 +59,7 @@ namespace RogueSC
                     }
 #endif
                     // Setup the engine and create the main window.
-                    Engine.Initialize("IBM.font", 80, 25);
+                    Engine.Initialize("IBM.font", DungeonScreen.WindowWidth, DungeonScreen.WindowHeight);
 
                     // Hook the start event so we can add consoles to the system.
                     Engine.EngineStart += Engine_EngineStart;

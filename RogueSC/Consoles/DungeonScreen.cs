@@ -45,6 +45,16 @@ namespace RogueSC.Consoles
         private const int MapHeight = 100;
         private readonly StreamReader _reader;
         private readonly StreamWriter _writer;
+        internal const int WindowWidth = 120;
+        internal const int WindowHeight = 42;
+        const int StatsWidth = 24;
+        const int DungeonWidth = WindowWidth - StatsWidth;
+        const int StatsHeight = WindowHeight - MessageHeight - 2;
+        // one less to account for MessageHeader
+        const int MessageHeight = 6;
+        const int DungeonHeight = StatsHeight;
+
+
         #endregion
 
         #region Constructor
@@ -100,12 +110,12 @@ namespace RogueSC.Consoles
             });
             _game.EnqueueAndProcess(levelCmd);
 
-            StatsConsole = new CharacterConsole(24, 17);
-            DungeonConsole = new DungeonMapConsole(_game, 56, 16);
-            MessageConsole = new MessagesConsole(80, 6);
+            StatsConsole = new CharacterConsole(StatsWidth, StatsHeight);
+            DungeonConsole = new DungeonMapConsole(_game, DungeonWidth, DungeonHeight);
+            MessageConsole = new MessagesConsole(WindowWidth, MessageHeight);
 
             // Setup the message header to be as wide as the screen but only 1 character high
-            messageHeaderConsole = new Console(80, 1)
+            messageHeaderConsole = new Console(WindowWidth, 1)
             {
                 DoUpdate = false,
                 CanUseKeyboard = false,
@@ -114,7 +124,8 @@ namespace RogueSC.Consoles
 
             // Draw the line for the header
             messageHeaderConsole.Fill(Color.White, Color.Black, 196, null);
-            messageHeaderConsole.SetGlyph(56, 0, 193); // This makes the border match the character console's left-edge border
+            // This is the "upside down T" that meets with the left border of the character console
+            messageHeaderConsole.SetGlyph(DungeonWidth, 0, 193);
 
             // Print the header text
             var tag = string.Empty;
@@ -129,9 +140,9 @@ namespace RogueSC.Consoles
             messageHeaderConsole.Print(2, 0, " Messages" + tag);
 
             // Move the rest of the consoles into position (DungeonConsole is already in position at 0,0)
-            StatsConsole.Position = new Point(56, 0);
-            MessageConsole.Position = new Point(0, 18);
-            messageHeaderConsole.Position = new Point(0, 17);
+            StatsConsole.Position = new Point(DungeonWidth, 0);
+            MessageConsole.Position = new Point(0, StatsHeight + 1);
+            messageHeaderConsole.Position = new Point(0, StatsHeight);
 
             // Add all consoles to this console list.
             Add(messageHeaderConsole);

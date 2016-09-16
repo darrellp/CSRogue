@@ -12,10 +12,10 @@ namespace RogueSC.Commands
         private readonly MapCoordinates _doorLocation;
 
         /// <summary> Event queue for all listeners interested in new level events. </summary>
-        internal static event EventHandler<ToogleDoorEventArgs> ToogleDoorEvent;
+        internal static event EventHandler<ToogleDoorEventArgs> ToggleDoorEvent;
         internal void InvokeNewLevelEvent(Object sender, ToogleDoorEventArgs e)
         {
-            ToogleDoorEvent?.Invoke(sender, e);
+            ToggleDoorEvent?.Invoke(sender, e);
         }
 
 

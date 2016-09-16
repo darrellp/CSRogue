@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using SadConsole;
 using Console = SadConsole.Consoles.Console;
 
 namespace RogueSC.Consoles

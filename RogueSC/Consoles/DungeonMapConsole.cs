@@ -74,13 +74,20 @@ namespace RogueSC.Consoles
             _game.HeroMoveEvent += _game_HeroMoveEvent;
             _game.CreatureMoveEvent += _game_CreatureMoveEvent;
             _game.AttackEvent += _game_AttackEvent;
-            ToggleDoorCommand.ToogleDoorEvent += ToggleDoorCommand_ToogleDoorEvent;
+            ToggleDoorCommand.ToggleDoorEvent += ToggleDoorCommandToggleDoorEvent;
 
-			var fontMaster = Engine.LoadFont("Cheepicus12.font");
+            var fontMaster = Engine.LoadFont("Cheepicus12.font");
             var font = fontMaster.GetFont(fontSize);
+            var fontsizeStats = Engine.LoadFont("IBM.font").GetFont(Font.FontSizes.One).Size;
+
             TextSurface.Font = font;
             var mult = SizeMultipliers[fontSize];
-            TextSurface.RenderArea = new Rectangle(0, 0, (int)(viewWidth * 2 / (3 * mult)), (int)(viewHeight * 3 / (2 * mult)) - 1);
+            var glyphHeight = fontsizeStats.Y * viewHeight;
+            var glyphWidth = fontsizeStats.X * viewWidth;
+            var charHeight = (int)(glyphHeight * mult / font.Size.Y);
+            var charWidth = (int)(glyphWidth  * mult / font.Size.X);
+
+            TextSurface.RenderArea = new Rectangle(0, 0, charWidth, charHeight);
 
             var playerAnimation = new AnimatedTextSurface("default", 1, 1, font);
             playerAnimation.CreateFrame();
@@ -108,7 +115,7 @@ namespace RogueSC.Consoles
             RenderToCell(GetAppearance(loc), this[loc.Column, loc.Row], true);
         }
 
-        private void ToggleDoorCommand_ToogleDoorEvent(object sender, ToogleDoorEventArgs e)
+        private void ToggleDoorCommandToggleDoorEvent(object sender, ToogleDoorEventArgs e)
         {
             if (_map.InView(e.DoorLocation))
             {
