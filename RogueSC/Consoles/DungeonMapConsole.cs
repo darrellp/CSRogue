@@ -185,24 +185,15 @@ namespace RogueSC.Consoles
 
 		    foreach (var loc in _map.Fov.CurrentlySeen())
 		    {
-			    var info = _map[loc];
-			    if (info.Items.Count > 0 && info.Items[0].ItemTypeId != ItemIDs.HeroId)
-			    {
-				    var id = info.Items[0].ItemTypeId;
-				    var name = _map.Game.Factory.InfoFromId[id].Name;
-					RenderToCell(ObjectNameToAppearance[name], this[loc.Column, loc.Row], true);
-				}
-			    else
-			    {
-				    RenderToCell(_map[loc].Appearance, this[loc.Column, loc.Row], true);
-			    }
+				RenderToCell(_map.GetAppearance(loc), this[loc.Column, loc.Row], true);
 		    }
 		    foreach (var loc in _map.Fov.NewlyUnseen())
 		    {
-				RenderToCell(_map[loc].Appearance, this[loc.Column, loc.Row], false);
+				RenderToCell(_map.GetAppearance(loc), this[loc.Column, loc.Row], false);
 			}
 		}
 
+        // TODO: Thought I'd made this a command but apparently not.  Fix this.
         public void ToggleDoors()
         {
             foreach (var doorLoc in _map.Neighbors(_map.Player.Location).Where(l => _map[l].Terrain == TerrainType.Door))
@@ -263,14 +254,14 @@ namespace RogueSC.Consoles
             foreach (var loc in e.GameMap.Fov.NewlySeen())
             {
                 RenderToCell(
-					_map[loc].Appearance,
+					_map.GetAppearance(loc),
                     this[loc.Column, loc.Row],
                     true);
             }
             foreach (var loc in e.GameMap.Fov.NewlyUnseen())
             {
                 RenderToCell(
-					_map[loc].Appearance,
+                    _map.GetAppearance(loc),
                     this[loc.Column, loc.Row],
                     false);
             }
@@ -301,13 +292,7 @@ namespace RogueSC.Consoles
                 {
                     continue;
                 }
-                var expectedGlyph = MapTerrainToAppearance[_map[seenLoc].Terrain].GlyphIndex;
-
-                if (_map[seenLoc].Items.Count > 0)
-                {
-                    var id = _map[seenLoc].Items[0].ItemTypeId;
-                    expectedGlyph = ObjectNameToAppearance[_game.Factory.InfoFromId[id].Name].GlyphIndex;
-                }
+                var expectedGlyph = _map.GetAppearance(seenLoc).GlyphIndex;
                 var cell = this[seenLoc.Column, seenLoc.Row];
                 if (cell.GlyphIndex != expectedGlyph)
                 {

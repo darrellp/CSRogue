@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CSRogue.GameControl;
 using CSRogue.Interfaces;
 using CSRogue.Map_Generation;
@@ -26,6 +27,16 @@ namespace RogueSC
 			{
 				this[doorLoc].IsDoorOpen = false;
 			}
+		    for (int iCol = 0; iCol < Width; iCol++)
+		    {
+		        for (int iRow = 0; iRow < Height; iRow++)
+		        {
+		            if (!this.Corridor(iCol, iRow) && this[iCol, iRow].Terrain == TerrainType.Floor && Rnd.GlobalNext(0, 7) == 0)
+		            {
+		                this[iCol, iRow].HasGroundCover = true;
+		            }
+		        }
+		    }
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -54,11 +65,17 @@ namespace RogueSC
         internal CellAppearance GetAppearance(int iCol, int iRow)
         {
             CellAppearance appearance;
+            Guid id;
 
-            if (this[iCol, iRow].Items.Count > 0)
+            if (this.InView(iCol, iRow) &&
+                this[iCol, iRow].Items.Count > 0 &&
+                (id = this[iCol, iRow].Items[0].ItemTypeId) != ItemIDs.HeroId)
             {
-                var id = this[iCol, iRow].Items[0].ItemTypeId;
                 appearance = ObjectNameToAppearance[Game.Factory.InfoFromId[id].Name];
+            }
+            else if (this[iCol, iRow].HasGroundCover)
+            {
+                appearance = ObjectNameToAppearance["groundCover"];
             }
             else
             {
