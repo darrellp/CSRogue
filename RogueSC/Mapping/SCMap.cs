@@ -23,7 +23,7 @@ namespace RogueSC
 		{
             var perlin = new PerlinNoise3D();
 		    perlin.Frequency = 50.0;
-		    perlin.Octaves = 3;
+		    perlin.Octaves = 2;
 			var excavator = new GridExcavator();
 			excavator.Excavate(this, Player);
 			foreach (var doorLoc in this.TerrainLocations(new HashSet<TerrainType>() { TerrainType.Door }))
@@ -37,7 +37,6 @@ namespace RogueSC
 		            var noise = perlin.ComputePositive(iCol / (3.0 * Width) + 0.333, iRow / (3.0 * Height) + 0.333, 0.5);
 		            if (!this.Corridor(iCol, iRow) && this[iCol, iRow].Terrain == TerrainType.Floor && noise < 0.4)
 		            {
-
 		                this[iCol, iRow].HasGroundCover = true;
 		            }
 		        }
