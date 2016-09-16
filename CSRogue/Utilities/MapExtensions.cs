@@ -446,10 +446,36 @@ namespace CSRogue.Utilities
 		{
 			map.Set(TerrainState.BlocksView, crd, fOn);
 		}
-		#endregion
+        #endregion
 
-		#region Walkable
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        #region Corridor
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Corridor(this IMap map, int x, int y)
+        {
+            return map.Value(TerrainState.Corridor, x, y);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Corridor(this IMap map, MapCoordinates crd)
+        {
+            return map.Value(TerrainState.Corridor, crd);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SetCorridor(this IMap map, int x, int y, bool fOn = true)
+        {
+            map.Set(TerrainState.Corridor, x, y, fOn);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SetCorridor(this IMap map, MapCoordinates crd, bool fOn = true)
+        {
+            map.Set(TerrainState.Corridor, crd, fOn);
+        }
+        #endregion
+
+        #region Walkable
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool Walkable(this IMap map, int x, int y)
 		{
 			return map.Value(TerrainState.Walkable, x, y);

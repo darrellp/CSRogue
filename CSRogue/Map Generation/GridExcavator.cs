@@ -489,6 +489,7 @@ namespace CSRogue.Map_Generation
 				// Place our terrain
 				currentLocation[dir] = iRow;
 			    map[currentLocation].Terrain = TerrainType.Floor;
+                map.SetCorridor(currentLocation);
 				room[currentLocation] = floorChar;
 			}
 		}

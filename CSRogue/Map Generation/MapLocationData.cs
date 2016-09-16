@@ -15,7 +15,8 @@ namespace CSRogue.Map_Generation
 		Remembered = 0x2,
 		FogOfWar = 0x4,
 		BlocksView = 0x8,
-		Walkable = 0x10
+		Walkable = 0x10,
+        Corridor = 0x20,
 	}
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
