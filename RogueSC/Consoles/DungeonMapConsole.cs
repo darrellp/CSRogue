@@ -74,7 +74,7 @@ namespace RogueSC.Consoles
             _game.HeroMoveEvent += _game_HeroMoveEvent;
             _game.CreatureMoveEvent += _game_CreatureMoveEvent;
             _game.AttackEvent += _game_AttackEvent;
-            ToggleDoorCommand.ToggleDoorEvent += ToggleDoorCommandToggleDoorEvent;
+            ToggleDoorCommand.ToggleDoorEvent += _game_ToggleDoorEvent;
 
             var fontMaster = Engine.LoadFont("Cheepicus12.font");
             var font = fontMaster.GetFont(fontSize);
@@ -115,7 +115,7 @@ namespace RogueSC.Consoles
             RenderToCell(_map.GetAppearance(loc), this[loc.Column, loc.Row], true);
         }
 
-        private void ToggleDoorCommandToggleDoorEvent(object sender, ToogleDoorEventArgs e)
+        private void _game_ToggleDoorEvent(object sender, ToogleDoorEventArgs e)
         {
             if (_map.InView(e.DoorLocation))
             {
@@ -193,7 +193,6 @@ namespace RogueSC.Consoles
 			}
 		}
 
-        // TODO: Thought I'd made this a command but apparently not.  Fix this.
         public void ToggleDoors()
         {
             foreach (var doorLoc in _map.Neighbors(_map.Player.Location).Where(l => _map[l].Terrain == TerrainType.Door))
