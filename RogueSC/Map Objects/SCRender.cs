@@ -8,7 +8,8 @@ namespace RogueSC.Map_Objects
 {
     internal static class ScRender
     {
-        public const int WallGlyph = 176;
+        public const int WallGlyph = 177;
+        public const int DoorGlyph = 176;
         public const int FloorGlyph = 46;
         public const int PlayerGlyph = 111;
 
@@ -37,14 +38,14 @@ namespace RogueSC.Map_Objects
             {"Rat", new CellAppearance(Color.Red, Color.Transparent, 'r') },
             {"Orc", new CellAppearance(Color.Yellow, Color.Transparent, 'o') },
 			{"Player", new CellAppearance(Color.Yellow, Color.Transparent, PlayerGlyph) /* really a noop */ },
-			{"openDoor", new CellAppearance(Color.Yellow, Color.Transparent, WallGlyph) },
-			{"closedDoor", new CellAppearance(Color.Orange, Color.Transparent, WallGlyph) },
+			{"openDoor", new CellAppearance(Color.Yellow, Color.Transparent, DoorGlyph) },
+			{"closedDoor", new CellAppearance(Color.Orange, Color.Transparent, DoorGlyph) },
 		};
 
-        internal static readonly CellAppearance WallAppearance = new CellAppearance(Color.Gray, Color.Blue, 176);
-        internal static readonly CellAppearance FloorAppearance = new CellAppearance(Color.Orange, Color.Transparent, 46);
-		internal static readonly CellAppearance OffMapAppearance = new CellAppearance(Color.Black, Color.Black, 46);
-		internal static readonly CellAppearance DoorAppearance = new CellAppearance(Color.Orange, Color.Transparent, 176);
+        internal static readonly CellAppearance WallAppearance = new CellAppearance(Color.Gray, Color.Blue, WallGlyph);
+        internal static readonly CellAppearance FloorAppearance = new CellAppearance(Color.Orange, Color.Transparent, FloorGlyph);
+		internal static readonly CellAppearance OffMapAppearance = new CellAppearance(Color.Black, Color.Black, FloorGlyph);
+		internal static readonly CellAppearance DoorAppearance = new CellAppearance(Color.Orange, Color.Transparent, DoorGlyph);
 
 		/// <summary>   Maps terrain types to appearance for that terrain. </summary>
 		/// Note that "Appearance" means a character, a foreground and a background color.  We display hidden and remembered
