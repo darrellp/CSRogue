@@ -96,7 +96,6 @@
     <Compile Include="Items\Sword.cs" />
     <Compile Include="Map Objects\SCMapLocationData.cs" />
     <Compile Include="Map Objects\SCRender.cs" />
-    <Compile Include="Mapping\Ground Cover.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Mapping\SCMap.cs" />
     <Compile Include="Utilities\Extensions.cs" />

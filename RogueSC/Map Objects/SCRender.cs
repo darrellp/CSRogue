@@ -35,8 +35,8 @@ namespace RogueSC.Map_Objects
         internal static readonly CellAppearance FloorAppearance = new CellAppearance(Color.Orange, Color.Transparent, FloorGlyph);
 		internal static readonly CellAppearance OffMapAppearance = new CellAppearance(Color.Black, Color.Black, FloorGlyph);
 		internal static readonly CellAppearance DoorAppearance = new CellAppearance(Color.Orange, Color.Transparent, DoorGlyph);
-        internal static readonly CellAppearance StairsDownAppearance = new CellAppearance(Color.Yellow, Color.Transparent, '<');
-        internal static readonly CellAppearance StairsUpAppearance = new CellAppearance(Color.Yellow, Color.Transparent, '>');
+        internal static readonly CellAppearance StairsDownAppearance = new CellAppearance(Color.Yellow, Color.Transparent, '>');
+        internal static readonly CellAppearance StairsUpAppearance = new CellAppearance(Color.Yellow, Color.Transparent, '<');
 
         internal static Dictionary<string, CellAppearance> ObjectNameToAppearance = new Dictionary<string, CellAppearance>()
         {

@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using CSRogue.GameControl.Commands;
 using CSRogue.Item_Handling;
+using CSRogue.Map_Generation;
 using CSRogue.RogueEventArgs;
 using CSRogue.Utilities;
 using Microsoft.Xna.Framework;
@@ -73,6 +74,7 @@ namespace RogueSC.Consoles
             }
         }
 
+
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Default constructor. </summary>
         ///
@@ -103,14 +105,7 @@ namespace RogueSC.Consoles
             _game = new CSRogue.GameControl.Game(Factory);
 			_game.NewLevelEvent += Game_NewLevelEvent;
 			_game.AttackEvent += Game_AttackEvent;
-            var map = new SCMap(MapWidth, MapHeight, 10, _game, Factory);
-
-            var levelCmd = new NewLevelCommand(0, map, new Dictionary<Guid, int>()
-            {
-                {ItemIDs.RatId, 1},
-                {ItemIDs.OrcId, 1}
-            });
-            _game.EnqueueAndProcess(levelCmd);
+            CreateNewLevel();
 
             StatsConsole = new CharacterConsole(StatsWidth, StatsHeight);
             DungeonConsole = new DungeonMapConsole(_game, DungeonWidth, DungeonHeight);
@@ -171,10 +166,33 @@ namespace RogueSC.Consoles
                 }
             }
         }
-		#endregion
 
-		#region Event Handlers
-		private void Game_AttackEvent(object sender, AttackEventArgs e)
+        private void CreateNewLevel()
+        {
+            var map = new SCMap(MapWidth, MapHeight, 10, _game, Factory);
+
+            var levelCmd = new NewLevelCommand(0, map, new Dictionary<Guid, int>()
+            {
+                {ItemIDs.RatId, 1},
+                {ItemIDs.OrcId, 1}
+            });
+            _game.EnqueueAndProcess(levelCmd);
+
+            DungeonConsole?.NewLevelInit();
+        }
+
+        private void NewLevelPlayerCheck()
+        {
+            var map = (SCMap) _game.Map;
+            if (map[map.Player.Location].Terrain == TerrainType.StairsDown)
+            {
+                CreateNewLevel();
+            }
+        }
+        #endregion
+
+        #region Event Handlers
+        private void Game_AttackEvent(object sender, AttackEventArgs e)
 		{
 			if (e.Victim.IsPlayer || !e.VictimDied)
             {
@@ -210,8 +228,16 @@ namespace RogueSC.Consoles
 				{Input.Keys.PageDown,(s) => s.DungeonConsole.MovePlayerBy(new Point(1, 1)) },
 				{Input.Keys.Home, (s) => s.DungeonConsole.MovePlayerBy(new Point(-1, -1)) },
 				{(Input.Keys)12, (s) => s.DungeonConsole.MovePlayerBy(new Point(0, 0)) },
-				{Input.Keys.O, (s)=> s.DungeonConsole.ToggleDoors() }
+                {Input.Keys.O, (s)=> s.DungeonConsole.ToggleDoors() }
 			};
+
+        /// <summary>   A dictionary to map the arrow keys to their corresponding movement. </summary>
+        private static readonly Dictionary<Input.Keys, Action<DungeonScreen>> ShiftKeysToAction = new Dictionary<Input.Keys, Action<DungeonScreen>>()
+            {
+                // Does this ALWAYS correspond to '>'?  Doubt it but I'm not sure how to recognize
+                // '>' from a shifted period key.
+                {Input.Keys.OemPeriod, (s) => s.NewLevelPlayerCheck() },
+            };
 
         private static Input.Keys _lastKeyActedOn = 0;
 
@@ -228,22 +254,45 @@ namespace RogueSC.Consoles
                 }
                 return false;
             }
-	        if (_lastKeyActedOn == Input.Keys.O && info.KeysPressed[0].XnaKey == Input.Keys.O)
+            // Just have this so during debugging I can put a bp on the following statement and hit
+            // shift-X and see the x rather than the shift.
+            if (info.KeysPressed[0].XnaKey == Input.Keys.LeftShift)
+            {
+                return false;
+            }
+            bool fShift = Input.Keyboard.GetState().IsKeyDown(Input.Keys.LeftShift) ||
+                          Input.Keyboard.GetState().IsKeyDown(Input.Keys.RightShift);
+
+
+            if (_lastKeyActedOn == Input.Keys.O && info.KeysPressed[0].XnaKey == Input.Keys.O)
 	        {
 	            return false;
 	        }
-			if (KeysToAction.ContainsKey(info.KeysPressed[0].XnaKey))
+			if (!fShift && KeysToAction.ContainsKey(info.KeysPressed[0].XnaKey))
 			{
 			    _lastKeyActedOn = info.KeysPressed[0].XnaKey;
                 _writer?.WriteLine(info.KeysPressed[0].XnaKey.ToString());
 			    ActOnKey(info.KeysPressed[0].XnaKey);
 			}
-			return false;
+            else if (fShift && ShiftKeysToAction.ContainsKey(info.KeysPressed[0].XnaKey))
+			{
+                // TODO: the recorder won't understand this - make it see the light
+                _writer?.WriteLine($"Shft-{info.KeysPressed[0].XnaKey}");
+                ActOnKey(info.KeysPressed[0].XnaKey, true);
+            }
+            return false;
         }
 
-        private void ActOnKey(Input.Keys key)
+        private void ActOnKey(Input.Keys key, bool fShift = false)
         {
-            KeysToAction[key](this);
+            if (fShift)
+            {
+                ShiftKeysToAction[key](this);
+            }
+            else
+            {
+                KeysToAction[key](this);
+            }
             DungeonConsole.CheckFOV();
         }
         #endregion

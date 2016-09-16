@@ -298,7 +298,7 @@ namespace CSRogue.Utilities
             }
             if (moveToStairwell)
             {
-                var stairwellLoc = map.LocateTerrain(TerrainType.StairsDown, true);
+                var stairwellLoc = map.LocateTerrain(TerrainType.StairsUp, true);
                 if (stairwellLoc.Count > 0)
                 {
                     map.MoveCreatureTo(map.Player, stairwellLoc[0]);

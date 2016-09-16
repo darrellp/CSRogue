@@ -27,7 +27,7 @@ namespace RogueSC.Consoles
     {
         #region Public Properties
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets the player GameObject. </summary>
+        /// <summary>   Gets the playerSprite GameObject. </summary>
         ///
         /// <remarks>
         /// Note that this is the SadConsole version of the player - i.e., the SadConsole sprite that
@@ -38,7 +38,7 @@ namespace RogueSC.Consoles
         ///
         /// <value> The player sprite. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        internal GameObject PlayerSprite { get; }
+        internal GameObject PlayerSprite => _playerSprite;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Gets or sets the distance we see in the field of view. </summary>
@@ -51,6 +51,8 @@ namespace RogueSC.Consoles
         #region Private Variables
         /// <summary>   The CSRogue map. </summary>
         private SCMap _map;
+
+        private GameObject _playerSprite;
 
         /// <summary>   The CSRogue game object. </summary>
         /// <remarks> The Game object queues up commands and dispatches them and also is a central
@@ -109,13 +111,20 @@ namespace RogueSC.Consoles
             // Set the size of the dungeon render area
             TextSurface.RenderArea = new Rectangle(0, 0, charWidth, charHeight);
 
+            NewLevelInit();
+        }
+
+        internal void NewLevelInit()
+        {
+            Clear();
+
             // Set up the sprite for the player
-            var playerAnimation = new AnimatedTextSurface("default", 1, 1, font);
+            var playerAnimation = new AnimatedTextSurface("default", 1, 1, TextSurface.Font);
             playerAnimation.CreateFrame();
             playerAnimation.CurrentFrame[0].Foreground = Color.Orange;
-            playerAnimation.CurrentFrame[0].GlyphIndex = 1;//'@';
+            playerAnimation.CurrentFrame[0].GlyphIndex = 1; //'@';
 
-            PlayerSprite = new GameObject(font)
+            _playerSprite = new GameObject(TextSurface.Font)
             {
                 Animation = playerAnimation,
                 Position = new Point(1, 1)
@@ -123,6 +132,7 @@ namespace RogueSC.Consoles
 
             GenerateMap();
         }
+
         #endregion
 
         #region Event handlers
