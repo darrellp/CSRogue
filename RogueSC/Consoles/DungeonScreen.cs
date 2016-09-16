@@ -18,12 +18,14 @@ using Input = Microsoft.Xna.Framework.Input;
 namespace RogueSC.Consoles
 {
     ////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// <summary>   A dungeon screen. </summary>
+    /// <summary>   The dungeon screen which gathers together the various consoles.. </summary>
     ///
-    /// <remarks>   This is the console that holds and coordinates all the other consoles.
+    /// <remarks>   This is the screen that holds and coordinates all the other consoles.  In SadConsole
+    ///             a ConsoleList doesn't actually have a "Console" itself but is just a collection of
+    ///             other consoles.  Those other consoles have sizes and positions but the ConsoleList
+    ///             doesn't - it's just the collection of those other consoles.
     ///             Darrellp, 8/26/2016. </remarks>
     ////////////////////////////////////////////////////////////////////////////////////////////////////
-
     class DungeonScreen : ConsoleList
     {
         #region Public Properties
@@ -36,11 +38,11 @@ namespace RogueSC.Consoles
         #endregion
 
         #region Private Variables
-        // ReSharper disable once InconsistentNaming
-        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
-        private readonly Console messageHeaderConsole;
-        private readonly CSRogue.GameControl.Game _game;
+        // The factory is essentially the dictionary for everything in the game - all monsters, all items, etc.
+        // It allows us to not only find out about objects but also to create them.
         private static readonly ItemFactory Factory;
+
+        private readonly CSRogue.GameControl.Game _game;
         private const int MapWidth = 100;
         private const int MapHeight = 100;
         private readonly StreamReader _reader;
@@ -115,7 +117,7 @@ namespace RogueSC.Consoles
             MessageConsole = new MessagesConsole(WindowWidth, MessageHeight);
 
             // Setup the message header to be as wide as the screen but only 1 character high
-            messageHeaderConsole = new Console(WindowWidth, 1)
+            var messageHeaderConsole = new Console(WindowWidth, 1)
             {
                 DoUpdate = false,
                 CanUseKeyboard = false,
@@ -211,16 +213,29 @@ namespace RogueSC.Consoles
 				{Input.Keys.O, (s)=> s.DungeonConsole.ToggleDoors() }
 			};
 
+        private static Input.Keys _lastKeyActedOn = 0;
+
 	    public override bool ProcessKeyboard(KeyboardInfo info)
         {
             if (info.KeysPressed.Count == 0)
             {
+                // If the user has taken their finger off the key then reset LastKeyActedOn so we can
+                // press "O" several times but not by holding down on the key.  Keeps us from opening
+                // a door and then accidentally closing it again while holding down the key.
+                if (info.IsKeyUp(Input.Keys.O))
+                {
+                    _lastKeyActedOn = 0;
+                }
                 return false;
             }
-
+	        if (_lastKeyActedOn == Input.Keys.O && info.KeysPressed[0].XnaKey == Input.Keys.O)
+	        {
+	            return false;
+	        }
 			if (KeysToAction.ContainsKey(info.KeysPressed[0].XnaKey))
 			{
-			    _writer?.WriteLine(info.KeysPressed[0].XnaKey.ToString());
+			    _lastKeyActedOn = info.KeysPressed[0].XnaKey;
+                _writer?.WriteLine(info.KeysPressed[0].XnaKey.ToString());
 			    ActOnKey(info.KeysPressed[0].XnaKey);
 			}
 			return false;

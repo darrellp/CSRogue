@@ -29,18 +29,32 @@ namespace RogueSC.Consoles
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Gets the player GameObject. </summary>
         ///
-        /// <value> The player. </value>
+        /// <remarks>
+        /// Note that this is the SadConsole version of the player - i.e., the SadConsole sprite that
+        /// represents the player.  It's only purpose is to get drawn on the screen and it has no actual
+        /// player information contained in it (other than position I suppose).  Other player information
+        /// is stored in the CSRogue object located at _map.Player.
+        /// </remarks>
+        ///
+        /// <value> The player sprite. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        public GameObject Player { get; }
+        internal GameObject PlayerSprite { get; }
 
-        public int FovDistance { get; set; } = 8;
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Gets or sets the distance we see in the field of view. </summary>
+        ///
+        /// <value> The fov distance. </value>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        internal int FovDistance { get; set; } = 8;
         #endregion
 
         #region Private Variables
         /// <summary>   The CSRogue map. </summary>
         private SCMap _map;
 
-        // The engine game
+        /// <summary>   The CSRogue game object. </summary>
+        /// <remarks> The Game object queues up commands and dispatches them and also is a central
+        ///           repository about all the information in the game such as the current level, etc. </remarks>
         private readonly Game _game;
         #endregion
 
@@ -66,35 +80,42 @@ namespace RogueSC.Consoles
         /// <param name="viewHeight">   Height of the console. </param>
         /// <param name="fontSize">     (Optional) size of the font. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public DungeonMapConsole(Game game, int viewWidth, int viewHeight, Font.FontSizes fontSize = Font.FontSizes.One) 
+        internal DungeonMapConsole(Game game, int viewWidth, int viewHeight, Font.FontSizes fontSize = Font.FontSizes.One) 
             : base(game.Map.Width, game.Map.Height)
         {
             _game = game;
+
+            // Hook up CSRogue command callbacks
             _game.HeroMoveEvent += _game_HeroMoveEvent;
             _game.CreatureMoveEvent += _game_CreatureMoveEvent;
             _game.AttackEvent += _game_AttackEvent;
+
+            // The ToogleDoorEvent is located in our SadConsole app rather than the engine
             ToggleDoorCommand.ToggleDoorEvent += _game_ToggleDoorEvent;
 
+            // Change the font to a square one for the dungeon
             var fontMaster = Engine.LoadFont("Cheepicus12.font");
             var font = fontMaster.GetFont(fontSize);
-            var fontsizeStats = Engine.LoadFont("IBM.font").GetFont(Font.FontSizes.One).Size;
-
             TextSurface.Font = font;
+
+            // Determine the height/width of the console in the new font size
+            var fontsizeStats = Engine.LoadFont("IBM.font").GetFont(Font.FontSizes.One).Size;
             var mult = SizeMultipliers[fontSize];
             var glyphHeight = fontsizeStats.Y * viewHeight;
             var glyphWidth = fontsizeStats.X * viewWidth;
             var charHeight = (int)(glyphHeight * mult / font.Size.Y);
             var charWidth = (int)(glyphWidth  * mult / font.Size.X);
 
+            // Set the size of the dungeon render area
             TextSurface.RenderArea = new Rectangle(0, 0, charWidth, charHeight);
 
+            // Set up the sprite for the player
             var playerAnimation = new AnimatedTextSurface("default", 1, 1, font);
             playerAnimation.CreateFrame();
             playerAnimation.CurrentFrame[0].Foreground = Color.Orange;
             playerAnimation.CurrentFrame[0].GlyphIndex = 1;//'@';
 
-            Player = new GameObject(font)
+            PlayerSprite = new GameObject(font)
             {
                 Animation = playerAnimation,
                 Position = new Point(1, 1)
@@ -105,6 +126,14 @@ namespace RogueSC.Consoles
         #endregion
 
         #region Event handlers
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Event handler. Called by _game for attack events. </summary>
+        ///
+        /// <remarks>   Darrell, 9/16/2016. </remarks>
+        ///
+        /// <param name="sender">   Source of the event. </param>
+        /// <param name="e">        Attack event information. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
         private void _game_AttackEvent(object sender, CSRogue.RogueEventArgs.AttackEventArgs e)
         {
             if (e.Victim.IsPlayer)
@@ -115,25 +144,47 @@ namespace RogueSC.Consoles
             RenderToCell(_map.GetAppearance(loc), this[loc.Column, loc.Row], true);
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Event handler. Called by _game for toggle door events. </summary>
+        ///
+        /// <remarks>   Darrell, 9/16/2016. </remarks>
+        ///
+        /// <param name="sender">   Source of the event. </param>
+        /// <param name="e">        Toogle door event information. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
         private void _game_ToggleDoorEvent(object sender, ToogleDoorEventArgs e)
         {
+            // Update the SadConsole console if the door is within our FOV
             if (_map.InView(e.DoorLocation))
             {
                 RenderToCell(_map.GetAppearance(e.DoorLocation), this[e.DoorLocation.Column, e.DoorLocation.Row], true);
             }
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Event handler. Called by _game for non-player creature movement. </summary>
+        ///
+        /// <remarks>   The player is handled by an onscreen sprite but monsters have to be hand rendered
+        ///             whenever they move around while in the field of view.  Darrell, 9/16/2016. </remarks>
+        ///
+        /// <param name="sender">   Source of the event. </param>
+        /// <param name="e">        Creature move event information. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
         private void _game_CreatureMoveEvent(object sender, CSRogue.RogueEventArgs.CreatureMoveEventArgs e)
         {
             if (e.IsBlocked || e.IsFirstTimePlacement)
             {
                 return;
             }
+
+            // Check on whether his previous location needs rendering
             var loc = e.PreviousCreatureLocation;
             if (_map.InView(loc))
             {
                 RenderToCell(_map.GetAppearance(loc), this[loc.Column, loc.Row], true);
             }
+
+            // Check on whether his current location needs rendering
             loc = e.CreatureDestination;
             if (_map.InView(loc))
             {
@@ -148,12 +199,11 @@ namespace RogueSC.Consoles
         ///
         /// <remarks>   Darrellp, 8/26/2016. </remarks>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-
         private void GenerateMap()
         {
             _map = (SCMap)_game.Map;
 
-            // Loop through the map information generated by RogueSharp and create our cached visuals of that data
+            // Loop through the map information generated by CSRogue and create our cached visuals of that data
             for (var iCol = 0; iCol < Width; iCol++)
             {
                 for (var iRow = 0; iRow < Height; iRow++)
@@ -168,17 +218,23 @@ namespace RogueSC.Consoles
                 }
             }
 
-            Player.Position = _map.Player.Location.ToPoint();
+            PlayerSprite.Position = _map.Player.Location.ToPoint();
 
-            // Center the veiw area
-            TextSurface.RenderArea = new Rectangle(Player.Position.X - (TextSurface.RenderArea.Width / 2),
-                                                    Player.Position.Y - (TextSurface.RenderArea.Height / 2),
+            // Center the view area
+            TextSurface.RenderArea = new Rectangle(PlayerSprite.Position.X - (TextSurface.RenderArea.Width / 2),
+                                                    PlayerSprite.Position.Y - (TextSurface.RenderArea.Height / 2),
                                                     TextSurface.RenderArea.Width, TextSurface.RenderArea.Height);
 
-            Player.RenderOffset = Position - TextSurface.RenderArea.Location;
+            PlayerSprite.RenderOffset = Position - TextSurface.RenderArea.Location;
 			Refresh();
 		}
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Refreshes the viewed map. </summary>
+        ///
+        /// <remarks>   Similar to the PlayerMoved event handling but no map movement and we draw everything
+        ///             the player currently sees rather than just the newly seen stuff.  Darrell, 9/16/2016. </remarks>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
 		private void Refresh()
 	    {
 		    _map.ScanPlayer();
@@ -193,22 +249,29 @@ namespace RogueSC.Consoles
 			}
 		}
 
-        public void ToggleDoors()
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Toggle doors adjacent to the player. </summary>
+        ///
+        /// <remarks>   Darrell, 9/16/2016. </remarks>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        internal void ToggleDoors()
         {
             foreach (var doorLoc in _map.Neighbors(_map.Player.Location).Where(l => _map[l].Terrain == TerrainType.Door))
             {
                 if (_map[doorLoc].Items.Count == 0)
                 {
+                    // Set up the door toggle command and queue it up.
                     var cmd = new ToggleDoorCommand(_map.Player, doorLoc);
                     _game.Enqueue(cmd);
                 }
             }
+
+            // This will give the monsters a chance to move and also actually fire off all our queued up door commands
             MovePlayerBy(new Point(0, 0));
         }
         #endregion
 
         #region Player handling
-
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Move player by a delta. </summary>
         ///
@@ -216,8 +279,7 @@ namespace RogueSC.Consoles
         ///
         /// <param name="amount">   The delta to move the player by. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public void MovePlayerBy(Point amount)
+        internal void MovePlayerBy(Point amount)
         {
             // Move the player on the engine map
             var moveCmd = new MovePlayerCommand(amount.ToMapCoordinates());
@@ -233,23 +295,27 @@ namespace RogueSC.Consoles
         /// <param name="sender">   Source of the event. </param>
         /// <param name="e">        Creature move event information. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-
         private void _game_HeroMoveEvent(object sender, CSRogue.RogueEventArgs.CreatureMoveEventArgs e)
         {
+            // If we were blocked or this is the first time we've been placed then there is no real
+            // "movement" and we can just forget the whole thing.
             if (e.IsBlocked || e.IsFirstTimePlacement)
             {
                 return;
             }
-            Player.Position = e.CreatureDestination.ToPoint();
+
+            // Move the SadConsole sprite to the destination
+            PlayerSprite.Position = e.CreatureDestination.ToPoint();
 
             // Scroll the view area to center the player on the screen
-            TextSurface.RenderArea = new Rectangle(Player.Position.X - (TextSurface.RenderArea.Width / 2),
-                                                    Player.Position.Y - (TextSurface.RenderArea.Height / 2),
+            TextSurface.RenderArea = new Rectangle(PlayerSprite.Position.X - (TextSurface.RenderArea.Width / 2),
+                                                    PlayerSprite.Position.Y - (TextSurface.RenderArea.Height / 2),
                                                     TextSurface.RenderArea.Width, TextSurface.RenderArea.Height);
 
             // If he view area moved, we'll keep our entity in sync with it.
-            Player.RenderOffset = Position - TextSurface.RenderArea.Location;
+            PlayerSprite.RenderOffset = Position - TextSurface.RenderArea.Location;
 
+            // Update any positions on the screen that have been revealed or hidden
             foreach (var loc in e.GameMap.Fov.NewlySeen())
             {
                 RenderToCell(
@@ -269,13 +335,13 @@ namespace RogueSC.Consoles
         public override void Render()
         {
             base.Render();
-            Player.Render();
+            PlayerSprite.Render();
         }
 
         public override void Update()
         {
             base.Update();
-            Player.Update();
+            PlayerSprite.Update();
         }
         #endregion
 

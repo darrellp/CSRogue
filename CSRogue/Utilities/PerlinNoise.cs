@@ -68,8 +68,6 @@ namespace CSRogue.Utilities
 
         public void InitNoiseFunctions()
         {
-            Random rand = new Random();
-
             // Fill empty
             for (int i = 0; i < PermLength; i++)
             {
@@ -79,7 +77,7 @@ namespace CSRogue.Utilities
             // Generate random numbers
             for (int i = 0; i < PermLength - 1; i++)
             {
-                int j = rand.Next() % (PermLength - i);
+                int j = Rnd.GlobalNext(PermLength - i);
                 int tmp = _perm[i];
                 _perm[i] = _perm[PermLength + i] = _perm[i + j];
                 _perm[i + j] = tmp;
