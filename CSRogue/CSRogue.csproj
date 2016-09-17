@@ -93,6 +93,7 @@
     <Compile Include="Item Handling\ItemInfo.cs" />
     <Compile Include="Items\Creature.cs" />
     <Compile Include="Items\Player.cs" />
+    <Compile Include="Utilities\DjikstraMap.cs" />
     <Compile Include="Utilities\FovExtensions.cs" />
     <Compile Include="Utilities\GameMapExtensions.cs" />
     <Compile Include="Utilities\LevelExtensions.cs" />
