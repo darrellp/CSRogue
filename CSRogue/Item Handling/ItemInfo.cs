@@ -79,8 +79,17 @@ namespace CSRogue.Item_Handling
 		///
 		/// <value>	An action to create the item. </value>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-
 		public Func<ILevel, IItem> CreateItem { get; set; }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Gets or sets any extra info. </summary>
+        ///
+        /// <remarks>   The user can put any extra information they wish onto the end of the lines in the info
+        ///             file.  An array of those extra fields in string format is kept here in Extra. </remarks>
+        /// 
+        /// <value> Extra data from the info file line for this item. </value>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        public string[] Extra { get; set; }
 		#endregion
 
 		#region Static methods to set up info tables
@@ -94,14 +103,10 @@ namespace CSRogue.Item_Handling
 
 	    public ItemInfo(string name = null,
 			char character = ' ',
-			double weight = 0,
-			int value = 0,
 			string description = "A singularly uninteresting item")
 		{
 			Name = name;
 			Character = character;
-			Weight = weight;
-			Value = value;
 			Description = description;
 		}
 		#endregion

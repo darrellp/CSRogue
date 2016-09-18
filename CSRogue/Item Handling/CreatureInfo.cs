@@ -1,4 +1,6 @@
-﻿using CSRogue.Utilities;
+﻿using System.Collections.Generic;
+using CSRogue.Utilities;
+using NUnit.Framework;
 
 namespace CSRogue.Item_Handling
 {
@@ -10,6 +12,7 @@ namespace CSRogue.Item_Handling
 		public RogueColor Color { get; set; }
 		public int Speed { get; set; }
 		public int ArmorClass { get; set; }
+        public string[] Extra { get; set; }
 
 		public CreatureInfo(
 			string hitPoints = "1d1",

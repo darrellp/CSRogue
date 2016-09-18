@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -71,10 +72,14 @@ namespace CSRogue.Item_Handling
 			var info = new ItemInfo();
 			var values = readLine.Split(Tabs).Where(s => s != string.Empty).ToList();
 		    var itemId = new Guid(values[0]);
-			for (var iField = 0; iField < values.Count; iField++)
+			for (var iField = 0; iField < Math.Min(DispatchTable.Count, values.Count); iField++)
 			{
 				ProcessField(info, iField, values[iField]);
 			}
+		    if (values.Count > DispatchTable.Count)
+		    {
+		        info.Extra = values.Skip(DispatchTable.Count).ToArray();
+		    }
 			mapItemTypeToInfo[itemId] = info;
 			return info;
 		}
@@ -97,7 +102,7 @@ namespace CSRogue.Item_Handling
 				DefaultDispatchTable[iField](this, value, info);
 				return;
 			}
-			_dispatchTable[iField](this, value, info);
+			DispatchTable[iField](this, value, info);
 		}
 
 		private static void ProcessCreatureField(CreatureInfo info, int iField, string value)
@@ -121,20 +126,23 @@ namespace CSRogue.Item_Handling
 			var values = readLine.Split(Tabs).Where(s => s != string.Empty).ToList();
 			var id = new Guid(values[1]);
 
-			for (var iField = 1; iField < values.Count; iField++)
+			for (var iField = 1; iField < Math.Min(CreatureDispatchTable.Count, values.Count); iField++)
 			{
 				ProcessCreatureField(info, iField, values[iField]);
 			}
+		    if (values.Count > CreatureDispatchTable.Count)
+		    {
+                info.Extra = values.Skip(CreatureDispatchTable.Count).ToArray();
+		    }
 			itemInfo[id].CreatureInfo = info;
 		}
 
-		private readonly List<Action<ReadItemData, string, ItemInfo>> _dispatchTable = new List<Action<ReadItemData, string, ItemInfo>>
+		private static readonly List<Action<ReadItemData, string, ItemInfo>> DispatchTable
+            = new List<Action<ReadItemData, string, ItemInfo>>
 		{
 			(t, s, i) => i.ItemId = new Guid(s),
 			(t, s, i) => i.Character = s[0],
 			(t, s, i) => i.Name = s,
-			(t, s, i) => i.Weight = Double.Parse(s),
-			(t, s, i) => i.Value = Int32.Parse(s),
 			(t, s, i) => i.Description = s,
 			(t, s, i) => i.CreateItem = t.GetConstructor(i.ItemId, s),
             (t, s, i) => i.IsPlayer = true,
@@ -143,8 +151,6 @@ namespace CSRogue.Item_Handling
 		private static readonly List<Action<ReadItemData, string, ItemInfo>> DefaultDispatchTable = new List<Action<ReadItemData, string, ItemInfo>>
 		{
 			(t, s, i) => { },
-			(t, s, i) => { },
-		    (t, s, i) => { },
 			(t, s, i) => { },
 			(t, s, i) => { },
 			(t, s, i) => { },
