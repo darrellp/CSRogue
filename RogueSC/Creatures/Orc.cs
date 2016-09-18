@@ -23,13 +23,33 @@ namespace RogueSC.Creatures
         public override void InvokeAi()
         {
             var neighbors = _game.Map.Neighbors(Location).ToList();
-            IList<MapCoordinates> select =
-                Selector<MapCoordinates>.SelectFrom(neighbors, loc => _game.Map[loc].Terrain == TerrainType.Floor);
-            if (select.Count == 0)
+            var playerLocation = _game.Map.Player.Location;
+            MapCoordinates dest = Location;
+            if (_game.Map[playerLocation].Room == _game.Map[Location].Room)
             {
-                return;
+                var min = int.MaxValue;
+                foreach (var neighbor in neighbors.Where(l => _game.Map[l].Terrain == TerrainType.Floor))
+                {
+                    var delta = neighbor - playerLocation;
+                    var metric = Math.Abs(delta.Column) + Math.Abs(delta.Row);
+                    if (metric < min)
+                    {
+                        dest = neighbor;
+                        min = metric;
+                    }
+                }
             }
-            _game.Enqueue(new MoveToCommand(this, select[0]));
+            else
+            {
+                IList<MapCoordinates> select =
+                    Selector<MapCoordinates>.SelectFrom(neighbors, loc => _game.Map[loc].Terrain == TerrainType.Floor);
+                if (select.Count == 0)
+                {
+                    return;
+                }
+                dest = select[0];
+            }
+            _game.Enqueue(new MoveToCommand(this, dest));
         }
     }
 }
