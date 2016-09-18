@@ -28,8 +28,8 @@ namespace RogueSC.Consoles
         public CharacterConsole(int width, int height): base(width, height)
         {
         
-        // Draw the side bar
-        var line = new SadConsole.Shapes.Line
+            // Draw the side bar
+            var line = new SadConsole.Shapes.Line
             {
                 EndingLocation = new Point(0, height - 1),
                 CellAppearance = {GlyphIndex = 179},

@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="BresenhamStepperTest.cs" />
     <Compile Include="DieRollTest.cs" />
+    <Compile Include="DjikstraMapTest.cs" />
     <Compile Include="ExcavatorTest.cs" />
     <Compile Include="FOVTest.cs" />
     <Compile Include="GenericRoomTest.cs" />
