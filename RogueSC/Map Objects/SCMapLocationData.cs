@@ -41,7 +41,7 @@ namespace RogueSC.Map_Objects
 				_isDoorOpen = value;
 			    CheckVisibility();
 			    CheckWalkability();
-                Appearance = ScRender.ObjectNameToAppearance[_isDoorOpen ? "openDoor" : "closedDoor"];
+			    Appearance = _isDoorOpen ? ScRender.OpenDoorAppearance : ScRender.ClosedDoorAppearance;
 			}
 		}
 

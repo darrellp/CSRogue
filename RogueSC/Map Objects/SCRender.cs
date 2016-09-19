@@ -34,22 +34,18 @@ namespace RogueSC.Map_Objects
         internal static readonly CellAppearance WallAppearance = new CellAppearance(Color.Gray, Color.Blue, WallGlyph);
         internal static readonly CellAppearance FloorAppearance = new CellAppearance(Color.Orange, Color.Transparent, FloorGlyph);
 		internal static readonly CellAppearance OffMapAppearance = new CellAppearance(Color.Black, Color.Black, FloorGlyph);
-		internal static readonly CellAppearance DoorAppearance = new CellAppearance(Color.Orange, Color.Transparent, DoorGlyph);
+		internal static readonly CellAppearance ClosedDoorAppearance = new CellAppearance(Color.Orange, Color.Transparent, DoorGlyph);
+        internal static readonly CellAppearance OpenDoorAppearance = new CellAppearance(Color.Yellow, Color.Transparent, DoorGlyph);
         internal static readonly CellAppearance StairsDownAppearance = new CellAppearance(Color.Yellow, Color.Transparent, '>');
         internal static readonly CellAppearance StairsUpAppearance = new CellAppearance(Color.Yellow, Color.Transparent, '<');
+        internal static readonly CellAppearance GroundCoverAppearance = new CellAppearance(Color.Green, Color.Transparent, '~');
 
         internal static Dictionary<string, CellAppearance> ObjectNameToAppearance = new Dictionary<string, CellAppearance>()
         {
-            {"wall", new CellAppearance(Color.Gray, Color.Blue, WallGlyph)},
-            {"floor", new CellAppearance(Color.Orange, Color.Transparent, FloorGlyph) },
             {"Rat", new CellAppearance(Color.Red, Color.Transparent, 'r') },
             {"Orc", new CellAppearance(Color.Yellow, Color.Transparent, 'o') },
 			{"Player", new CellAppearance(Color.Yellow, Color.Transparent, PlayerGlyph) /* really a noop */ },
-			{"openDoor", new CellAppearance(Color.Yellow, Color.Transparent, DoorGlyph) },
-			{"closedDoor", new CellAppearance(Color.Orange, Color.Transparent, DoorGlyph) },
-            {"groundCover", new CellAppearance(Color.Green, Color.Transparent, '~') },
-            {"stairsDown", new CellAppearance(Color.Yellow, Color.Transparent, '>') },
-            {"stairsUp", new CellAppearance(Color.Yellow, Color.Transparent, '<') },
+            {"Sword", new CellAppearance(Color.Red, Color.Transparent, '!') },
         };
 
         /// <summary>   Maps terrain types to appearance for that terrain. </summary>
@@ -61,7 +57,7 @@ namespace RogueSC.Map_Objects
 		    <TerrainType, CellAppearance>()
 	    {
 		    {TerrainType.Floor, FloorAppearance},
-		    {TerrainType.Door, DoorAppearance},
+		    {TerrainType.Door, ClosedDoorAppearance},
 		    {TerrainType.StairsDown, StairsDownAppearance},
 		    {TerrainType.StairsUp, StairsUpAppearance},
 		    {TerrainType.Corner, WallAppearance},

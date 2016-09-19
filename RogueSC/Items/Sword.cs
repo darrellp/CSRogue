@@ -1,10 +1,11 @@
 ﻿using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
+using CSRogue.Utilities;
 
 namespace RogueSC.Items
 {
-    public class Sword : Item
+    internal class Sword : Weapon
     {
-        public Sword(Level l) { }
+        public Sword(Level l, ItemInfo i) : base(l, i) { }
     }
 }

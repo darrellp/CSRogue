@@ -174,7 +174,8 @@ namespace RogueSC.Consoles
             var levelCmd = new NewLevelCommand(0, map, new Dictionary<Guid, int>()
             {
                 {ItemIDs.RatId, 1},
-                {ItemIDs.OrcId, 1}
+                {ItemIDs.OrcId, 1},
+                {ItemIDs.SwordId, 1},
             });
             _game.EnqueueAndProcess(levelCmd);
 

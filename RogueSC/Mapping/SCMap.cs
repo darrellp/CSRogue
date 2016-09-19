@@ -18,7 +18,7 @@ namespace RogueSC
 				height, width,
 				fovRadius,
 				game,
-				(IPlayer)factory.InfoFromId[ItemIDs.HeroId].CreateItem(null),
+				(IPlayer)factory.InfoFromId[ItemIDs.HeroId].CreateItem(null, null),
 				() => new SCMapLocationData())
 		{
             var perlin = new PerlinNoise3D();
@@ -79,7 +79,7 @@ namespace RogueSC
             }
             else if (this[iCol, iRow].HasGroundCover)
             {
-                appearance = ObjectNameToAppearance["groundCover"];
+                appearance = ScRender.GroundCoverAppearance;
             }
             else
             {

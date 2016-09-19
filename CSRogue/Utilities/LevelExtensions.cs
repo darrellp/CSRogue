@@ -88,7 +88,7 @@ namespace CSRogue.Utilities
 
             if (level.Factory != null)
             {
-                var sumRarity = rarity.Values.Sum();
+                var sumRarity = rarity.Where(p => level.Factory.InfoFromId[p.Key].IsCreature == areCreatures).Select(p => p.Value).Sum();
 
                 if (sumRarity == 0)
                 {
@@ -117,7 +117,7 @@ namespace CSRogue.Utilities
                 rarityCumulation += rarity[info.ItemId];
                 if (rarityCumulation > cumulationLimit)
                 {
-                    return info.CreateItem(level);
+                    return info.CreateItem(level, info);
                 }
             }
             throw new RogueException("Couldn't find creature in SelectCreature");
