@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CSRogue.GameControl;
 using CSRogue.GameControl.Commands;
+using CSRogue.Interfaces;
 using CSRogue.Items;
 using CSRogue.Map_Generation;
 using CSRogue.Utilities;
@@ -11,22 +12,22 @@ namespace RogueSC.Creatures
 {
     internal class ChasingCreature : Creature
     {
-        protected Game _game;
+        protected Game Game;
 
-        public ChasingCreature(Level l)
+        public ChasingCreature(ILevel l)
         {
-            _game = l.Map.Game;
+            Game = l.Map.Game;
         }
 
         public override void InvokeAi()
         {
-            var neighbors = _game.Map.Neighbors(Location).ToList();
-            var playerLocation = _game.Map.Player.Location;
+            var neighbors = Game.Map.Neighbors(Location).ToList();
+            var playerLocation = Game.Map.Player.Location;
             var dest = Location;
-            if (_game.Map[playerLocation].Room == _game.Map[Location].Room)
+            if (Game.Map[playerLocation].Room == Game.Map[Location].Room)
             {
                 var min = int.MaxValue;
-                foreach (var neighbor in neighbors.Where(l => _game.Map[l].Terrain == TerrainType.Floor))
+                foreach (var neighbor in neighbors.Where(l => Game.Map[l].Terrain == TerrainType.Floor))
                 {
                     var delta = neighbor - playerLocation;
                     var metric = Math.Abs(delta.Column) + Math.Abs(delta.Row);
@@ -40,14 +41,14 @@ namespace RogueSC.Creatures
             else
             {
                 IList<MapCoordinates> select =
-                    Selector<MapCoordinates>.SelectFrom(neighbors, loc => _game.Map[loc].Terrain == TerrainType.Floor);
+                    Selector<MapCoordinates>.SelectFrom(neighbors, loc => Game.Map[loc].Terrain == TerrainType.Floor);
                 if (select.Count == 0)
                 {
                     return;
                 }
                 dest = select[0];
             }
-            _game.Enqueue(new MoveToCommand(this, dest));
+            Game.Enqueue(new MoveToCommand(this, dest));
         }
     }
 }
