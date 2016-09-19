@@ -10,14 +10,9 @@ using CSRogue.Utilities;
 
 namespace RogueSC.Creatures
 {
-    internal class ChasingCreature : Creature
+    internal class ChasingCreature : SCCreature
     {
-        protected Game Game;
-
-        public ChasingCreature(ILevel l)
-        {
-            Game = l.Map.Game;
-        }
+        public ChasingCreature(ILevel l) : base(l) { }
 
         public override void InvokeAi()
         {

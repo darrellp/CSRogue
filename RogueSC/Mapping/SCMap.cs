@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using CSRogue.GameControl;
 using CSRogue.Interfaces;
+using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
 using CSRogue.Utilities;
+using RogueSC.Creatures;
 using RogueSC.Map_Objects;
 using RogueSC.Utilities;
 using SadConsole;
@@ -13,7 +15,9 @@ namespace RogueSC
 {
     internal class SCMap : GameMap, IRoomsMap
 	{
-		public SCMap(int height, int width, int fovRadius, Game game, IItemFactory factory) :
+        internal Hero Hero => (Hero) Player;
+
+        public SCMap(int height, int width, int fovRadius, Game game, IItemFactory factory) :
 			base(
 				height, width,
 				fovRadius,

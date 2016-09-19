@@ -229,8 +229,9 @@ namespace RogueSC.Consoles
 				{Input.Keys.PageDown,(s) => s.DungeonConsole.MovePlayerBy(new Point(1, 1)) },
 				{Input.Keys.Home, (s) => s.DungeonConsole.MovePlayerBy(new Point(-1, -1)) },
 				{(Input.Keys)12, (s) => s.DungeonConsole.MovePlayerBy(new Point(0, 0)) },
-                {Input.Keys.O, (s)=> s.DungeonConsole.ToggleDoors() }
-			};
+                {Input.Keys.O, (s)=> s.DungeonConsole.ToggleDoors() },
+                {Input.Keys.G, (s)=> s.DungeonConsole.GetItem() },
+            };
 
         /// <summary>   A dictionary to map the arrow keys to their corresponding movement. </summary>
         private static readonly Dictionary<Input.Keys, Action<DungeonScreen>> ShiftKeysToAction = new Dictionary<Input.Keys, Action<DungeonScreen>>()
