@@ -89,6 +89,7 @@
     <Compile Include="Consoles\DungeonMapConsole.cs" />
     <Compile Include="Consoles\DungeonScreen.cs" />
     <Compile Include="Consoles\MessagesConsole.cs" />
+    <Compile Include="Creatures\ChasingCreature.cs" />
     <Compile Include="Creatures\Hero.cs" />
     <Compile Include="Creatures\Orc.cs" />
     <Compile Include="Creatures\Rat.cs" />

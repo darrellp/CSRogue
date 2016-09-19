@@ -35,7 +35,9 @@ namespace CSRogue.Utilities
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Constructor. </summary>
         ///
-        /// <remarks>   The goals may take different valuesDarrell, 9/17/2016. </remarks>
+        /// <remarks>   The goals may take different values.  If goal 1 has value n higher than goal 2 that
+        ///             means we're willing to go n steps further to reach goal 1 in preference to goal2.
+        ///             Darrell, 9/17/2016. </remarks>
         ///
         /// <param name="height">       The height of the bounding box containing our map. </param>
         /// <param name="width">        The width of the bounding box containing our map. </param>
