@@ -18,15 +18,16 @@ namespace RogueSC.Commands
         {
             SCMap scMap = (SCMap)game.Map;
             var playerLocation = scMap.Player.Location;
-            if (scMap[playerLocation].Items.Count > 0)
+            // There's at least one item at the player's location - namely the player!  So we've got to have 2
+            // or more for there to be something to pick up.
+            if (scMap[playerLocation].Items.Count > 1)
             {
                 // TODO: bring up a nice dialog in case there are several items to see which to pick up.
                 // Right now we just pick up the first item.
                 scMap.Hero.Inventory.Add((Item)scMap[playerLocation].Items[0]);
                 scMap[playerLocation].Items.RemoveAt(0);
-                //RenderToCell(scMap.GetAppearance(playerLocation), this[playerLocation.Column, playerLocation.Row], true);
+                InvokeGetItemEvent(game, new GetItemEventArgs(scMap.Hero.Inventory[0]));
             }
-            InvokeGetItemEvent(game, new GetItemEventArgs(scMap.Hero.Inventory[0]));
         }
     }
 }

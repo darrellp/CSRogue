@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using CSRogue.GameControl.Commands;
-using CSRogue.Items;
-using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
 using SadConsole;
 using Microsoft.Xna.Framework;
@@ -12,8 +10,6 @@ using SadConsole.Game;
 using SadConsole.Consoles;
 using CSRogue.Utilities;
 using RogueSC.Commands;
-using RogueSC.Creatures;
-using RogueSC.Map_Objects;
 using RogueSC.Utilities;
 using static RogueSC.Map_Objects.ScRender;
 using Console = SadConsole.Consoles.Console;
@@ -125,6 +121,8 @@ namespace RogueSC.Consoles
                 _map.GetAppearance(playerLocation),
                 this[playerLocation.Column, playerLocation.Row],
                 true);
+            
+            DungeonScreen.PrintLine($"[c:r f:Green]You picked up a [c:r f:Yellow]{e.ItemPickedUp}!");
         }
 
         internal void NewLevelInit()
