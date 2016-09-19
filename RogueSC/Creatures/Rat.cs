@@ -5,6 +5,7 @@ using CSRogue.GameControl;
 using CSRogue.Items;
 using CSRogue.Utilities;
 using CSRogue.GameControl.Commands;
+using CSRogue.Interfaces;
 using CSRogue.Map_Generation;
 
 namespace RogueSC.Creatures
@@ -13,7 +14,7 @@ namespace RogueSC.Creatures
     {
         private Game _game;
 
-        public Rat(Level l)
+        public Rat(ILevel l)
         {
             _game = l.Map.Game;
         }
