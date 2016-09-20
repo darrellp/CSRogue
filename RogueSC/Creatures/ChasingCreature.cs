@@ -5,6 +5,7 @@ using CSRogue.GameControl;
 using CSRogue.GameControl.Commands;
 using CSRogue.Interfaces;
 using CSRogue.Items;
+using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
 using CSRogue.Utilities;
 
@@ -12,7 +13,7 @@ namespace RogueSC.Creatures
 {
     internal class ChasingCreature : SCCreature
     {
-        public ChasingCreature(ILevel l) : base(l) { }
+        public ChasingCreature(ILevel l, ItemInfo i) : base(l, i) { }
 
         public override void InvokeAi()
         {

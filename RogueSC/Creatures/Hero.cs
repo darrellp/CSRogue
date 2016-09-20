@@ -6,6 +6,6 @@ namespace RogueSC.Creatures
 {
     internal class Hero : SCCreature, IPlayer
     {
-        public Hero(Level l, ItemInfo i) : base(l) { }
+        public Hero(Level l, ItemInfo i) : base(l, i) { }
     }
 }

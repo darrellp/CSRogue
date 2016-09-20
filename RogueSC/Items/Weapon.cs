@@ -6,18 +6,15 @@ namespace RogueSC.Items
 {
     internal class Weapon : Item
     {
-        protected static DieRoll DamageRoll;
-
         internal int Damage { get; }
+        internal string DamageRollString { get; }
 
         // ReSharper disable once UnusedParameter.Local
         public Weapon(Level l, ItemInfo i)
         {
-            if (DamageRoll == null)
-            {
-                DamageRoll = new DieRoll(i.Extra[0]);
-            }
-            Damage = DamageRoll.Roll();
+            DamageRollString = i.Extra[0];
+            var damageRoll = new DieRoll(i.Extra[0]);
+            Damage = damageRoll.Roll();
         }
     }
 }

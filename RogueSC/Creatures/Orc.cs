@@ -5,6 +5,6 @@ namespace RogueSC.Creatures
 {
     internal class Orc : ChasingCreature
     {
-        public Orc(Level l, ItemInfo i) : base(l) { }
+        public Orc(Level l, ItemInfo i) : base(l, i) { }
     }
 }

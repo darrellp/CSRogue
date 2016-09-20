@@ -70,15 +70,9 @@ namespace CSRogue.Items
         /// <param name="level">    (Optional) the level. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	    protected Creature(Guid itemTypeId = default(Guid), Level level = null)
+	    protected Creature(Guid itemTypeId = default(Guid), Level level = null, ItemInfo i = null)
 		{
 	        ItemTypeId = itemTypeId;
-
-            if (level != null)
-            {
-	            var info = level.Factory.InfoFromId[itemTypeId];
-	            HitPoints = info.CreatureInfo.HitPoints.Roll();
-            }
 		}
         #endregion
 

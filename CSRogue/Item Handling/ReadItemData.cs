@@ -87,6 +87,7 @@ namespace CSRogue.Item_Handling
 		private Func<ILevel, ItemInfo, IItem> GetConstructor(Guid id, ItemInfo i, string s)
 		{
 			var type = _typeAssembly.GetType(s);
+
 			return (level, itemInfo) =>
 			{
 				var item = (IItem) Activator.CreateInstance(type, level, itemInfo);

@@ -10,7 +10,7 @@ namespace RogueSC.Items
 
         public override string ToString()
         {
-            return $"{DamageRoll} Sword";
+            return $"{DamageRollString} Sword";
         }
     }
 }

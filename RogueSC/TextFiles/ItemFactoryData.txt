@@ -16,7 +16,7 @@ BAC45CA4-E0C9-4559-9806-0DF31A3652F6		o	Orc			Ugly green vermin.						RogueSC.Cr
 // 
 // Name field is only for documentation. It's actually ignored.
 // 
-//name  type										HP		Lvl	Rarity	Color	Speed	AC
-player	0D583F58-FA20-4292-A272-37919917644A		4d6		.	.		.		.		8
-rat		1BA9B9C4-6133-4CD3-92A6-233F0F26CBC0		2d6		0	2		Red		.		3
-orc		BAC45CA4-E0C9-4559-9806-0DF31A3652F6		2d6		0	2		Yellow	.		3
+//name  type										HP		Lvl	Rarity	Color	Speed	AC	HP
+player	0D583F58-FA20-4292-A272-37919917644A		4d6		.	.		.		.		8	4d6
+rat		1BA9B9C4-6133-4CD3-92A6-233F0F26CBC0		2d6		0	2		Red		.		3	2d6
+orc		BAC45CA4-E0C9-4559-9806-0DF31A3652F6		2d6		0	2		Yellow	.		3	2d6

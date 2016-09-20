@@ -38,10 +38,14 @@ namespace CSRogue.Item_Handling
             var itemId = new Guid(values[1]);
             infoList[itemId] = info;
 
-			for (var iField = 1; iField < values.Count; iField++)
+			for (var iField = 1; iField < Math.Min(values.Count, DispatchTable.Count); iField++)
 			{
 				ProcessField(info, iField, values[iField]);
 			}
+		    if (values.Count > DispatchTable.Count)
+		    {
+		        info.Extra = values.Skip(DispatchTable.Count).ToArray();
+		    }
 		}
 
 		private static readonly List<Action<string, CreatureInfo>> DispatchTable = new List<Action<string, CreatureInfo>>
@@ -65,7 +69,8 @@ namespace CSRogue.Item_Handling
 				(s, i) => { },
 				(s, i) => { },
 				(s, i) => { },
-		    };
+                (s, i) => { },
+            };
 
 		private static void ProcessField(CreatureInfo info, int iField, string value)
 		{
