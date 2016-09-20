@@ -97,10 +97,5 @@ namespace CSRogue.GameControl.Commands
             game.Map.MoveCreatureTo(game.Map.Player, location, run: run, litAtStartOfRun: litAtStartOfRun);
 	        game.EndTurn();
         }
-
-        public virtual void HitCreatureFor(ICreature victim, int damage)
-        {
-            victim.HitPoints -= damage;
-        }
     }
 }

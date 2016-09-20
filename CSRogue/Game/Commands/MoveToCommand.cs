@@ -37,11 +37,23 @@ namespace CSRogue.GameControl.Commands
 
         public override void Execute(Game game)
         {
+            if (!Creature.IsAlive)
+            {
+                return;
+            }
+            var bumpedCreature = game.Map.CreatureAt(Location);
+
             // If there isn't already a creature there
-            if (Creature.IsAlive && game.Map.CreatureAt(Location) == null)
+            if (bumpedCreature == null)
             {
                 // Then move the creature there
                 game.CurrentLevel.Map.MoveCreatureTo(Creature, Location);
+            }
+            else if (bumpedCreature.IsPlayer)
+            {
+                AttackCommand cmd = new AttackCommand(Creature, game.Map.Player);
+                game.Enqueue(cmd);
+
             }
         }
     }

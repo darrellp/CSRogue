@@ -10,6 +10,7 @@ using SadConsole.Game;
 using SadConsole.Consoles;
 using CSRogue.Utilities;
 using RogueSC.Commands;
+using RogueSC.Creatures;
 using RogueSC.Utilities;
 using static RogueSC.Map_Objects.ScRender;
 using Console = SadConsole.Consoles.Console;
@@ -337,6 +338,7 @@ namespace RogueSC.Consoles
                 return;
             }
 
+            ((Hero) _map.Player).Moved();
             // Move the SadConsole sprite to the destination
             PlayerSprite.Position = e.CreatureDestination.ToPoint();
 

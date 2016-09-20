@@ -8,6 +8,7 @@ using CSRogue.Map_Generation;
 using CSRogue.RogueEventArgs;
 using CSRogue.Utilities;
 using Microsoft.Xna.Framework;
+using RogueSC.Creatures;
 using RogueSC.Map_Objects;
 using RogueSC.Utilities;
 using SadConsole;
@@ -36,13 +37,13 @@ namespace RogueSC.Consoles
         public CharacterConsole StatsConsole;
         /// <summary>   The message console. </summary>
         public MessagesConsole MessageConsole;
+        public static DungeonScreen BaseScreen;
         #endregion
 
         #region Private Variables
         // The factory is essentially the dictionary for everything in the game - all monsters, all items, etc.
         // It allows us to not only find out about objects but also to create them.
         private static readonly ItemFactory Factory;
-        private static DungeonScreen _dungeonScreen;
         private readonly CSRogue.GameControl.Game _game;
         private const int MapWidth = 100;
         private const int MapHeight = 100;
@@ -87,7 +88,10 @@ namespace RogueSC.Consoles
 
         internal DungeonScreen(StreamWriter writer, StreamReader reader, int fileIndex)
         {
-            _dungeonScreen = this;
+            StatsConsole = new CharacterConsole(StatsWidth, StatsHeight);
+            MessageConsole = new MessagesConsole(WindowWidth, MessageHeight);
+
+            BaseScreen = this;
             var seed = -1;
             if (reader != null)
             {
@@ -108,9 +112,7 @@ namespace RogueSC.Consoles
 			_game.AttackEvent += Game_AttackEvent;
             CreateNewLevel();
 
-            StatsConsole = new CharacterConsole(StatsWidth, StatsHeight);
             DungeonConsole = new DungeonMapConsole(_game, DungeonWidth, DungeonHeight);
-            MessageConsole = new MessagesConsole(WindowWidth, MessageHeight);
 
             // Setup the message header to be as wide as the screen but only 1 character high
             var messageHeaderConsole = new Console(WindowWidth, 1)
@@ -149,9 +151,7 @@ namespace RogueSC.Consoles
             Add(MessageConsole);
 
             // Placeholder stuff for the stats screen
-            StatsConsole.CharacterName = "Hydorn";
-            StatsConsole.MaxHealth = 200;
-            StatsConsole.Health = 100;
+            StatsConsole.CharacterName = "darrellp";
 
             Engine.ActiveConsole = this;
             Engine.Keyboard.RepeatDelay = 0.1f;
@@ -170,7 +170,7 @@ namespace RogueSC.Consoles
 
         private void CreateNewLevel()
         {
-            var map = new SCMap(MapWidth, MapHeight, 10, _game, Factory);
+            var map = new SCMap(MapWidth, MapHeight, 10, _game, _game.Map?.Player, Factory);
 
             var levelCmd = new NewLevelCommand(0, map, new Dictionary<Guid, int>()
             {
@@ -203,18 +203,46 @@ namespace RogueSC.Consoles
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         internal static void PrintLine(string msg)
         {
-            _dungeonScreen.MessageConsole.PrintMessage(msg);
+            BaseScreen.MessageConsole.PrintMessage(msg);
         }
         #endregion
 
         #region Event Handlers
         private void Game_AttackEvent(object sender, AttackEventArgs e)
-		{
-			if (e.Victim.IsPlayer || !e.VictimDied)
+        {
+            bool involvesPlayer = e.Victim.IsPlayer || e.Attacker.IsPlayer;
+            // Determine damage
+            var damage = ((SCCreature) e.Attacker).CalculateDamage((SCCreature)e.Victim);
+
+            if (involvesPlayer)
+            {
+                string msg = e.Attacker.IsPlayer
+                    ? $"[c:r f:Red]You hit the [c:r f:Yellow]{Factory.InfoFromId[e.Victim.ItemTypeId].Name}[c:r f:Red] for [c:r f:Blue]{damage}[c:r f:Red] points"
+                    : $"[c:r f:Red]The [c:r f:Yellow]{Factory.InfoFromId[e.Attacker.ItemTypeId].Name}[c:r f:Red] hit you for [c:r f:Blue]{damage}[c:r f:Red] points";
+
+                PrintLine(msg);
+            }
+
+            // Hit the victim for that damage
+            ((SCCreature)e.Victim).HitPoints -= damage;
+            var expired = ((SCCreature)e.Victim).HitPoints <= 0;
+
+            // Did the victim die?
+            if (expired)
+            {
+                // Kill the unfortunate victim
+                // TODO: check to see if the victim is the player in which case, game over!
+                _game.CurrentLevel.KillCreature(e.Victim);
+            }
+
+            if (e.Victim.IsPlayer || !expired)
             {
                 return;
             }
-            MessageConsole.PrintMessage($"[c:r f:Red]You killed a mighty [c:r f:Yellow]{_game.Factory.InfoFromId[e.Victim.ItemTypeId].Name}!");
+            if (involvesPlayer)
+            {
+                PrintLine($"[c:r f:Red]You killed a mighty [c:r f:Yellow]{_game.Factory.InfoFromId[e.Victim.ItemTypeId].Name}!");
+            }
         }
 
 		private void Game_NewLevelEvent(object sender, NewLevelEventArgs e)

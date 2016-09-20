@@ -17,18 +17,20 @@ namespace RogueSC
 	{
         internal Hero Hero => (Hero) Player;
 
-        public SCMap(int height, int width, int fovRadius, Game game, IItemFactory factory) :
+        public SCMap(int height, int width, int fovRadius, Game game, IPlayer player, IItemFactory factory) :
 			base(
 				height, width,
 				fovRadius,
 				game,
-				(IPlayer)factory.InfoFromId[ItemIDs.HeroId].CreateItem(null, null),
+				player??(IPlayer)factory.InfoFromId[ItemIDs.HeroId].CreateItem(null, factory.InfoFromId[ItemIDs.HeroId]),
 				() => new SCMapLocationData())
 		{
-            var perlin = new PerlinNoise3D();
-		    perlin.Frequency = 50.0;
-		    perlin.Octaves = 2;
-			var excavator = new GridExcavator();
+            var perlin = new PerlinNoise3D
+            {
+                Frequency = 50.0,
+                Octaves = 2
+            };
+            var excavator = new GridExcavator();
 			excavator.Excavate(this, Player);
 			foreach (var doorLoc in this.TerrainLocations(new HashSet<TerrainType>() { TerrainType.Door }))
 			{

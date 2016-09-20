@@ -4,13 +4,13 @@ using CSRogue.Utilities;
 
 namespace RogueSC.Items
 {
-    internal class Sword : Weapon
+    internal sealed class Sword : Weapon
     {
         public Sword(Level l, ItemInfo i) : base(l, i) { }
 
         public override string ToString()
         {
-            return $"{DamageRollString} Sword";
+            return $"{DamageRoll} Sword";
         }
     }
 }

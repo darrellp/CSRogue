@@ -23,6 +23,7 @@ namespace RogueSC.Consoles
         public int MaxHealth
         {
             set { _maxHealth = value; RedrawPanel(); }
+            get { return _maxHealth;}
         }
 
         public CharacterConsole(int width, int height): base(width, height)
@@ -44,7 +45,7 @@ namespace RogueSC.Consoles
             Print(2, 2, _characterName);
 
             // Create a colored string that looks like 52/500
-            var healthStatus = _health.ToString().CreateColored(Color.LightGreen, Color.Black, null) +
+            var healthStatus = _health.ToString().PadLeft(2).CreateColored(Color.LightGreen, Color.Black, null) +
                                                     "/".CreateColored(Color.White, Color.Black, null) +
                                                     _maxHealth.ToString().CreateColored(Color.DarkGreen, Color.Black, null);
 

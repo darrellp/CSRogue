@@ -3,7 +3,7 @@ using CSRogue.Map_Generation;
 
 namespace RogueSC.Creatures
 {
-    internal class Rat : ChasingCreature
+    internal sealed class Rat : ChasingCreature
     {
         public Rat(Level l, ItemInfo i) : base(l, i) { }
     }
