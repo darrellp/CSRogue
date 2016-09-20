@@ -84,12 +84,12 @@ namespace CSRogue.Item_Handling
 			return info;
 		}
 
-		private Func<ILevel, IItem> GetConstructor(Guid id, string s)
+		private Func<ILevel, ItemInfo, IItem> GetConstructor(Guid id, ItemInfo i, string s)
 		{
 			var type = _typeAssembly.GetType(s);
-			return l =>
+			return (level, itemInfo) =>
 			{
-				var item = (IItem) Activator.CreateInstance(type, l);
+				var item = (IItem) Activator.CreateInstance(type, level, itemInfo);
 				item.ItemTypeId = id;
 				return item;
 			};
@@ -144,7 +144,7 @@ namespace CSRogue.Item_Handling
 			(t, s, i) => i.Character = s[0],
 			(t, s, i) => i.Name = s,
 			(t, s, i) => i.Description = s,
-			(t, s, i) => i.CreateItem = t.GetConstructor(i.ItemId, s),
+			(t, s, i) => i.CreateItem = t.GetConstructor(i.ItemId, i, s),
             (t, s, i) => i.IsPlayer = true,
 		};
 
@@ -155,7 +155,8 @@ namespace CSRogue.Item_Handling
 			(t, s, i) => { },
 			(t, s, i) => { },
 			(t, s, i) => { },
-		};
+            (t, s, i) => { },
+        };
 
 		private static readonly List<Action<string, CreatureInfo>> CreatureDispatchTable = new List<Action<string, CreatureInfo>>
 		{
@@ -178,6 +179,7 @@ namespace CSRogue.Item_Handling
 			(s, i) => { },
 			(s, i) => { },
 			(s, i) => { },
-		};
+            (s, i) => { },
+        };
 	}
 }

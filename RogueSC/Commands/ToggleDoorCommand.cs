@@ -13,7 +13,7 @@ namespace RogueSC.Commands
 
         /// <summary> Event queue for all listeners interested in new level events. </summary>
         internal static event EventHandler<ToogleDoorEventArgs> ToggleDoorEvent;
-        internal void InvokeNewLevelEvent(Object sender, ToogleDoorEventArgs e)
+        internal void InvokeToggleDoorEvent(Object sender, ToogleDoorEventArgs e)
         {
             ToggleDoorEvent?.Invoke(sender, e);
         }
@@ -29,7 +29,7 @@ namespace RogueSC.Commands
         {
             SCMap scMap = (SCMap) game.Map;
             scMap[_doorLocation].ToggleDoor();
-            InvokeNewLevelEvent(game, new ToogleDoorEventArgs(_agent, _doorLocation));
+            InvokeToggleDoorEvent(game, new ToogleDoorEventArgs(_agent, _doorLocation));
             var moveCmd = new MovePlayerCommand(new MapCoordinates());
             game.EnqueueAndProcess(moveCmd);
         }

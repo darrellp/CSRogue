@@ -1,15 +1,17 @@
-﻿using CSRogue.Map_Generation;
+﻿using System.Collections.Generic;
+using CSRogue.Item_Handling;
+using CSRogue.Map_Generation;
 using SadConsole;
 
 namespace RogueSC.Map_Objects
 {
 	class SCMapLocationData : MapLocationData
 	{
-	    private bool _hasGroundCover = false;
+	    private bool _hasGroundCover;
 	    private bool _isDoorOpen;
 		internal CellAppearance Appearance { get; set; }
 
-	    internal bool HasGroundCover
+        internal bool HasGroundCover
 	    {
 	        get { return _hasGroundCover; }
 	        set
@@ -41,7 +43,7 @@ namespace RogueSC.Map_Objects
 				_isDoorOpen = value;
 			    CheckVisibility();
 			    CheckWalkability();
-                Appearance = ScRender.ObjectNameToAppearance[_isDoorOpen ? "openDoor" : "closedDoor"];
+			    Appearance = _isDoorOpen ? ScRender.OpenDoorAppearance : ScRender.ClosedDoorAppearance;
 			}
 		}
 

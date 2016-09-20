@@ -99,7 +99,7 @@ namespace CSRogue.Map_Generation
 				var terrain = TerrainFactory.ProduceTerrain(currentLine[iCol]);
 
 				var item = _charToId.ContainsKey(currentLine[iCol])
-					? _factory.InfoFromId[_charToId[currentLine[iCol]]].CreateItem(null) : null;
+					? _factory.InfoFromId[_charToId[currentLine[iCol]]].CreateItem(null, null) : null;
                 
 				var items = item == null ? null : new List<IItem> { item };
 				var data = _dataCreator();

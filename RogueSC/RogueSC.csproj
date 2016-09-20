@@ -83,17 +83,22 @@
     <EmbeddedResource Include="TextFiles\ItemFactoryData.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\GetItemCommand.cs" />
+    <Compile Include="Commands\GetItemEventArgs.cs" />
     <Compile Include="Commands\ToggleDoorCommand.cs" />
     <Compile Include="Commands\ToggleDoorEventArgs.cs" />
     <Compile Include="Consoles\CharacterConsole.cs" />
     <Compile Include="Consoles\DungeonMapConsole.cs" />
     <Compile Include="Consoles\DungeonScreen.cs" />
     <Compile Include="Consoles\MessagesConsole.cs" />
+    <Compile Include="Creatures\ChasingCreature.cs" />
     <Compile Include="Creatures\Hero.cs" />
     <Compile Include="Creatures\Orc.cs" />
     <Compile Include="Creatures\Rat.cs" />
+    <Compile Include="Creatures\SCCreature.cs" />
     <Compile Include="GameWorld.cs" />
     <Compile Include="Items\Sword.cs" />
+    <Compile Include="Items\Weapon.cs" />
     <Compile Include="Map Objects\SCMapLocationData.cs" />
     <Compile Include="Map Objects\SCRender.cs" />
     <Compile Include="Program.cs" />

@@ -42,7 +42,7 @@ namespace RogueSC.Consoles
         // The factory is essentially the dictionary for everything in the game - all monsters, all items, etc.
         // It allows us to not only find out about objects but also to create them.
         private static readonly ItemFactory Factory;
-
+        private static DungeonScreen _dungeonScreen;
         private readonly CSRogue.GameControl.Game _game;
         private const int MapWidth = 100;
         private const int MapHeight = 100;
@@ -87,6 +87,7 @@ namespace RogueSC.Consoles
 
         internal DungeonScreen(StreamWriter writer, StreamReader reader, int fileIndex)
         {
+            _dungeonScreen = this;
             var seed = -1;
             if (reader != null)
             {
@@ -174,7 +175,8 @@ namespace RogueSC.Consoles
             var levelCmd = new NewLevelCommand(0, map, new Dictionary<Guid, int>()
             {
                 {ItemIDs.RatId, 1},
-                {ItemIDs.OrcId, 1}
+                {ItemIDs.OrcId, 1},
+                {ItemIDs.SwordId, 1},
             });
             _game.EnqueueAndProcess(levelCmd);
 
@@ -188,6 +190,20 @@ namespace RogueSC.Consoles
             {
                 CreateNewLevel();
             }
+        }
+        #endregion
+
+        #region Messaging
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Print a message. </summary>
+        ///
+        /// <remarks>   Darrell, 9/18/2016. </remarks>
+        ///
+        /// <param name="msg">  The message to print. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        internal static void PrintLine(string msg)
+        {
+            _dungeonScreen.MessageConsole.PrintMessage(msg);
         }
         #endregion
 
@@ -228,8 +244,9 @@ namespace RogueSC.Consoles
 				{Input.Keys.PageDown,(s) => s.DungeonConsole.MovePlayerBy(new Point(1, 1)) },
 				{Input.Keys.Home, (s) => s.DungeonConsole.MovePlayerBy(new Point(-1, -1)) },
 				{(Input.Keys)12, (s) => s.DungeonConsole.MovePlayerBy(new Point(0, 0)) },
-                {Input.Keys.O, (s)=> s.DungeonConsole.ToggleDoors() }
-			};
+                {Input.Keys.O, (s)=> s.DungeonConsole.ToggleDoors() },
+                {Input.Keys.G, (s)=> s.DungeonConsole.GetItem() },
+            };
 
         /// <summary>   A dictionary to map the arrow keys to their corresponding movement. </summary>
         private static readonly Dictionary<Input.Keys, Action<DungeonScreen>> ShiftKeysToAction = new Dictionary<Input.Keys, Action<DungeonScreen>>()

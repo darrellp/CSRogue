@@ -90,7 +90,6 @@ namespace CSRogue.Utilities
 		///
 		/// <returns>	A dictionary mapping local coordinates to the corresponding room </returns>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-
 		public static Dictionary<MapCoordinates, IRoom> MapExitsToRooms(this IRoom room)
 		{
 			var exitMap = new Dictionary<MapCoordinates, IRoom>();
@@ -120,5 +119,46 @@ namespace CSRogue.Utilities
 			}
 			return exitMap;
 		}
-	}
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   An IRoom extension method that produces a djikstra map given a single goal cell. </summary>
+        ///
+        /// <remarks>   Darrell, 9/18/2016. </remarks>
+        ///
+        /// <param name="room"> The room to act on. </param>
+        /// <param name="goal"> The goal cell location. </param>
+        ///
+        /// <returns>   The Djikstra map. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+	    public static int[][] DjikstraMap(this IRoom room, MapCoordinates goal)
+	    {
+            var goals = new Dictionary<int, List<MapCoordinates>>()
+            {
+                {0, new List<MapCoordinates>() {goal}}
+            };
+	        return room.DjikstraMap(goals);
+	    }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>
+        /// An IRoom extension method that produces a djikstra map given multiple goals and priorities.
+        /// </summary>
+        ///
+        /// <remarks>   Darrell, 9/18/2016. </remarks>
+        ///
+        /// <param name="room">     The room to act on. </param>
+        /// <param name="goals">    The goals. </param>
+        ///
+        /// <returns>   The Djikstra map. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        public static int[][] DjikstraMap(this IRoom room, Dictionary<int, List<MapCoordinates>> goals)
+        {
+            var djikstra = new DjikstraMap(room.Height(), room.Width(), goals, (c, r) =>
+            {
+                var tile = room.Layout[c][r];
+                return tile == '.' || char.IsLetter(tile);
+            });
+            return djikstra.CreateMap();
+        }
+    }
 }

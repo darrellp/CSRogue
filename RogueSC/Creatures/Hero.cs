@@ -1,11 +1,11 @@
 ﻿using CSRogue.Interfaces;
-using CSRogue.Items;
+using CSRogue.Item_Handling;
 using CSRogue.Map_Generation;
 
 namespace RogueSC.Creatures
 {
-    public class Hero : Creature, IPlayer
+    internal class Hero : SCCreature, IPlayer
     {
-        public Hero(Level l) { }
+        public Hero(Level l, ItemInfo i) : base(l) { }
     }
 }

@@ -51,7 +51,6 @@ namespace RogueSC.Consoles
         #region Private Variables
         /// <summary>   The CSRogue map. </summary>
         private SCMap _map;
-
         private GameObject _playerSprite;
 
         /// <summary>   The CSRogue game object. </summary>
@@ -94,6 +93,7 @@ namespace RogueSC.Consoles
 
             // The ToogleDoorEvent is located in our SadConsole app rather than the engine
             ToggleDoorCommand.ToggleDoorEvent += _game_ToggleDoorEvent;
+            GetItemCommand.GetItemEvent += GetItemCommand_GetItemEvent;
 
             // Change the font to a square one for the dungeon
             var fontMaster = Engine.LoadFont("Cheepicus12.font");
@@ -112,6 +112,17 @@ namespace RogueSC.Consoles
             TextSurface.RenderArea = new Rectangle(0, 0, charWidth, charHeight);
 
             NewLevelInit();
+        }
+
+        private void GetItemCommand_GetItemEvent(object sender, GetItemEventArgs e)
+        {
+            var playerLocation = _map.Player.Location;
+            RenderToCell(
+                _map.GetAppearance(playerLocation),
+                this[playerLocation.Column, playerLocation.Row],
+                true);
+            
+            DungeonScreen.PrintLine($"[c:r f:Green]You picked up a [c:r f:Yellow]{e.ItemPickedUp}!");
         }
 
         internal void NewLevelInit()
@@ -259,11 +270,23 @@ namespace RogueSC.Consoles
 			}
 		}
 
+        private void EndTurn()
+        {
+            MovePlayerBy(new Point(0, 0));
+        }
+
+        internal void GetItem()
+        {
+            var cmd = new GetItemCommand();
+            _game.Enqueue(cmd);
+            EndTurn();
+        }
+
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Toggle doors adjacent to the player. </summary>
         ///
         /// <remarks>   Darrell, 9/16/2016. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////////////////
         internal void ToggleDoors()
         {
             foreach (var doorLoc in _map.Neighbors(_map.Player.Location).Where(l => _map[l].Terrain == TerrainType.Door))
@@ -277,7 +300,7 @@ namespace RogueSC.Consoles
             }
 
             // This will give the monsters a chance to move and also actually fire off all our queued up door commands
-            MovePlayerBy(new Point(0, 0));
+            EndTurn();
         }
         #endregion
 
