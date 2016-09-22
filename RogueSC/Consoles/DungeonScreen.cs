@@ -44,8 +44,10 @@ namespace RogueSC.Consoles
         // The factory is essentially the dictionary for everything in the game - all monsters, all items, etc.
         // It allows us to not only find out about objects but also to create them.
         private static readonly ItemFactory Factory;
+
+        // Probably should be in a text file but for this little toy rogue, no big deal.
         public static string[] TolkienNames =
-{
+        {
             "alfwine", "abattarik", "adanedhel", "adanel", "adrahil", "adunakhor", "aegnor", "aerin", "agarwaen",
             "aikanaro", "aiwendil", "alatar", "alatariel", "alcarin", "aldamir", "aldarion", "aldaron", "aldor",
             "amandil", "amdir", "amlaith", "amras", "amrod", "amroth", "amrothos", "anaire", "anardil", "anarion",
@@ -113,8 +115,7 @@ namespace RogueSC.Consoles
         // one less to account for MessageHeader
         const int MessageHeight = 6;
         const int DungeonHeight = StatsHeight;
-
-
+        private int _levelDepth;
         #endregion
 
         #region Constructor
@@ -228,7 +229,7 @@ namespace RogueSC.Consoles
         {
             var map = new SCMap(MapWidth, MapHeight, 10, _game, _game.Map?.Player, Factory);
 
-            var levelCmd = new NewLevelCommand(0, map, new Dictionary<Guid, int>()
+            var levelCmd = new NewLevelCommand(_levelDepth++, map, new Dictionary<Guid, int>()
             {
                 {ItemIDs.RatId, 1},
                 {ItemIDs.OrcId, 1},
@@ -303,7 +304,22 @@ namespace RogueSC.Consoles
 
 		private void Game_NewLevelEvent(object sender, NewLevelEventArgs e)
 		{
-			var map = (SCMap)e.NewLevel.Map;
+		    if (e.NewLevel.Depth != 0)
+		    {
+                PrintLine($"Level {e.NewLevel.Depth}");
+                PrintLine("Your atoms begin to fly apart as you feel yourself sucked down into...");
+		        if (((Hero) e.NewLevel.Map.Player).Inventory.Count > 0)
+		        {
+                    PrintLine("Your sword is ripped from your hands as you feel yourself disassociating...");
+		            ((Hero) e.NewLevel.Map.Player).Inventory.Clear();
+		        }
+                else
+		        {
+                    PrintLine("you feel yourself disassociating...");
+		        }
+
+            }
+            var map = (SCMap)e.NewLevel.Map;
 			for (var iCol = 0; iCol < map.Width; iCol++)
 			{
 				for (var iRow = 0; iRow < map.Height; iRow++)
