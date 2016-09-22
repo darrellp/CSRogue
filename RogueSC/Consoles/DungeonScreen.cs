@@ -132,7 +132,6 @@ namespace RogueSC.Consoles
             }
         }
 
-
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Default constructor. </summary>
         ///
@@ -306,18 +305,17 @@ namespace RogueSC.Consoles
 		{
 		    if (e.NewLevel.Depth != 0)
 		    {
-                PrintLine($"Level {e.NewLevel.Depth}");
-                PrintLine("Your atoms begin to fly apart as you feel yourself sucked down into...");
 		        if (((Hero) e.NewLevel.Map.Player).Inventory.Count > 0)
 		        {
-                    PrintLine("Your sword is ripped from your hands as you feel yourself disassociating...");
+                    PrintLine("[c:r f:Blue]Your sword is ripped from your hands as you feel yourself disassociating...");
 		            ((Hero) e.NewLevel.Map.Player).Inventory.Clear();
 		        }
                 else
 		        {
-                    PrintLine("you feel yourself disassociating...");
+                    PrintLine("[c:r f:Blue]you feel yourself disassociating...");
 		        }
-
+                PrintLine("[c:r f:Blue]Your atoms begin to fly apart as you feel yourself sucked down into...");
+                PrintLine($"[c:r f:Yellow]Level {e.NewLevel.Depth}");
             }
             var map = (SCMap)e.NewLevel.Map;
 			for (var iCol = 0; iCol < map.Width; iCol++)

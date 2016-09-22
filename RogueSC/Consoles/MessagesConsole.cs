@@ -1,4 +1,5 @@
-﻿using SadConsole;
+﻿using Microsoft.Xna.Framework;
+using SadConsole;
 using SadConsole.Consoles;
 using Console = SadConsole.Consoles.Console;
 
@@ -9,18 +10,19 @@ namespace RogueSC.Consoles
     {
         public void PrintMessage(string text)
         {
-            ShiftDown(1);
+            ShiftUp(1);
             VirtualCursor.Print(text).CarriageReturn();
         }
 
         public void PrintMessage(ColoredString text)
         {
-            ShiftDown(1);
+            ShiftUp(1);
             VirtualCursor.Print(text).CarriageReturn();
         }
 
         public MessagesConsole(int width, int height) : base(width, height)
         {
+            VirtualCursor.Position = new Point(0, height - 1);
         }
 
         public MessagesConsole(int width, int height, Font font) : base(width, height, font)
