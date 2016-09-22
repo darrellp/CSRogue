@@ -96,9 +96,12 @@
     <Compile Include="Utilities\DjikstraMap.cs" />
     <Compile Include="Utilities\FovExtensions.cs" />
     <Compile Include="Utilities\GameMapExtensions.cs" />
+    <Compile Include="Utilities\NameGenerator.cs" />
     <Compile Include="Utilities\LevelExtensions.cs" />
+    <Compile Include="Utilities\LevenshteinDistance.cs" />
     <Compile Include="Utilities\MapExtensions.cs" />
     <Compile Include="Utilities\MapLocationDataExtensions.cs" />
+    <Compile Include="Utilities\MarkovModel.cs" />
     <Compile Include="Utilities\PerlinNoise.cs" />
     <Compile Include="Utilities\PerThreadSingleton.cs" />
     <Compile Include="Utilities\Preferences.cs" />

@@ -44,6 +44,62 @@ namespace RogueSC.Consoles
         // The factory is essentially the dictionary for everything in the game - all monsters, all items, etc.
         // It allows us to not only find out about objects but also to create them.
         private static readonly ItemFactory Factory;
+        public static string[] TolkienNames =
+{
+            "alfwine", "abattarik", "adanedhel", "adanel", "adrahil", "adunakhor", "aegnor", "aerin", "agarwaen",
+            "aikanaro", "aiwendil", "alatar", "alatariel", "alcarin", "aldamir", "aldarion", "aldaron", "aldor",
+            "amandil", "amdir", "amlaith", "amras", "amrod", "amroth", "amrothos", "anaire", "anardil", "anarion",
+            "anborn", "ancalagon", "ancalime", "ancalimon", "andrast", "anducal", "anfauglir", "andreth", "androg",
+            "angbor", "angrod", "annatar", "arador", "araglas", "aragorn", "aragost", "arahad", "arahael", "aranarth",
+            "arantar", "aranuir", "araphant", "araphor", "arassuil", "aratan", "aratar", "arathorn", "araval", "aravir",
+            "aravorn", "aredhel", "argeleb", "argon", "argonui", "arien", "aros", "arthedain", "arvedui", "arvegil",
+            "arveleg", "arwen", "asfaloth", "atanamir", "atanatar", "aule", "ausir", "avranc", "azaghal", "azog",
+            "baldor", "balin", "baragund", "barahir", "barahir", "baran", "bard", "bauglir", "belecthor", "beleg",
+            "belegorn", "belegund", "belemir", "beor", "beorn", "bereg", "beregond", "beren", "bergil", "bert",
+            "beruthiel", "bifur", "boldog", "berylla", "bofur", "bolg", "bolger", "bombadil", "bombur", "bor", "borin",
+            "boromir", "boron", "borondir", "brand", "brandir", "gormadoc", "meriadoc", "primula", "brego", "bregolas",
+            "bregor", "brodda", "brytta", "bucca", "barliman", "calembel", "calimehtar", "calion", "calmacil",
+            "calmacil", "caranthir", "carcharoth", "castamir", "cemendur", "celeborn", "celebrian", "celebrimbor",
+            "celebrindor", "celegorm", "celepharn", "ceorl", "cirdan", "cirion", "ciryaher", "ciryandil", "ciryatan",
+            "ciryon", "cotton", "curufin", "curunir", "daeron", "dáin", "deagol", "denethor", "deor", "deorwine",
+            "dernhelm", "dior", "dis", "dori", "dorlas", "draugluin", "duilin", "durin", "dwalin", "earendil",
+            "earendur", "amandil", "earnil", "earnur", "earwen", "ecthelion", "egalmoth", "eilinel", "elanor",
+            "elbereth", "eldacar", "eldarion", "elemmakil", "elendil", "elendor", "elendur", "elenna", "elenwe",
+            "elessar", "elfhelm", "elfhild", "elfwine", "elladan", "elmo", "elrohir", "elrond", "elros", "elu", "elwe",
+            "elwing", "elven", "king", "emeldir", "emerie", "enel", "enelye", "eöl", "eomer", "eomund", "eönwe", "eorl",
+            "eothain", "eotheod", "eowyn", "eradan", "erendis", "erestor", "erkenbrand", "iluvatar", "estel", "estelmo",
+            "este", "falassion", "faniel", "faramir", "fastred", "feanor", "felarof", "fengel", "fili", "finarfin",
+            "findis", "finduilas", "finduilas", "fingolfin", "fingon", "finrod", "finvain", "finwe", "firiel",
+            "folcwine", "frea", "frealáf", "freawine", "freca", "frerin", "fror", "fuinur", "fundin", "galador",
+            "galadriel", "galdor", "gamil", "gamling", "gandalf", "ghânburi", "gilgalad", "gildor", "gilrain",
+            "gimilkhâd", "gimilzôr", "gimli", "ginglith", "girion", "glanhir", "glaurung", "gloin", "gloredhel",
+            "glorfindel", "goldberry", "goldwine", "golfimbul", "gollum", "gorbag", "gorlim", "gorthaur", "gothmog",
+            "gram", "grima", "grimbold", "grishnákh", "gror", "gwaihir", "gwathir", "gwindor", "hador", "halbarad",
+            "haldad", "haldan", "haldar", "haldir", "haleth", "hallas", "halmir", "háma", "handir", "hardang", "hareth",
+            "helm", "herion", "herucalmo", "herumor", "herunumen", "hirgon", "hiril", "hostamir", "huan", "hundar",
+            "huor", "hurin", "hyarmendacil", "ibûn", "idril", "ilmare", "iluvatar", "imbar", "imin", "iminye", "imrahil",
+            "indis", "inglor", "ingwe", "inziladûn", "inzilbêth", "irilde", "irime", "irmo", "isildur", "isilme",
+            "isilmo", "ivriniel", "khamûl", "khîm", "kili", "arthedain", "lagduf", "lalaith", "legolas", "lenwe", "leod",
+            "lindir", "lugdush", "luthien", "lurtz", "mablung", "maedhros", "maeglin", "maglor", "magor", "mahtan",
+            "maiar", "malach", "mallor", "malvegil", "manthor", "manwe", "marach", "voronwe", "mauhur", "melian",
+            "meleth", "meneldil", "meneldur", "mîm", "minalcar", "minardil", "minastir", "minyatur", "mirielar",
+            "zimraphel", "mirielserinde", "mithrandir", "morgoth", "morwen", "morwen", "muzgash", "nahar", "náin",
+            "námo", "narmacil", "narvi", "nerdanel", "nessa", "nienna", "nienor", "nimloth", "nimrodel", "niniel", "nom",
+            "nori", "ohtar", "oin", "olorin", "olwe", "ondoher", "ori", "ornendil", "orodreth", "orome", "oropher",
+            "orophin", "osse", "ostoher", "pallando", "palantir", "pelendur", "pengolodh", "pharazôn", "beruthiel",
+            "radagast", "rian", "romendacil", "rumil", "lobelia", "lotho", "sador", "saeros", "sakalthôr", "salgant",
+            "salmar", "saruman", "sauron", "scatha", "shadowfax", "shagrat", "shelob", "silmarien", "singollo",
+            "siriondil", "smaug", "smeagol", "snowmane", "soronto", "strider", "surion", "elmar", "tarcil", "tarondor",
+            "tarannon", "tata", "tatie", "telchar", "telemmaite", "telemnar", "telperien", "telumehtar", "thengel",
+            "theoden", "theodred", "theodwyn", "thingol", "thorin", "thorondir", "thorondor", "thráin", "thranduil",
+            "thror", "tilion", "tindomiel", "tinuviel", "adalgrim", "belladonna", "ferumbras", "fortinbras", "gerontius",
+            "isumbras", "paladin", "peregrin", "pervinca", "tulkas", "tuor", "turgon", "turambar", "turin", "ufthak",
+            "ugluk", "uinen", "uldor", "ulfang", "ulfast", "ulwarth", "ulmo", "umbardacil", "undomiel", "ungoliant",
+            "uole", "kuvion", "urwen", "vaire", "valacar", "valandil", "valandur", "vána", "vanimelde", "varda",
+            "vardamir", "nolimon", "vidugavia", "vidumavi", "vinyarion", "vorondil", "voronwe", "walda", "wormtongue",
+            "yavanna", "yávien", "zimraphel", "zimrathôn"
+        };
+
         private readonly CSRogue.GameControl.Game _game;
         private const int MapWidth = 100;
         private const int MapHeight = 100;
@@ -151,7 +207,7 @@ namespace RogueSC.Consoles
             Add(MessageConsole);
 
             // Placeholder stuff for the stats screen
-            StatsConsole.CharacterName = "darrellp";
+            StatsConsole.CharacterName = (new NameGenerator(TolkienNames, 3, 0.01)).Generate(5, 9);
 
             Engine.ActiveConsole = this;
             Engine.Keyboard.RepeatDelay = 0.1f;

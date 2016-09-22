@@ -9,7 +9,7 @@ namespace RogueSC.Creatures
     {
         private int _maxHitPointsBase;
         private int _regain;
-        private int _vitality = 30;
+        private int _healTime = 30;
 
         public int MaxHitPointsBase
         {
@@ -37,7 +37,7 @@ namespace RogueSC.Creatures
 
         internal void Moved()
         {
-            if (++_regain >= _vitality && HitPoints < MaxHitPointsBase)
+            if (++_regain >= _healTime && HitPoints < MaxHitPointsBase)
             {
                 _regain = 0;
                 HitPoints++;

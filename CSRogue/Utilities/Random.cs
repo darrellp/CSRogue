@@ -43,6 +43,19 @@ namespace CSRogue.Utilities
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>	Random double generator. </summary>
+        ///
+        /// <remarks>	Darrellp, 9/16/2011. </remarks>
+        ///
+        /// <returns>	Random double between 0 and 1. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        public static double GlobalNextDouble()
+        {
+            _validToSetSeed = false;
+            return Global.NextDouble();
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>	Mirrors Random.Next(). </summary>
         ///
         /// <remarks>	Darrellp, 9/16/2011. </remarks>
