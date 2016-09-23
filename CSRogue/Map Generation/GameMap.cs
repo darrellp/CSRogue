@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using CSRogue.GameControl;
 using CSRogue.Interfaces;
 using CSRogue.Items;

@@ -22,7 +22,6 @@ namespace CSRogue.Utilities
         ///
         /// <returns>	An enumerable of all neighbors. </returns>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-
         public static IEnumerable<MapCoordinates> Neighbors(this IMap map, int column, int row)
         {
             var minRowOffset = row == 0 ? 0 : -1;
