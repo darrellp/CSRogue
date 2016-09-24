@@ -32,7 +32,7 @@ namespace RogueSC
             // be done before the consoles are up and running so I'm not sure how best to handle that.
             // I suppose we could make two "phases" - one bringing up some sort of debug UI and then the
             // actual game.  This will have to do for the moment.
-            const int readIndex = 0;
+            const int readIndex = -1;
 
             const string debugFolder = "DebugFiles";
             Directory.CreateDirectory(debugFolder);

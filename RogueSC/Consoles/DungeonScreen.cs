@@ -284,7 +284,9 @@ namespace RogueSC.Consoles
             var expired = ((SCCreature)e.Victim).HitPoints <= 0;
 
             // Did the victim die?
-            if (expired)
+            
+			// Currently the player never dies.  Hooray for the player!
+            if (expired && !e.Victim.IsPlayer)
             {
                 // Kill the unfortunate victim
                 // TODO: check to see if the victim is the player in which case, game over!
