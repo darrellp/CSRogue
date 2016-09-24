@@ -61,6 +61,7 @@
     <Compile Include="Interfaces\IItemFactory.cs" />
     <Compile Include="Interfaces\IPlayer.cs" />
     <Compile Include="Interfaces\IRogueCommand.cs" />
+    <Compile Include="Map Generation\AStar.cs" />
     <Compile Include="Map Generation\BaseMap.cs" />
     <Compile Include="Map Generation\FileExcavator.cs" />
     <Compile Include="Map Generation\FOV.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Map Generation\MapCoordinates.cs" />
     <Compile Include="Map Generation\MapLocationData.cs" />
     <Compile Include="Map Generation\NullExcavator.cs" />
+    <Compile Include="Map Generation\Pathfinding.cs" />
     <Compile Include="Map Generation\RectangularRoom.cs" />
     <Compile Include="Map Generation\Room.cs" />
     <Compile Include="Map Generation\RoomMap.cs" />
@@ -84,6 +86,14 @@
     <Compile Include="Interfaces\IMapLocationData.cs" />
     <Compile Include="Interfaces\IRoom.cs" />
     <Compile Include="Interfaces\IRoomsMap.cs" />
+    <Compile Include="Priority Queue\BinaryPriorityQueue.cs" />
+    <Compile Include="Priority Queue\BinaryQueueDithDeletionsTyped.cs" />
+    <Compile Include="Priority Queue\BinaryQueueWithDeletions.cs" />
+    <Compile Include="Priority Queue\BinaryWrapper.cs" />
+    <Compile Include="Priority Queue\FibonacciPriorityQueue.cs" />
+    <Compile Include="Priority Queue\FibonacciValidation.cs" />
+    <Compile Include="Priority Queue\FibonacciWrapper.cs" />
+    <Compile Include="Priority Queue\ILocatable.cs" />
     <Compile Include="Utilities\BresenhamStepper.cs" />
     <Compile Include="Utilities\DieRoll.cs" />
     <Compile Include="Item Handling\ReadCreatureData.cs" />

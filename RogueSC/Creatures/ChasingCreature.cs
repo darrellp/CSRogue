@@ -19,22 +19,19 @@ namespace RogueSC.Creatures
         {
             var neighbors = Game.Map.Neighbors(Location).ToList();
             var playerLocation = Game.Map.Player.Location;
-            var dest = Location;
+            MapCoordinates dest = default(MapCoordinates);
+            bool fAStarSucceeded = false;
             if (Game.Map[playerLocation].Room == Game.Map[Location].Room)
             {
-                var min = int.MaxValue;
-                foreach (var neighbor in neighbors.Where(l => Game.Map[l].Terrain == TerrainType.Floor))
+                var astar = new AStar(Location, playerLocation, Game.Map);
+                var path = astar.Solve(c => Game.Map.Walkable(c) && (!Game.Map.IsCreatureAt(c) || c == playerLocation));
+                if (path != null)
                 {
-                    var delta = neighbor - playerLocation;
-                    var metric = Math.Abs(delta.Column) + Math.Abs(delta.Row);
-                    if (metric < min)
-                    {
-                        dest = neighbor;
-                        min = metric;
-                    }
+                    dest = path[1];
+                    fAStarSucceeded = true;
                 }
             }
-            else
+            if (!fAStarSucceeded)
             {
                 IList<MapCoordinates> select =
                     Selector<MapCoordinates>.SelectFrom(neighbors, loc => Game.Map[loc].Terrain == TerrainType.Floor);
