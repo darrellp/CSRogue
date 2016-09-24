@@ -20,7 +20,7 @@ namespace RogueSC.Creatures
 
         protected Game Game;
         internal List<Item> Inventory { get; } = new List<Item>();
-        private readonly DieRoll _handToHandDamageRoll = new DieRoll("1d6");
+        private DieRoll HandToHandDamageRoll = new DieRoll("1d6");
         public SCCreature(ILevel l, ItemInfo i)
         {
             Game = l?.Map.Game;
@@ -42,7 +42,7 @@ namespace RogueSC.Creatures
             }
             else
             {
-                damage = _handToHandDamageRoll.Roll();
+                damage = HandToHandDamageRoll.Roll();
             }
             return damage;
         }

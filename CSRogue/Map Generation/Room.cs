@@ -20,9 +20,7 @@ namespace CSRogue.Map_Generation
 		private char[][] _layout;
 		private MapCoordinates _location;
 		private List<Room> _neighborRooms;
-	    private List<MapCoordinates> _exits = new List<MapCoordinates>();
 		private Dictionary<MapCoordinates, IRoom> _exitMap;
-	    private List<int[][]> _exitDjikstraMaps = new List<int[][]>();
 		#endregion
 
 		#region IRoom Properties
@@ -42,35 +40,19 @@ namespace CSRogue.Map_Generation
 		{
 			get { return _exitMap ?? (_exitMap = this.MapExitsToRooms()); }
 		}
-        #endregion
+		#endregion
 
-        #region Djikstra Mapping
-	    internal void DjikstraMapExits()
-	    {
-	        foreach (var exitLocation in _exits)
-	        {
-                _exitDjikstraMaps.Add(this.DjikstraMap(exitLocation));
-	        }
-	    }
-
-	    internal int ExitToExitDistance(int iExit1, int iExit2)
-	    {
-	        var exit2Location = _exits[iExit2];
-	        return _exitDjikstraMaps[iExit1][exit2Location.Column][exit2Location.Row];
-	    }
-        #endregion
-
-        #region Constructors
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>	Basic setup code called by all constructors. </summary>
-        ///
-        /// <remarks>	Darrellp, 9/28/2011. </remarks>
-        ///
-        /// <param name="layout">		The layout. </param>
-        /// <param name="location">		The location. </param>
-        /// <param name="neighbors">	The neighboring rooms. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        internal void Setup(char[][] layout, MapCoordinates location, List<Room> neighbors)
+		#region Constructors
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		/// <summary>	Basic setup code called by all constructors. </summary>
+		///
+		/// <remarks>	Darrellp, 9/28/2011. </remarks>
+		///
+		/// <param name="layout">		The layout. </param>
+		/// <param name="location">		The location. </param>
+		/// <param name="neighbors">	The neighboring rooms. </param>
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		internal void Setup(char[][] layout, MapCoordinates location, List<Room> neighbors)
 		{
 			_layout = layout;
 			_neighborRooms = neighbors ?? new List<Room>();
@@ -328,7 +310,6 @@ namespace CSRogue.Map_Generation
 			NeighborRooms.Add(room);
 			this[location] = exitChar;
 			ExitMap[location] = room;
-            _exits.Add(location);
 			return exitChar;
 		}
 		#endregion
