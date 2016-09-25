@@ -211,7 +211,7 @@ namespace RogueSC.Consoles
 
             Engine.ActiveConsole = this;
             Engine.Keyboard.RepeatDelay = 0.1f;
-            Engine.Keyboard.InitialRepeatDelay = 0.1f;
+            Engine.Keyboard.InitialRepeatDelay = 0.3f;
 
             if (_reader != null)
             {
