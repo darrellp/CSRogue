@@ -27,5 +27,9 @@ namespace CSRogue.Interfaces
 		char[][] Layout { get; }
 		MapCoordinates Location { get; }
 		List<Room> NeighborRooms { get; }
+		// Room exits in GLOBAL MapCoordinates
+		List<MapCoordinates> Exits { get; set; }
+		// The following should be null if you don't use Heirarchical AStar
+		int[][][] ExitDMaps { get; set; }
 	}
 }

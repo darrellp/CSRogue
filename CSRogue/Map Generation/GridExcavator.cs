@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using CSRogue.Interfaces;
-using CSRogue.Items;
 using CSRogue.Utilities;
 
 namespace CSRogue.Map_Generation
@@ -49,6 +48,7 @@ namespace CSRogue.Map_Generation
 		private readonly int _minRoomHeight;
 		private readonly int _pctMergeChance;
 		private readonly int _pctDoorChance;
+		private readonly bool _useRoomAStar;
 		private RectangularRoom[][] _rooms;
 		private GridConnections _connections;
 		private GridConnections _merges;
@@ -62,7 +62,8 @@ namespace CSRogue.Map_Generation
 			int minRoomWidth = 5,
 			int minRoomHeight = 5,
 			int pctMergeChance = 40,
-			int pctDoorChance = 50)
+			int pctDoorChance = 50,
+			bool useRoomAStar = true)
 		{
 			_baseCellWidth = baseCellWidth;
 			_baseCellHeight = baseCellHeight;
@@ -70,6 +71,7 @@ namespace CSRogue.Map_Generation
 			_minRoomHeight = minRoomHeight;
 			_pctMergeChance = pctMergeChance;
 			_pctDoorChance = pctDoorChance;
+			_useRoomAStar = useRoomAStar;
 		} 
 		#endregion
 
@@ -142,6 +144,16 @@ namespace CSRogue.Map_Generation
 			AddRandomConnections(Math.Min(_rooms.Length, _rooms[0].Length), _connections);
 		}
 
+#if DEBUG
+		void CheckRoom50()
+		{
+			var groom = _mapRoomToGenericRooms[RoomAt(new MapCoordinates(5, 0))];
+			if (groom._exitMap != null)
+			{
+				Debug.Assert(!groom._exitMap.ContainsKey(new MapCoordinates(6, 8)));
+			}
+		}
+#endif
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Excavate all corridors on the map. </summary>
 		///
@@ -168,8 +180,14 @@ namespace CSRogue.Map_Generation
 				}
 				else
 				{
+#if DEBUG
+					CheckRoom50();
+#endif
 					// Build a corridor between them
 					ExcavateCorridor(map, room1, room2, info.Dir);
+#if DEBUG
+					CheckRoom50();
+#endif
 				}
 			}
 		}
@@ -249,6 +267,15 @@ namespace CSRogue.Map_Generation
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		private void ExcavateMerge(IMap map, RectangularRoom topRoom, RectangularRoom bottomRoom, Dir dir)
 		{
+			// Get the generic rooms
+			var roomTop = _mapRoomToGenericRooms[topRoom];
+			var roomBottom = _mapRoomToGenericRooms[bottomRoom];
+
+#if DEBUG
+			//var junk = roomTop.ExitMap;
+			//junk = roomBottom.ExitMap;
+#endif
+
 			// Get the opposite direction
 			var dirOther = MapCoordinates.OtherDirection(dir);
 
@@ -270,8 +297,6 @@ namespace CSRogue.Map_Generation
 			var overlapRight = Math.Min(topRoomsRight, bottomRoomsRight) - 1;
 
 			// Create our new merged generic room
-			var roomTop = _mapRoomToGenericRooms[topRoom];
-			var roomBottom = _mapRoomToGenericRooms[bottomRoom];
 			roomTop.CombineWith(roomBottom);
 
 			// For each column in the grid
@@ -309,7 +334,6 @@ namespace CSRogue.Map_Generation
 				roomTop[currentLocation] = floorChar;
 				currentLocation[dir] = topRoomsBottom;
 			}
-			Debug.Assert(roomBottom == roomTop || !_mapRoomToGenericRooms.ContainsValue(roomBottom));
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -561,11 +585,21 @@ namespace CSRogue.Map_Generation
 			// Put the exits in the appropriate generic rooms
 			var roomTop = _mapRoomToGenericRooms[rectRoomTop];
 			var roomBottom = _mapRoomToGenericRooms[rectRoomBottom];
+
+#if DEBUG
+			//var junk = roomTop.ExitMap;
+			//junk = roomBottom.ExitMap;
+#endif
 			corridor.AddExit(roomTop, topEntrance);
 			corridor.AddExit(roomBottom, bottomEntrance);
+#if DEBUG
+			CheckRoom50();
+#endif
 			roomTop.AddExit(corridor, topEntrance);
+#if DEBUG
+			CheckRoom50();
+#endif
 			roomBottom.AddExit(corridor, bottomEntrance);
-
 
 			// Should we put a door in the top room?
 			if (Rnd.GlobalNext(100) < _pctDoorChance)
@@ -620,7 +654,7 @@ namespace CSRogue.Map_Generation
 		/// <param name="topEntrance">		[out] The small coordinate entrance. </param>
 		/// <param name="bottomEntrance">	[out] The large coordinate entrance. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		private void GetEntrances(
+		private static void GetEntrances(
 			RectangularRoom room1,
 			RectangularRoom room2,
 			Dir dir,
@@ -812,6 +846,10 @@ namespace CSRogue.Map_Generation
 
 				// Add the room to the map
 				AssignTilesInRoom(map, room);
+				if (_useRoomAStar)
+				{
+					room.CalcExitDjikstraMaps();
+				}
 			}
 		}
 

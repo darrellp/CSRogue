@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define FIXEDMAP
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -148,7 +149,11 @@ namespace RogueSC.Consoles
             MessageConsole = new MessagesConsole(WindowWidth, MessageHeight);
 
             BaseScreen = this;
-            var seed = -1;
+#if FIXEDMAP
+			var seed = 0;
+#else
+			var seed = -1;
+#endif
             if (reader != null)
             {
                 _reader = reader;
@@ -247,9 +252,9 @@ namespace RogueSC.Consoles
                 CreateNewLevel();
             }
         }
-        #endregion
+#endregion
 
-        #region Messaging
+#region Messaging
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Print a message. </summary>
         ///
@@ -261,9 +266,9 @@ namespace RogueSC.Consoles
         {
             BaseScreen.MessageConsole.PrintMessage(msg);
         }
-        #endregion
+#endregion
 
-        #region Event Handlers
+#region Event Handlers
         private void Game_AttackEvent(object sender, AttackEventArgs e)
         {
             bool involvesPlayer = e.Victim.IsPlayer || e.Attacker.IsPlayer;
@@ -329,9 +334,9 @@ namespace RogueSC.Consoles
 				}
 			}
 		}
-		#endregion
+#endregion
 
-		#region Keyboard handling
+#region Keyboard handling
 		/// <summary>   A dictionary to map the arrow keys to their corresponding movement. </summary>
 		private static readonly Dictionary<Input.Keys, Action<DungeonScreen>> KeysToAction = new Dictionary<Input.Keys, Action<DungeonScreen>>()
 			{
@@ -412,6 +417,6 @@ namespace RogueSC.Consoles
             }
             DungeonConsole.CheckFOV();
         }
-        #endregion
+#endregion
     }
 }

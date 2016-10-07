@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using CSRogue.Interfaces;
@@ -21,11 +22,15 @@ namespace CSRogue.Map_Generation
 		private MapCoordinates _location;
 		private List<Room> _neighborRooms;
 	    private List<MapCoordinates> _exits = new List<MapCoordinates>();
+#if DEBUG
+		internal Dictionary<MapCoordinates, IRoom> _exitMap;
+#else
 		private Dictionary<MapCoordinates, IRoom> _exitMap;
-	    private List<int[][]> _exitDjikstraMaps = new List<int[][]>();
-		#endregion
+#endif
+		private int[][][] _exitDjikstraMaps;
+#endregion
 
-		#region IRoom Properties
+#region IRoom Properties
 		/// <summary>	The layout map. </summary>
 		public char[][] Layout => _layout;
 
@@ -34,22 +39,44 @@ namespace CSRogue.Map_Generation
 
 		/// <summary>	The neighboring rooms. </summary>
 		public List<Room> NeighborRooms => _neighborRooms;
-		#endregion
 
-		#region Properties
-		/// <summary>   Matches global coordinates for exits to the rooms they lead to. </summary>
-		public Dictionary<MapCoordinates, IRoom> ExitMap
+		public List<MapCoordinates> Exits
 		{
-			get { return _exitMap ?? (_exitMap = this.MapExitsToRooms()); }
+			get { return _exits; }
+			set { _exits = value; }
 		}
-        #endregion
 
-        #region Djikstra Mapping
-	    internal void DjikstraMapExits()
+		public int[][][] ExitDMaps => _exitDjikstraMaps;
+
+#endregion
+
+#region Properties
+		/// <summary>   Matches global coordinates for exits to the rooms they lead to. </summary>
+		public Dictionary<MapCoordinates, IRoom> ExitMap => _exitMap ?? (_exitMap = this.MapExitsToRooms());
+
+		int[][][] IRoom.ExitDMaps
+		{
+			get
+			{
+				return ExitDMaps;
+			}
+
+			set
+			{
+				_exitDjikstraMaps = value;
+			}
+		}
+
+#endregion
+
+#region Djikstra Mapping
+		internal void SetupDjikstraMapExits()
 	    {
-	        foreach (var exitLocation in _exits)
-	        {
-                _exitDjikstraMaps.Add(this.DjikstraMap(exitLocation));
+		    _exitDjikstraMaps = new int[_exits.Count][][];
+		    for (var iExit = 0; iExit < _exits.Count; iExit++)
+		    {
+			    var exitLocation = _exits[iExit];
+                _exitDjikstraMaps[iExit] = this.DjikstraMap(exitLocation);
 	        }
 	    }
 
@@ -58,17 +85,17 @@ namespace CSRogue.Map_Generation
 	        var exit2Location = _exits[iExit2];
 	        return _exitDjikstraMaps[iExit1][exit2Location.Column][exit2Location.Row];
 	    }
-        #endregion
+#endregion
 
-        #region Constructors
+#region Constructors
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>	Basic setup code called by all constructors. </summary>
         ///
         /// <remarks>	Darrellp, 9/28/2011. </remarks>
         ///
-        /// <param name="layout">		The layout. </param>
-        /// <param name="location">		The location. </param>
-        /// <param name="neighbors">	The neighboring rooms. </param>
+        /// <param name="layout">			The layout. </param>
+        /// <param name="location">			The location. </param>
+        /// <param name="neighbors">		The neighboring rooms. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         internal void Setup(char[][] layout, MapCoordinates location, List<Room> neighbors)
 		{
@@ -82,9 +109,9 @@ namespace CSRogue.Map_Generation
 		///
 		/// <remarks>	Darrellp, 9/27/2011. </remarks>
 		///
-		/// <param name="layout">	The layout. </param>
-		/// <param name="location">	The location. </param>
-		/// <param name="neighbors">	The exits. </param>
+		/// <param name="layout">			The layout. </param>
+		/// <param name="location">			The location. </param>
+		/// <param name="neighbors">		The exits. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		internal Room(char[][] layout, MapCoordinates location, List<Room> neighbors)
 		{
@@ -96,9 +123,9 @@ namespace CSRogue.Map_Generation
 		///
 		/// <remarks>	Darrellp, 9/28/2011. </remarks>
 		///
-		/// <param name="width">	The width. </param>
-		/// <param name="height">	The height. </param>
-		/// <param name="location">	The location. </param>
+		/// <param name="width">			The width. </param>
+		/// <param name="height">			The height. </param>
+		/// <param name="location">			The location. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		internal Room(int width, int height, MapCoordinates location)
 		{
@@ -115,9 +142,9 @@ namespace CSRogue.Map_Generation
 		///
 		/// <remarks>	Darrellp, 9/27/2011. </remarks>
 		///
-		/// <param name="layout">	The layout. </param>
-		/// <param name="location">	The location. </param>
-		/// <param name="neighbors">	The exits. </param>
+		/// <param name="layout">			The layout. </param>
+		/// <param name="location">			The location. </param>
+		/// <param name="neighbors">		The exits. </param>
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		internal Room(string layout, MapCoordinates location, List<Room> neighbors)
 		{
@@ -135,9 +162,9 @@ namespace CSRogue.Map_Generation
 			}
 			Setup(layoutArray, location, neighbors);
 		}
-		#endregion
+#endregion
 
-		#region Queries
+#region Queries
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Return true if a location is part of this room's floor. </summary>
 		///
@@ -153,9 +180,9 @@ namespace CSRogue.Map_Generation
 			       location.Row >= this.Top() && location.Row <= this.Bottom() &&
 			       this[location] == '.';
 		}
-		#endregion
+#endregion
 
-		#region Indexer
+#region Indexer
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Indexer using global (map) row and column arguments. </summary>
 		///
@@ -191,9 +218,9 @@ namespace CSRogue.Map_Generation
 				Layout[local.Column][local.Row] = value;
 			}
 		}
-		#endregion
+#endregion
 
-		#region Modification
+#region Modification
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>	Transfer terrain. </summary>
 		///
@@ -265,6 +292,7 @@ namespace CSRogue.Map_Generation
 			// Clear our exits
 			// They'll come back in from the cloned room
 			_neighborRooms = new List<Room>();
+			Exits.Clear();
 
 			// Allocate a new layout array
 			_layout = new char[newWidth][];
@@ -284,9 +312,6 @@ namespace CSRogue.Map_Generation
 
 			// Update pointers for any rooms which connected to room
 			UpdateConnectedRoomsToPointToUs(room);
-
-			// Set up our exit map
-			_exitMap = this.MapExitsToRooms();
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -327,13 +352,15 @@ namespace CSRogue.Map_Generation
 
 			NeighborRooms.Add(room);
 			this[location] = exitChar;
+			Debug.Assert(_exitMap == null || !_exitMap.ContainsKey(new MapCoordinates(6, 8)));
 			ExitMap[location] = room;
-            _exits.Add(location);
+			Debug.Assert(_exitMap == null || !_exitMap.ContainsKey(new MapCoordinates(6, 8)));
+			_exits.Add(location);
 			return exitChar;
 		}
-		#endregion
+#endregion
 
-		#region Display
+#region Display
 		public override string ToString()
 		{
 			var sbret = new StringBuilder();
@@ -353,6 +380,6 @@ namespace CSRogue.Map_Generation
 
 			return sbret.ToString();
 		}
-		#endregion
+#endregion
 	}
 }
